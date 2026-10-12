@@ -1,22 +1,22 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Persetujuan Surat Izin</h1>
-        <p class="text-sm text-gray-500 mt-1">
-          Tinjau dan proses permohonan surat izin tidak hadir siswa kelas binaan
-        </p>
-      </div>
+  <div class="flex-1 flex flex-col">
+    <AppHeader
+      title="Persetujuan Surat Izin Belajar"
+      subtitle="Daftar permohonan absen siswa yang membutuhkan verifikasi Anda"
+    >
+      <template #actions>
+        <button
+          @click="fetchLeaves"
+          type="button"
+          class="px-3.5 py-2 rounded-xl border border-gray-200 bg-white text-xs text-gray-700 hover:bg-gray-50 font-semibold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+        >
+          <RefreshCwIcon class="w-3.5 h-3.5 text-gray-500" />
+          <span>Segarkan Data</span>
+        </button>
+      </template>
+    </AppHeader>
 
-      <button
-        @click="fetchLeaves"
-        class="px-3.5 py-2 rounded-xl border border-gray-200 bg-white text-xs text-gray-700 hover:bg-gray-50 font-medium transition flex items-center gap-1.5 self-start md:self-auto shadow-xs"
-      >
-        <RefreshCwIcon class="w-3.5 h-3.5" />
-        Segarkan Data
-      </button>
-    </div>
+    <main class="px-6 md:px-8 pb-10 space-y-6">
 
     <!-- Alert / Toast -->
     <div v-if="successMsg" class="p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 flex items-center justify-between">
@@ -183,6 +183,7 @@
         </div>
       </div>
     </div>
+    </main>
   </div>
 </template>
 

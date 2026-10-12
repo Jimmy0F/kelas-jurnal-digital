@@ -1,31 +1,30 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Rekap Harian Kehadiran</h1>
-        <p class="text-sm text-gray-500 mt-1">
-          Laporan presensi harian siswa per rombongan belajar
-        </p>
-      </div>
-
-      <div class="flex items-center gap-2">
+  <div class="flex-1 flex flex-col">
+    <AppHeader
+      title="Rekap Kehadiran Siswa"
+      subtitle="Laporan dan ringkasan data presensi siswa kelas XI RPL 1"
+    >
+      <template #actions>
         <button
           @click="exportExcel"
-          class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-sm"
+          type="button"
+          class="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
         >
-          <DownloadIcon class="w-4 h-4 text-gray-500" />
-          Ekspor Excel
+          <DownloadIcon class="w-3.5 h-3.5 text-gray-500" />
+          <span class="hidden sm:inline">Ekspor Excel</span>
         </button>
         <button
           @click="printReport"
-          class="px-4 py-2 rounded-xl bg-brand-red text-white text-xs font-semibold hover:bg-brand-red-dark transition flex items-center gap-1.5 shadow-sm"
+          type="button"
+          class="px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
         >
-          <PrinterIcon class="w-4 h-4" />
-          Cetak Rekap
+          <PrinterIcon class="w-3.5 h-3.5" />
+          <span>Cetak PDF</span>
         </button>
-      </div>
-    </div>
+      </template>
+    </AppHeader>
+
+    <main class="px-6 md:px-8 pb-10 space-y-6">
 
     <!-- Filter Card -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-4 md:p-5 flex flex-wrap items-center justify-between gap-4">
@@ -167,6 +166,7 @@
         </table>
       </div>
     </div>
+    </main>
   </div>
 </template>
 

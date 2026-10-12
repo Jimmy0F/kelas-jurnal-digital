@@ -115,6 +115,13 @@ class UserController extends Controller
         }
 
         $user = User::findOrFail($id);
+        
+        if ($user->role === 'SISWA') {
+            return response()->json([
+                'message' => 'Guru Pembimbing tidak diizinkan mereset kata sandi Siswa. Siswa dapat mereset mandiri melalui Lupa Password.'
+            ], 403);
+        }
+
         $newPassword = 'password123';
         $user->password = Hash::make($newPassword);
         $user->save();

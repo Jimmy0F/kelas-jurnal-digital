@@ -16,6 +16,12 @@ module.exports = {
           light: '#FEE2E2',
           subtle: '#FEF2F2'
         },
+        'brand-red': {
+          DEFAULT: '#C62828',
+          dark: '#B71C1C',
+          light: '#FEE2E2',
+          50: '#FEF2F2'
+        },
         presence: {
           hadir: '#16A34A',
           'hadir-bg': '#DCFCE7',

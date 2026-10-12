@@ -95,6 +95,8 @@ const userSubtitle = computed(() => {
 
 function isActive(path: string) {
   if (path === '/dashboard') return route.path === '/dashboard' || route.path === '/'
+  if (path === '/laporan-jurnal') return route.path.startsWith('/laporan-jurnal') || route.path.startsWith('/rekap-harian')
+  if (path === '/rekap-semester') return route.path.startsWith('/rekap-semester')
   return route.path.startsWith(path)
 }
 

@@ -1,24 +1,22 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Laporan Permohonan Izin</h1>
-        <p class="text-sm text-gray-500 mt-1">
-          Arsip data dan riwayat permohonan izin tidak masuk siswa
-        </p>
-      </div>
-
-      <div class="flex items-center gap-2">
+  <div class="flex-1 flex flex-col">
+    <AppHeader
+      title="Riwayat Surat Izin"
+      subtitle="Arsip dan log digital seluruh surat izin tidak masuk kelas"
+    >
+      <template #actions>
         <button
           @click="exportExcel"
-          class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-sm"
+          type="button"
+          class="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
         >
-          <DownloadIcon class="w-4 h-4 text-gray-500" />
-          Ekspor Rekap XLSX
+          <DownloadIcon class="w-3.5 h-3.5 text-gray-500" />
+          <span>Ekspor Rekap XLSX</span>
         </button>
-      </div>
-    </div>
+      </template>
+    </AppHeader>
+
+    <main class="px-6 md:px-8 pb-10 space-y-6">
 
     <!-- Filter Card -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-4 md:p-5 flex flex-wrap items-center justify-between gap-4">
@@ -129,6 +127,7 @@
         </table>
       </div>
     </div>
+    </main>
   </div>
 </template>
 

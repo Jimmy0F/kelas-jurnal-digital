@@ -109,13 +109,29 @@
               <h3 class="text-sm font-bold text-gray-900">Isi Presensi Kelas {{ data?.class_name || 'XI RPL 1' }} Hari ini</h3>
               <p class="text-xs text-gray-400 mt-0.5">Tanggal: Hari ini, status: {{ data?.session_status }}</p>
             </div>
-            <NuxtLink
-              to="/presensi"
-              class="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-2xs"
-            >
-              <ClipboardCheck class="w-4 h-4" />
-              <span>Kelola Presensi</span>
-            </NuxtLink>
+            <div class="flex items-center gap-2">
+              <NuxtLink
+                to="/surat-izin"
+                class="px-3 py-2 bg-white border border-gray-200 hover:border-gray-300 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-2xs"
+              >
+                <Mail class="w-3.5 h-3.5 text-primary" />
+                <span class="hidden sm:inline">Surat Izin</span>
+              </NuxtLink>
+              <NuxtLink
+                to="/jurnal-kelas"
+                class="px-3 py-2 bg-white border border-gray-200 hover:border-gray-300 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-2xs"
+              >
+                <FileText class="w-3.5 h-3.5 text-primary" />
+                <span class="hidden sm:inline">Isi Jurnal</span>
+              </NuxtLink>
+              <NuxtLink
+                to="/presensi"
+                class="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-2xs"
+              >
+                <ClipboardCheck class="w-4 h-4" />
+                <span>Input Presensi</span>
+              </NuxtLink>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
@@ -322,7 +338,7 @@
 </template>
 
 <script setup lang="ts">
-import { ClipboardCheck, CheckCircle2 } from 'lucide-vue-next'
+import { ClipboardCheck, CheckCircle2, Mail, FileText } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 
 const authStore = useAuthStore()
@@ -340,7 +356,9 @@ const dashboardTitle = computed(() => {
 
 const dashboardSubtitle = computed(() => {
   const role = authStore.user?.role
-  if (role === 'GURU_PEMBIMBING') return 'Guru Pembimbing Sekolah'
+  if (role === 'SISWA') return 'Ringkasan presensi mandiri dan pembelajaran siswa'
+  if (role === 'SEKRETARIS') return 'Ringkasan presensi harian dan aktivitas kelas'
+  if (role === 'GURU_PEMBIMBING') return 'Pengawasan presensi kelas binaan, jurnal, dan perizinan siswa'
   if (role === 'GURU_PENGAJAR') return 'Ringkasan aktivitas mengajar hari ini'
   return ''
 })

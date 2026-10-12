@@ -56,3 +56,8 @@ backend/storage/framework/sessions/*
 backend/storage/framework/views/*
 backend/bootstrap/cache/*
 !backend/bootstrap/cache/.gitignore
+
+# Documents & Prompts
+*.docx
+*.doc
+PROMPT_ANTIGRAVITY_JURNAL_KELAS.md

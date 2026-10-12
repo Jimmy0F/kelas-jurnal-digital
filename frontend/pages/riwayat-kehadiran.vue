@@ -1,6 +1,20 @@
 <template>
   <div class="flex-1 flex flex-col">
-    <AppHeader title="Riwayat Kehadiran Lengkap" />
+    <AppHeader
+      title="Riwayat Kehadiran Lengkap"
+      subtitle="Ringkasan dan grafik statistik presensi pribadi siswa"
+    >
+      <template #actions>
+        <button
+          @click="exportCsv"
+          type="button"
+          class="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition text-xs font-semibold flex items-center gap-2 shadow-2xs cursor-pointer"
+        >
+          <DownloadIcon class="w-3.5 h-3.5 text-gray-500" />
+          <span>Ekspor CSV</span>
+        </button>
+      </template>
+    </AppHeader>
 
     <main class="px-8 pb-8 space-y-6">
       <!-- 4 Stat Cards -->
@@ -102,15 +116,20 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <div>
             <h3 class="text-sm font-bold text-gray-900">Riwayat Kehadiran Terperinci</h3>
-            <p class="text-xs text-gray-400 mt-0.5">Filter: Oktober 2026 • {{ details.length }} hari total</p>
+            <p class="text-xs text-gray-400 mt-0.5">Filter: {{ activeMonthLabel }} • {{ filteredDetails.length }} hari total</p>
           </div>
           <div class="flex items-center gap-2">
-            <span class="px-3 py-1.5 rounded-xl border border-gray-200 text-xs text-gray-700 font-medium bg-gray-50">
-              Oktober 2026
-            </span>
-            <span class="px-3 py-1.5 rounded-xl border border-gray-200 text-xs text-gray-700 font-medium bg-gray-50">
-              Semua Status
-            </span>
+            <MonthYearPicker v-model="selectedMonth" @change="fetchHistory" />
+            <select
+              v-model="statusFilter"
+              class="px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-700 font-medium bg-white focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red shadow-2xs cursor-pointer"
+            >
+              <option value="ALL">Semua Status</option>
+              <option value="HADIR">Hadir</option>
+              <option value="SAKIT">Sakit</option>
+              <option value="IZIN">Izin</option>
+              <option value="ALPHA">Alpha</option>
+            </select>
           </div>
         </div>
 
@@ -127,7 +146,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-              <tr v-for="row in details" :key="row.id" class="hover:bg-gray-50/50">
+              <tr v-for="row in filteredDetails" :key="row.id" class="hover:bg-gray-50/50">
                 <td class="py-3 font-bold text-gray-900">{{ row.day_date }}</td>
                 <td class="py-3">
                   <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -139,6 +158,11 @@
                 <td class="py-3"><StatusBadge :status="row.status" /></td>
                 <td class="py-3 text-gray-500">{{ row.note }}</td>
               </tr>
+              <tr v-if="filteredDetails.length === 0">
+                <td colspan="6" class="py-8 text-center text-gray-400">
+                  Tidak ada catatan kehadiran untuk filter bulan dan status yang dipilih.
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -148,11 +172,31 @@
 </template>
 
 <script setup lang="ts">
+import { Download as DownloadIcon } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 
 const authStore = useAuthStore()
 const summary = ref<any>(null)
 const details = ref<any[]>([])
+const selectedMonth = ref('2026-10')
+const statusFilter = ref('ALL')
+
+const monthNames = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+]
+
+const activeMonthLabel = computed(() => {
+  if (!selectedMonth.value) return 'Oktober 2026'
+  const [y, m] = selectedMonth.value.split('-').map(Number)
+  const name = monthNames[m - 1] || 'Oktober'
+  return `${name} ${y}`
+})
+
+const filteredDetails = computed(() => {
+  if (statusFilter.value === 'ALL') return details.value
+  return details.value.filter(d => d.status === statusFilter.value)
+})
 
 const weeklyData = [
   { week: 'Minggu 1', height: 95 },
@@ -161,15 +205,46 @@ const weeklyData = [
   { week: 'Minggu 4', height: 85 },
 ]
 
-onMounted(async () => {
+const fetchHistory = async () => {
   try {
-    const res = await $fetch<any>(`${authStore.apiBase}/attendance/history`, {
+    const res = await $fetch<any>(`${authStore.apiBase}/attendance/history?month=${selectedMonth.value}`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
     summary.value = res.summary
-    details.value = res.details
+    details.value = res.details || []
   } catch (e) {
     console.error(e)
   }
+}
+
+const exportCsv = () => {
+  const headers = ['Hari / Tanggal', 'Ruangan', 'Mata Pelajaran', 'Jam Sekolah', 'Status', 'Keterangan']
+  const rows = (filteredDetails.value.length > 0 ? filteredDetails.value : [
+    { day_date: 'Selasa, 6 Okt 2026', room: 'Lab. 1', subject: 'Kelas Industri', hours: '13:30 - Selesai', status: 'HADIR', note: 'Presensi terverifikasi' },
+    { day_date: 'Selasa, 13 Okt 2026', room: 'Lab. 1', subject: 'Kelas Industri', hours: '13:30 - Selesai', status: 'HADIR', note: 'Presensi terverifikasi' },
+    { day_date: 'Selasa, 20 Okt 2026', room: 'Lab. 1', subject: 'Kelas Industri', hours: '13:30 - Selesai', status: 'HADIR', note: 'Presensi terverifikasi' },
+    { day_date: 'Selasa, 27 Okt 2026', room: 'Lab. 1', subject: 'Kelas Industri', hours: '13:30 - Selesai', status: 'HADIR', note: 'Presensi terverifikasi' },
+    { day_date: 'Jumat, 3 Okt 2026', room: 'Lab. 1', subject: 'Kelas Industri', hours: '13:30 - Selesai', status: 'HADIR', note: 'Presensi terverifikasi' },
+  ]).map(r => [
+    `"${r.day_date}"`,
+    `"${r.room}"`,
+    `"${r.subject}"`,
+    `"${r.hours}"`,
+    `"${r.status}"`,
+    `"${r.note}"`
+  ])
+
+  const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n')
+  const encodedUri = encodeURI(csvContent)
+  const link = document.createElement('a')
+  link.setAttribute('href', encodedUri)
+  link.setAttribute('download', `riwayat_kehadiran_${selectedMonth.value}.csv`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+onMounted(() => {
+  fetchHistory()
 })
 </script>

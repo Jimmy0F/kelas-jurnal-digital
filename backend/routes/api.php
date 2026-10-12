@@ -39,6 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/journals/material', [JournalController::class, 'getMaterialJournals']);
     Route::post('/journals/material', [JournalController::class, 'storeMaterialJournal']);
 
+    // Schedules (Jadwal Mengajar)
+    Route::get('/schedules', [JournalController::class, 'getSchedules']);
+    Route::post('/schedules', [JournalController::class, 'storeSchedule']);
+
     // Leave Requests (Surat Izin)
     Route::get('/leave-requests', [LeaveRequestController::class, 'index']);
     Route::post('/leave-requests', [LeaveRequestController::class, 'store']);

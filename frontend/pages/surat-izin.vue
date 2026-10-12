@@ -1,23 +1,20 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Form Pengajuan Surat Izin</h1>
-        <p class="text-sm text-gray-500 mt-1">
-          Buat permohonan surat izin tidak masuk bagi siswa kelas XI RPL 1
-        </p>
-      </div>
-    </div>
+  <div class="flex-1 flex flex-col">
+    <AppHeader
+      title="Pengajuan Surat Izin Belajar"
+      subtitle="Ajukan permohonan absen kelas resmi secara daring"
+      :show-back="true"
+    />
 
-    <!-- Alert / Notif -->
-    <div v-if="successMsg" class="p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 flex items-center justify-between">
-      <div class="flex items-center gap-2 text-sm font-medium">
-        <CheckCircle2Icon class="w-5 h-5 text-green-600" />
-        {{ successMsg }}
+    <main class="px-6 md:px-8 pb-10 space-y-6">
+      <!-- Alert / Notif -->
+      <div v-if="successMsg" class="p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-sm font-medium">
+          <CheckCircle2Icon class="w-5 h-5 text-green-600" />
+          {{ successMsg }}
+        </div>
+        <button @click="successMsg = ''" class="text-green-500 hover:text-green-700 text-sm">✕</button>
       </div>
-      <button @click="successMsg = ''" class="text-green-500 hover:text-green-700 text-sm">Tutup</button>
-    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <!-- Form Input (Kiri) -->
@@ -229,6 +226,7 @@
         </div>
       </div>
     </div>
+    </main>
   </div>
 </template>
 

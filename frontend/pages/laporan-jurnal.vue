@@ -1,28 +1,31 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Laporan Jurnal Kelas</h1>
-        <p class="text-sm text-gray-500 mt-1">
-          Rekapitulasi log aktivitas pembelajaran dan status verifikasi guru pengajar
-        </p>
-      </div>
-
-      <div class="flex items-center gap-2">
+  <div class="flex-1 flex flex-col">
+    <AppHeader
+      :title="pageTitle"
+      :subtitle="pageSubtitle"
+    >
+      <template #actions>
         <button
           @click="exportReport"
-          class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-sm"
+          type="button"
+          class="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
         >
-          <DownloadIcon class="w-4 h-4 text-gray-500" />
-          Ekspor Log Jurnal
+          <DownloadIcon class="w-3.5 h-3.5 text-gray-500" />
+          <span>Ekspor Log Jurnal</span>
         </button>
-      </div>
-    </div>
+      </template>
+    </AppHeader>
+
+    <main class="px-6 md:px-8 pb-10 space-y-6">
 
     <!-- Filter Card -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-4 md:p-5 flex flex-wrap items-center justify-between gap-4">
       <div class="flex flex-wrap items-center gap-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-gray-500 mb-1">Periode Bulan & Tahun</label>
+          <MonthYearPicker v-model="selectedMonth" @change="fetchJournals" />
+        </div>
+
         <div>
           <label class="block text-[11px] font-semibold text-gray-500 mb-1">Status Verifikasi</label>
           <select
@@ -156,13 +159,15 @@
         <div class="pt-3 border-t border-gray-100 flex justify-end">
           <button
             @click="selectedJournal = null"
-            class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs transition"
+            type="button"
+            class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs transition cursor-pointer"
           >
             Tutup
           </button>
         </div>
       </div>
     </div>
+    </main>
   </div>
 </template>
 
@@ -176,8 +181,19 @@ import {
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
 
+const pageTitle = computed(() => {
+  if (authStore.user?.role === 'SEKRETARIS') return 'Jurnal Instruktur Pembelajaran'
+  return 'Laporan Jurnal Kelas'
+})
+
+const pageSubtitle = computed(() => {
+  if (authStore.user?.role === 'SEKRETARIS') return 'Dokumentasi agenda, materi mengajar, dan verifikasi instruktur'
+  return 'Rekapitulasi log aktivitas pembelajaran dan status verifikasi guru pengajar'
+})
+
 const loading = ref(false)
 const journals = ref<any[]>([])
+const selectedMonth = ref('2026-10')
 const statusFilter = ref('ALL')
 const searchQuery = ref('')
 const selectedJournal = ref<any | null>(null)
@@ -197,7 +213,7 @@ const filteredJournals = computed(() => {
 const fetchJournals = async () => {
   loading.value = true
   try {
-    const res: any = await $fetch(`${config.public.apiBase}/journals/class`, {
+    const res: any = await $fetch(`${config.public.apiBase}/journals/class?month=${selectedMonth.value}`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
     journals.value = res.data || res || []

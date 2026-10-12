@@ -1,271 +1,316 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Jurnal Kelas</h1>
-        <p class="text-sm text-gray-500 mt-1">
-          Catat aktivitas kegiatan belajar mengajar harian kelas XI RPL 1
-        </p>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-50 text-brand-red border border-red-100">
-          <CalendarIcon class="w-3.5 h-3.5" />
-          {{ todayFormatted }}
-        </span>
-      </div>
-    </div>
+  <div class="flex-1 flex flex-col">
+    <AppHeader
+      title="Rekap Kehadiran Siswa"
+      subtitle="Laporan dan ringkasan data presensi siswa kelas XI RPL 1"
+    >
+      <template #actions>
+        <button
+          @click="exportPdf"
+          type="button"
+          class="px-3.5 py-2 rounded-xl bg-white border border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors text-xs font-semibold flex items-center gap-2 shadow-2xs cursor-pointer"
+        >
+          <FileTextIcon class="w-3.5 h-3.5" />
+          <span>Export PDF</span>
+        </button>
+      </template>
+    </AppHeader>
 
-    <!-- Alert / Info -->
-    <div v-if="successMsg" class="p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 flex items-center justify-between">
-      <div class="flex items-center gap-2 text-sm font-medium">
-        <CheckCircle2Icon class="w-5 h-5 text-green-600" />
-        {{ successMsg }}
-      </div>
-      <button @click="successMsg = ''" class="text-green-500 hover:text-green-700 text-sm">Tutup</button>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- Form Input Jurnal (Kiri/Atas) -->
-      <div class="lg:col-span-5 bg-white rounded-2xl border border-gray-100 shadow-card p-5 md:p-6 space-y-4">
-        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-          <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
-            <BookOpenIcon class="w-5 h-5 text-brand-red" />
-            Input Jurnal Harian
-          </h2>
-          <span class="text-xs text-gray-400">XI RPL 1</span>
-        </div>
-
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-          <!-- Pilih Jadwal / Jam & Mapel -->
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Jadwal / Jam Pelajaran
-            </label>
-            <select
-              v-model="form.schedule_id"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition bg-white"
-              required
-            >
-              <option value="" disabled>-- Pilih Jadwal Pembelajaran --</option>
-              <option v-for="sch in schedules" :key="sch.id" :value="sch.id">
-                {{ sch.subject?.name }} (Jam {{ sch.start_time?.slice(0,5) }} - {{ sch.end_time?.slice(0,5) }})
-              </option>
-            </select>
-          </div>
-
-          <!-- Topik / Materi Pembelajaran -->
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Materi Pembahasan
-            </label>
+    <main class="px-6 md:px-8 pb-10 space-y-5">
+      <!-- Filter Controls: Tanggal, Kelas, Export PDF -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Filter Tanggal -->
+          <div class="flex items-center gap-2 px-3 py-2 bg-white rounded-xl border border-gray-200 text-xs font-medium text-gray-700 shadow-2xs">
+            <CalendarIcon class="w-4 h-4 text-gray-400" />
             <input
-              v-model="form.topic"
-              type="text"
-              placeholder="Contoh: Implementasi Routing & State Management Nuxt 3"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition"
-              required
+              v-model="filterDate"
+              type="date"
+              @change="fetchRecap"
+              class="border-none bg-transparent text-xs font-medium text-gray-800 focus:outline-none cursor-pointer"
             />
           </div>
 
-          <!-- Rangkuman Kegiatan Pembelajaran -->
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Kegiatan Belajar
-            </label>
-            <textarea
-              v-model="form.activity"
-              rows="3"
-              placeholder="Jelaskan alur kegiatan pembelajaran di kelas..."
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition resize-none"
-              required
-            ></textarea>
-          </div>
-
-          <!-- Catatan / Hambatan -->
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-              Catatan / Kendala Kelas <span class="text-gray-400 font-normal">(Opsional)</span>
-            </label>
-            <textarea
-              v-model="form.notes"
-              rows="2"
-              placeholder="Misal: Proyektor ruang lab sempat kendala 10 menit, materi dilanjutkan lancar"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition resize-none"
-            ></textarea>
-          </div>
-
-          <!-- Submit Buttons -->
-          <div class="pt-2">
-            <button
-              type="submit"
-              :disabled="loading"
-              class="w-full py-2.5 px-4 rounded-xl bg-brand-red hover:bg-brand-red-dark text-white font-medium text-sm transition shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-50"
+          <!-- Filter Kelas -->
+          <div class="relative">
+            <select
+              v-model="filterClass"
+              @change="fetchRecap"
+              class="px-3 py-2 pr-8 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red shadow-2xs cursor-pointer"
             >
-              <SendIcon class="w-4 h-4" />
-              <span>{{ loading ? 'Menyimpan...' : 'Kirim Jurnal ke Guru' }}</span>
-            </button>
-            <p class="text-[11px] text-gray-400 text-center mt-2">
-              Jurnal akan dikirimkan ke Guru Pengajar bersangkutan untuk konfirmasi dan verifikasi.
-            </p>
+              <option value="1">Kelas: XI RPL 1</option>
+              <option value="2">Kelas: XI RPL 2</option>
+              <option value="3">Kelas: XII RPL 1</option>
+            </select>
           </div>
-        </form>
+        </div>
+
+        <button
+          @click="exportPdf"
+          type="button"
+          class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer"
+        >
+          <DownloadIcon class="w-3.5 h-3.5" />
+          <span>Export PDF</span>
+        </button>
       </div>
 
-      <!-- Riwayat Jurnal Kelas (Kanan/Bawah) -->
-      <div class="lg:col-span-7 space-y-4">
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-5 md:p-6">
-          <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
-            <div>
-              <h2 class="text-base font-bold text-gray-800">Daftar Jurnal Terkirim</h2>
-              <p class="text-xs text-gray-400 mt-0.5">Catatan jurnal kelas yang telah dibuat</p>
+      <!-- 4 Stat Summary Cards (Hadir, Sakit, Izin, Alfa) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Hadir -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-card flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <CheckSquareIcon class="w-5 h-5" />
+          </div>
+          <div>
+            <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">Hadir</span>
+            <div class="text-base font-bold text-gray-900 flex items-baseline gap-1 mt-0.5">
+              <span>{{ summary.hadir }}</span>
+              <span class="text-[11px] font-normal text-gray-400">siswa</span>
             </div>
-            <button
-              @click="fetchJournals"
-              class="text-xs text-brand-red hover:underline font-semibold flex items-center gap-1"
-            >
-              <RefreshCwIcon class="w-3.5 h-3.5" /> Segarkan
-            </button>
           </div>
+        </div>
 
-          <!-- Loading state -->
-          <div v-if="fetching" class="py-12 text-center text-gray-400 text-sm">
-            Memuat data jurnal kelas...
+        <!-- Sakit -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-card flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+            <PaperclipIcon class="w-5 h-5" />
           </div>
-
-          <!-- Empty state -->
-          <div v-else-if="journals.length === 0" class="py-12 text-center text-gray-400 text-sm">
-            <FileTextIcon class="w-10 h-10 text-gray-300 mx-auto mb-2" />
-            Belum ada jurnal kelas yang dicatat hari ini.
+          <div>
+            <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">Sakit</span>
+            <div class="text-base font-bold text-gray-900 flex items-baseline gap-1 mt-0.5">
+              <span>{{ summary.sakit }}</span>
+              <span class="text-[11px] font-normal text-gray-400">siswa</span>
+            </div>
           </div>
+        </div>
 
-          <!-- Journal Cards -->
-          <div v-else class="space-y-3.5">
-            <div
-              v-for="j in journals"
-              :key="j.id"
-              class="p-4 rounded-xl border border-gray-100 hover:border-gray-200 transition bg-gray-50/50 space-y-3"
-            >
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-gray-800">
-                      {{ j.schedule?.subject?.name || 'Mata Pelajaran' }}
-                    </span>
-                    <span class="text-[11px] text-gray-400">
-                      ({{ j.schedule?.start_time?.slice(0,5) }} - {{ j.schedule?.end_time?.slice(0,5) }})
-                    </span>
-                  </div>
-                  <h3 class="text-sm font-semibold text-gray-900 mt-1">
-                    {{ j.topic }}
-                  </h3>
-                </div>
-                <StatusBadge :status="j.status" />
-              </div>
+        <!-- Izin -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-card flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <ClockIcon class="w-5 h-5" />
+          </div>
+          <div>
+            <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">Izin</span>
+            <div class="text-base font-bold text-gray-900 flex items-baseline gap-1 mt-0.5">
+              <span>{{ summary.izin }}</span>
+              <span class="text-[11px] font-normal text-gray-400">siswa</span>
+            </div>
+          </div>
+        </div>
 
-              <div class="text-xs text-gray-600 bg-white p-3 rounded-lg border border-gray-100">
-                <span class="font-semibold text-gray-700">Kegiatan:</span>
-                <p class="mt-0.5 whitespace-pre-line">{{ j.activity }}</p>
-                <div v-if="j.notes" class="mt-2 pt-2 border-t border-gray-100 text-amber-700">
-                  <span class="font-semibold">Catatan:</span> {{ j.notes }}
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between text-[11px] text-gray-400 pt-1">
-                <span class="flex items-center gap-1">
-                  <UserIcon class="w-3 h-3 text-gray-400" />
-                  Pengajar: {{ j.schedule?.teacher?.name || '-' }}
-                </span>
-                <span>{{ j.date }}</span>
-              </div>
+        <!-- Alfa -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-card flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+            <AlertCircleIcon class="w-5 h-5" />
+          </div>
+          <div>
+            <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">Alfa</span>
+            <div class="text-base font-bold text-gray-900 flex items-baseline gap-1 mt-0.5">
+              <span>{{ summary.alpha }}</span>
+              <span class="text-[11px] font-normal text-gray-400">siswa</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Search & Readonly Indicator Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+        <div class="relative w-full sm:w-80">
+          <SearchIcon class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Cari nama atau NIS..."
+            class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white shadow-2xs"
+          />
+        </div>
+
+        <div class="flex items-center gap-2 text-xs font-medium text-gray-500">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+          <span>Read-only - Sumber: Presensi Kehadiran</span>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden">
+        <div v-if="loading" class="py-16 text-center text-gray-400 text-xs">
+          Memuat rekap data kehadiran kelas...
+        </div>
+
+        <div v-else class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-400 uppercase text-[10px] tracking-wider font-semibold">
+                <th class="py-3 px-4 w-14">NO.</th>
+                <th class="py-3 px-4">NAMA SISWA</th>
+                <th class="py-3 px-4">NIS</th>
+                <th class="py-3 px-4 text-center">STATUS</th>
+                <th class="py-3 px-4">WAKTU & CATATAN</th>
+                <th class="py-3 px-4 text-center">KEHADIRAN</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr
+                v-for="(row, idx) in filteredRecords"
+                :key="row.id || idx"
+                class="hover:bg-gray-50/50 transition"
+              >
+                <td class="py-3.5 px-4 font-medium text-gray-400">
+                  {{ String(idx + 1).padStart(2, '0') }}
+                </td>
+                <td class="py-3.5 px-4 font-bold text-gray-900">
+                  {{ row.name }}
+                </td>
+                <td class="py-3.5 px-4 font-mono text-gray-500">
+                  {{ row.nis }}
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border"
+                    :class="{
+                      'bg-emerald-50 text-emerald-700 border-emerald-200': row.status === 'HADIR',
+                      'bg-blue-50 text-blue-700 border-blue-200': row.status === 'SAKIT',
+                      'bg-amber-50 text-amber-700 border-amber-200': row.status === 'IZIN',
+                      'bg-rose-50 text-rose-700 border-rose-200': row.status === 'ALFA',
+                    }"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full"
+                      :class="{
+                        'bg-emerald-500': row.status === 'HADIR',
+                        'bg-blue-500': row.status === 'SAKIT',
+                        'bg-amber-500': row.status === 'IZIN',
+                        'bg-rose-500': row.status === 'ALFA',
+                      }"
+                    ></span>
+                    {{ formatStatusLabel(row.status) }}
+                  </span>
+                </td>
+                <td class="py-3.5 px-4 text-gray-600">
+                  {{ row.time_note }}
+                </td>
+                <td class="py-3.5 px-4 text-center">
+                  <span
+                    v-if="row.verification && row.verification !== '-'"
+                    class="inline-flex items-center gap-1 text-[11px] font-semibold"
+                    :class="row.verification.includes('Terverifikasi') ? 'text-emerald-700' : 'text-gray-500'"
+                  >
+                    <CalendarCheck2Icon v-if="row.verification.includes('Terverifikasi')" class="w-3.5 h-3.5 text-emerald-600" />
+                    {{ row.verification }}
+                  </span>
+                  <span v-else class="text-gray-300">-</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom Rekap Presensi Harian Card (Matching media_1791815124022.png) -->
+      <div class="rounded-2xl border-2 border-brand-red bg-white p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <BookOpenIcon class="w-5 h-5 text-brand-red shrink-0" />
+          <span class="text-sm font-bold text-brand-red">Rekap Presensi Harian</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-700">
+          <span>Hadir: <strong class="text-emerald-600">{{ summary.hadir }}</strong></span>
+          <span>Izin: <strong class="text-amber-600">{{ summary.izin }}</strong></span>
+          <span>Sakit: <strong class="text-blue-600">{{ summary.sakit }}</strong></span>
+          <span>Alfa: <strong class="text-rose-600">{{ summary.alpha }}</strong></span>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  Calendar as CalendarIcon,
-  BookOpen as BookOpenIcon,
-  Send as SendIcon,
-  RefreshCw as RefreshCwIcon,
   FileText as FileTextIcon,
-  CheckCircle2 as CheckCircle2Icon,
-  User as UserIcon,
+  Download as DownloadIcon,
+  Calendar as CalendarIcon,
+  CheckSquare as CheckSquareIcon,
+  Paperclip as PaperclipIcon,
+  Clock as ClockIcon,
+  AlertCircle as AlertCircleIcon,
+  Search as SearchIcon,
+  CalendarCheck2 as CalendarCheck2Icon,
+  BookOpen as BookOpenIcon
 } from 'lucide-vue-next'
 
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
 
-const todayFormatted = computed(() => {
-  return new Intl.DateTimeFormat('id-ID', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }).format(new Date())
-})
-
-const schedules = ref<any[]>([])
-const journals = ref<any[]>([])
-const fetching = ref(false)
+const filterDate = ref(new Date().toISOString().slice(0, 10))
+const filterClass = ref('1')
+const searchQuery = ref('')
 const loading = ref(false)
-const successMsg = ref('')
 
-const form = ref({
-  schedule_id: '',
-  topic: '',
-  activity: '',
-  notes: ''
+const summary = ref({
+  hadir: 3,
+  sakit: 2,
+  izin: 1,
+  alpha: 1
 })
 
-const fetchJournals = async () => {
-  fetching.value = true
-  try {
-    const res: any = await $fetch(`${config.public.apiBase}/journals/class`, {
-      headers: {
-        Authorization: `Bearer ${authStore.token}`
-      }
-    })
-    journals.value = res.data || []
-    schedules.value = res.schedules || []
-    if (schedules.value.length > 0 && !form.value.schedule_id) {
-      form.value.schedule_id = schedules.value[0].id
-    }
-  } catch (err: any) {
-    console.error('Error fetching journals:', err)
-  } finally {
-    fetching.value = false
+const defaultMockRecords = [
+  { id: 1, name: 'Nabila Azzahra', nis: '241101', status: 'HADIR', time_note: 'Tepat waktu - 06.52', verification: 'Terverifikasi' },
+  { id: 2, name: 'Farhan Maulana', nis: '241102', status: 'SAKIT', time_note: 'Demam sejak pagi', verification: 'Form Attached' },
+  { id: 3, name: 'Salsabila Putri', nis: '241103', status: 'IZIN', time_note: 'Keperluan keluarga', verification: 'Terverifikasi' },
+  { id: 4, name: 'Rizky Ramadhan', nis: '241104', status: 'ALFA', time_note: 'Belum ada keterangan', verification: '-' },
+  { id: 5, name: 'Alif Pratama', nis: '241105', status: 'HADIR', time_note: 'Tepat waktu - 06.01', verification: 'Terverifikasi' },
+  { id: 6, name: 'Dinda Maharani', nis: '241106', status: 'SAKIT', time_note: 'Kontrol dokter', verification: 'Form Attached' },
+  { id: 7, name: 'Hanif Akbar', nis: '241107', status: 'HADIR', time_note: 'Tepat waktu - 06.19', verification: 'Terverifikasi' },
+]
+
+const records = ref<any[]>(defaultMockRecords)
+
+const formatStatusLabel = (st: string) => {
+  switch (st) {
+    case 'HADIR': return 'Hadir'
+    case 'SAKIT': return 'Sakit'
+    case 'IZIN': return 'Izin'
+    case 'ALFA': return 'Alfa'
+    default: return st
   }
 }
 
-const handleSubmit = async () => {
+const filteredRecords = computed(() => {
+  if (!searchQuery.value) return records.value
+  const q = searchQuery.value.toLowerCase()
+  return records.value.filter(
+    r => r.name.toLowerCase().includes(q) || (r.nis && r.nis.includes(q))
+  )
+})
+
+const fetchRecap = async () => {
   loading.value = true
-  successMsg.value = ''
   try {
-    const res: any = await $fetch(`${config.public.apiBase}/journals/class`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${authStore.token}`
-      },
-      body: form.value
+    const res: any = await $fetch(`${config.public.apiBase}/attendance/daily-recap`, {
+      headers: { Authorization: `Bearer ${authStore.token}` },
+      params: {
+        date: filterDate.value,
+        class_id: filterClass.value
+      }
     })
-    successMsg.value = 'Jurnal kelas berhasil dikirimkan ke guru pengajar!'
-    form.value.topic = ''
-    form.value.activity = ''
-    form.value.notes = ''
-    await fetchJournals()
+    if (res.summary) summary.value = res.summary
+    if (res.records && res.records.length > 0) {
+      records.value = res.records
+    } else {
+      records.value = defaultMockRecords
+    }
   } catch (err: any) {
-    alert(err?.data?.message || 'Gagal menyimpan jurnal kelas')
+    console.error('Error fetching recap:', err)
   } finally {
     loading.value = false
   }
 }
 
+const exportPdf = () => {
+  window.print()
+}
+
 onMounted(() => {
-  fetchJournals()
+  fetchRecap()
 })
 </script>
