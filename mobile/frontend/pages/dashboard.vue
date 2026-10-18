@@ -180,19 +180,19 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Jadwal Mengajar Hari Ini (2 cols) -->
-          <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs">
-            <div class="flex items-center justify-between mb-4">
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-150 p-4 sm:p-6 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h3 class="text-sm font-bold text-gray-900">Jadwal Mengajar Hari Ini</h3>
                 <p class="text-xs text-gray-400">5 pertemuan • Total 5 jam mengajar</p>
               </div>
-              <NuxtLink to="/jurnal-materi" class="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-semibold">
+              <NuxtLink to="/jurnal-materi" class="inline-flex items-center justify-center px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-semibold shrink-0 self-start sm:self-auto">
                 + Isi Jurnal Baru
               </NuxtLink>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto -mx-4 sm:-mx-6 px-4 sm:px-6">
+              <table class="w-full text-left text-xs whitespace-nowrap min-w-[540px]">
                 <thead>
                   <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100">
                     <th class="pb-3 font-semibold">Jam</th>

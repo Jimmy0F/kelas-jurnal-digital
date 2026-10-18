@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs hover:shadow-xs transition-shadow">
-    <div class="flex items-center justify-between mb-3">
-      <span class="text-xs font-semibold text-gray-500 tracking-wide uppercase">{{ title }}</span>
-      <div :class="['w-8 h-1 rounded-full', indicatorColor]"></div>
+  <div class="bg-white rounded-2xl border border-gray-150 p-4 sm:p-6 shadow-2xs hover:shadow-xs transition-shadow">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-[11px] sm:text-xs font-semibold text-gray-500 tracking-wide uppercase line-clamp-1">{{ title }}</span>
+      <div :class="['w-6 sm:w-8 h-1 rounded-full shrink-0', indicatorColor]"></div>
     </div>
-    <div class="text-3xl font-extrabold text-gray-900 tracking-tight">{{ value }}</div>
-    <p v-if="subtext" class="text-xs text-gray-400 mt-2 font-medium">{{ subtext }}</p>
+    <div class="text-xl sm:text-3xl font-extrabold text-gray-900 tracking-tight break-words">{{ value }}</div>
+    <p v-if="subtext" class="text-[10px] sm:text-xs text-gray-400 mt-1 sm:mt-2 font-medium truncate">{{ subtext }}</p>
   </div>
 </template>
 
