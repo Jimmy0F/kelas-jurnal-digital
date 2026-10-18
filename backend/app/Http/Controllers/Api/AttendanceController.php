@@ -443,9 +443,35 @@ class AttendanceController extends Controller
         $totalStudents = $students->count() ?: 1;
         $avgAttendancePct = round(($totalHadirAll / ($totalStudents * $effectiveDays)) * 100, 1);
 
+        // Dinamis predikat status & status label
+        $predicate = 'Sangat Baik';
+        $targetNote = 'Target sekolah di atas 90% tercapai';
+        $predicateBadgeClass = 'text-green-700 bg-green-50';
+
+        if ($avgAttendancePct >= 90) {
+            $predicate = 'Sangat Baik';
+            $targetNote = 'Target sekolah di atas 90% tercapai';
+            $predicateBadgeClass = 'text-green-700 bg-green-50';
+        } elseif ($avgAttendancePct >= 75) {
+            $predicate = 'Baik';
+            $targetNote = 'Tingkat kehadiran stabil memenuhi standar';
+            $predicateBadgeClass = 'text-blue-700 bg-blue-50';
+        } elseif ($avgAttendancePct >= 60) {
+            $predicate = 'Cukup';
+            $targetNote = 'Perlu pemantauan absensi kelas berkala';
+            $predicateBadgeClass = 'text-amber-700 bg-amber-50';
+        } else {
+            $predicate = 'Perlu Pembinaan';
+            $targetNote = 'Kehadiran di bawah standar minimal sekolah';
+            $predicateBadgeClass = 'text-red-700 bg-red-50';
+        }
+
         return response()->json([
             'effective_days' => $effectiveDays,
             'average_attendance' => min(100, $avgAttendancePct) . '%',
+            'predicate' => $predicate,
+            'target_note' => $targetNote,
+            'predicate_badge_class' => $predicateBadgeClass,
             'lowest_alpha' => $totalAlphaAll === 0 ? '0% (Sempurna)' : $totalAlphaAll . ' Ketidakhadiran',
             'students' => $rows,
         ]);

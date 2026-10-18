@@ -89,9 +89,11 @@
         </div>
         <div class="mt-2 flex items-baseline gap-2">
           <span class="text-3xl font-extrabold text-green-600">{{ avgAttendance }}</span>
-          <span class="text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded-full font-semibold">Sangat Baik</span>
+          <span class="text-xs px-2 py-0.5 rounded-full font-semibold" :class="predicateBadgeClass">
+            {{ predicate }}
+          </span>
         </div>
-        <p class="text-[11px] text-gray-400 mt-1">Target sekolah di atas 90% tercapai</p>
+        <p class="text-[11px] text-gray-400 mt-1">{{ targetNote }}</p>
       </div>
 
       <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-card">
@@ -191,6 +193,9 @@ const loading = ref(false)
 
 const effectiveDays = ref(0)
 const avgAttendance = ref('0%')
+const predicate = ref('Sangat Baik')
+const targetNote = ref('Target sekolah di atas 90% tercapai')
+const predicateBadgeClass = ref('text-green-700 bg-green-50')
 const students = ref<any[]>([])
 
 const filteredStudents = computed(() => {
@@ -210,6 +215,9 @@ const fetchData = async () => {
     })
     effectiveDays.value = res.effective_days
     avgAttendance.value = res.average_attendance
+    if (res.predicate) predicate.value = res.predicate
+    if (res.target_note) targetNote.value = res.target_note
+    if (res.predicate_badge_class) predicateBadgeClass.value = res.predicate_badge_class
     students.value = res.students || []
   } catch (err: any) {
     console.error('Error fetching semester recap:', err)
