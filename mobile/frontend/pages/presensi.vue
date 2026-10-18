@@ -5,10 +5,10 @@
       :subtitle="dateFormatted + ' • ' + (authStore.user?.school_class?.name || 'XI RPL 1')"
     />
 
-    <main class="px-8 pb-8 space-y-6">
+    <main class="px-4 sm:px-8 pb-8 space-y-6">
       <!-- 5 Summary Metric Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div class="bg-white border border-gray-150 rounded-2xl p-4 shadow-2xs">
+        <div class="col-span-2 sm:col-span-1 bg-white border border-gray-150 rounded-2xl p-4 shadow-2xs">
           <p class="text-[11px] font-semibold text-gray-400 uppercase">Total Siswa</p>
           <p class="text-2xl font-bold text-gray-900 mt-1">{{ summary.total }}</p>
         </div>
@@ -53,11 +53,14 @@
       </div>
 
       <!-- Main Layout: Table + Verification Panel -->
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 min-w-0">
         <!-- Student Table (3 cols) -->
-        <div class="lg:col-span-3 bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs flex flex-col justify-between">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+        <div class="lg:col-span-3 min-w-0 bg-white rounded-2xl border border-gray-150 p-4 sm:p-6 shadow-2xs flex flex-col justify-between overflow-hidden">
+          <div class="block sm:hidden mb-2 text-[10px] text-gray-400 font-medium">
+            ↔ Geser ke samping untuk memilih status kehadiran lengkap
+          </div>
+          <div class="overflow-x-auto pb-2 -mx-2 px-2">
+            <table class="w-full text-left text-xs min-w-[560px]">
               <thead>
                 <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100">
                   <th class="pb-3 font-semibold w-10">No</th>

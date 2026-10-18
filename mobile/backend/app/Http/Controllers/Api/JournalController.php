@@ -116,6 +116,10 @@ class JournalController extends Controller
     public function storeClassJournal(Request $request)
     {
         $user = $request->user();
+        if (!in_array($user->role, ['SEKRETARIS', 'GURU_PENGAJAR', 'GURU_PEMBIMBING'])) {
+            return response()->json(['message' => 'Hanya Sekretaris Kelas atau Guru yang berhak mengisi jurnal kelas.'], 403);
+        }
+
         $schedule = Schedule::find($request->schedule_id);
 
         $classId = ($user->role === 'SEKRETARIS' || $user->role === 'SISWA') ? ($user->class_id ?: 1) : ($request->class_id ?? ($schedule->class_id ?? ($user->class_id ?? 1)));
@@ -333,5 +337,65 @@ class JournalController extends Controller
             return response()->json(['message' => 'Berkas lampiran materi tidak ditemukan.'], 404);
         }
         return response()->file($path);
+    }
+
+    public function deleteClassJournal(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!in_array($user->role, ['SEKRETARIS', 'GURU_PENGAJAR', 'GURU_PEMBIMBING'])) {
+            return response()->json(['message' => 'Hanya Sekretaris Kelas atau Guru yang berhak menghapus jurnal kelas.'], 403);
+        }
+        $journal = ClassJournal::findOrFail($id);
+        if ($journal->verification_status === 'TERVERIFIKASI' && $user->role !== 'GURU_PEMBIMBING') {
+            return response()->json([
+                'message' => 'Jurnal KBM telah terverifikasi dan tidak dapat dihapus.'
+            ], 422);
+        }
+        $journal->delete();
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'Menghapus jurnal kelas ID #' . $id,
+            'ip_address' => $request->ip(),
+        ]);
+        return response()->json(['message' => 'Jurnal kelas berhasil dihapus']);
+    }
+
+    public function updateMaterialJournal(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!in_array($user->role, ['GURU_PENGAJAR', 'GURU_PEMBIMBING'])) {
+            return response()->json(['message' => 'Hanya Guru Pengajar yang berhak menyunting materi pelajaran.'], 403);
+        }
+        $material = MaterialJournal::findOrFail($id);
+        $material->update([
+            'topic' => $request->topic ?: $material->topic,
+            'plan' => $request->plan ?: $material->plan,
+            'assignment' => $request->assignment !== null ? $request->assignment : $material->assignment,
+        ]);
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'Menyunting jurnal materi ID #' . $material->id,
+            'ip_address' => $request->ip(),
+        ]);
+        return response()->json(['message' => 'Jurnal materi berhasil diperbarui', 'material' => $material]);
+    }
+
+    public function deleteMaterialJournal(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!in_array($user->role, ['GURU_PENGAJAR', 'GURU_PEMBIMBING'])) {
+            return response()->json(['message' => 'Hanya Guru Pengajar yang berhak menghapus materi pelajaran.'], 403);
+        }
+        $material = MaterialJournal::findOrFail($id);
+        if ($material->attachment_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($material->attachment_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($material->attachment_path);
+        }
+        $material->delete();
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'Menghapus jurnal materi ID #' . $id,
+            'ip_address' => $request->ip(),
+        ]);
+        return response()->json(['message' => 'Materi pelajaran berhasil dihapus']);
     }
 }

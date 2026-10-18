@@ -47,10 +47,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/journals/class', [JournalController::class, 'storeClassJournal']);
     Route::put('/journals/class/{id}', [JournalController::class, 'updateClassJournal']);
     Route::post('/journals/class/{id}', [JournalController::class, 'updateClassJournal']);
+    Route::delete('/journals/class/{id}', [JournalController::class, 'deleteClassJournal']);
     Route::put('/journals/class/{id}/confirm', [JournalController::class, 'confirmClassJournal']);
     Route::post('/journals/class/{id}/confirm', [JournalController::class, 'confirmClassJournal']);
     Route::get('/journals/material', [JournalController::class, 'getMaterialJournals']);
     Route::post('/journals/material', [JournalController::class, 'storeMaterialJournal']);
+    Route::put('/journals/material/{id}', [JournalController::class, 'updateMaterialJournal']);
+    Route::delete('/journals/material/{id}', [JournalController::class, 'deleteMaterialJournal']);
 
     // Schedules (Jadwal Mengajar)
     Route::get('/schedules', [JournalController::class, 'getSchedules']);
@@ -60,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/leave-requests', [LeaveRequestController::class, 'index']);
     Route::post('/leave-requests', [LeaveRequestController::class, 'store']);
     Route::put('/leave-requests/{id}/review', [LeaveRequestController::class, 'review']);
+    Route::delete('/leave-requests/{id}', [LeaveRequestController::class, 'destroy']);
 
     // Notifications & Audit Logs
     Route::get('/notifications', [NotificationController::class, 'index']);
@@ -67,11 +71,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/notifications/read-all', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::put('/notifications/{id?}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+    Route::delete('/notifications/clear-all', [NotificationController::class, 'clearAll']);
     Route::get('/audit-logs', [NotificationController::class, 'auditLogs']);
 
     // User Management (Pembimbing)
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/users', [UserController::class, 'store']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::put('/users/{id}/toggle-active', [UserController::class, 'toggleActive']);
     Route::post('/users/{id}/reset-password', [UserController::class, 'resetPassword']);
     Route::get('/classes', [UserController::class, 'getClasses']);
