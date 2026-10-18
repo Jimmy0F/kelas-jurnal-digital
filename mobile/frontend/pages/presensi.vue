@@ -246,7 +246,16 @@ import { Check, Search, Lock } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 
 const authStore = useAuthStore()
-const dateFormatted = ref('Rabu, 28 Agustus 2026')
+
+const now = new Date()
+const todayFormatted = new Intl.DateTimeFormat('id-ID', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+}).format(now)
+
+const dateFormatted = ref(todayFormatted)
 const searchQuery = ref('')
 const pin = ref('')
 const sessionStatus = ref('DRAFT')
@@ -291,6 +300,15 @@ async function loadAttendance() {
     if (res.session) {
       sessionStatus.value = res.session.status || 'DRAFT'
       verificationStatus.value = res.session.verification_status || 'BELUM_KONFIRMASI'
+      if (res.session.date) {
+        const d = new Date(res.session.date)
+        dateFormatted.value = new Intl.DateTimeFormat('id-ID', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }).format(d)
+      }
     }
   } catch (e) {
     console.error(e)

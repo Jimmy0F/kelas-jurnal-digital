@@ -178,7 +178,10 @@ import { useAuthStore } from '~/stores/auth'
 const authStore = useAuthStore()
 const summary = ref<any>(null)
 const details = ref<any[]>([])
-const selectedMonth = ref('2026-10')
+
+const now = new Date()
+const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+const selectedMonth = ref(currentYearMonth)
 const statusFilter = ref('ALL')
 
 const monthNames = [

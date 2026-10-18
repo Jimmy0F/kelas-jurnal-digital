@@ -193,7 +193,10 @@ const pageSubtitle = computed(() => {
 
 const loading = ref(false)
 const journals = ref<any[]>([])
-const selectedMonth = ref('2026-10')
+
+const now = new Date()
+const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+const selectedMonth = ref(currentYearMonth)
 const statusFilter = ref('ALL')
 const searchQuery = ref('')
 const selectedJournal = ref<any | null>(null)
