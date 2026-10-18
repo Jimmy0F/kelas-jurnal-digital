@@ -227,7 +227,14 @@ class AuthController extends Controller
         $waSent = false;
         $waError = null;
 
-        if ($waGatewayUrl && $user->phone) {
+        // Cegah pengiriman WA ke nomor dummy contoh/seeder (cth: 0812345678xx / 0858000000xx)
+        $isDummyPhone = preg_match('/^(62812345678|62858000000|0812345678|0858000000)/', (string) $user->phone);
+
+        if ($isDummyPhone) {
+            Log::info("Sandbox Testing: Nomor {$user->phone} adalah dummy testing. Pengiriman WA ril dibatalkan.");
+            $waSent = true;
+            $waError = 'Mode Uji: Nomor dummy tidak dikirim ke WhatsApp publik';
+        } elseif ($waGatewayUrl && $user->phone) {
             try {
                 $response = \Illuminate\Support\Facades\Http::timeout(5)
                     ->withHeaders([
