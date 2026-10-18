@@ -21,10 +21,10 @@ export const ROLE_MENUS: Record<string, MenuItem[]> = {
   ],
   GURU_PENGAJAR: [
     { name: 'Dashboard', to: '/dashboard', icon: 'Home' },
-    { name: 'Jurnal Kelas', to: '/jurnal-kelas', icon: 'FileText' },
     { name: 'Jurnal Materi', to: '/jurnal-materi', icon: 'Edit3' },
-    { name: 'Laporan Jurnal', to: '/laporan-jurnal', icon: 'FolderOpen' },
     { name: 'Rekap Otomatis', to: '/rekap-semester', icon: 'BarChart2' },
+    { name: 'Jurnal Kelas', to: '/jurnal-kelas', icon: 'FileText' },
+    { name: 'Laporan Jurnal', to: '/laporan-jurnal', icon: 'FolderOpen' },
   ],
   GURU_PEMBIMBING: [
     { name: 'Dashboard', to: '/dashboard', icon: 'Home' },

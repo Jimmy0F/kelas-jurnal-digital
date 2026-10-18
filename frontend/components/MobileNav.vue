@@ -31,21 +31,21 @@
         v-for="item in primaryMenus"
         :key="item.to"
         :to="item.to"
-        class="flex flex-col items-center gap-1 py-1 px-2 rounded-lg text-[10px] font-medium transition-colors"
+        class="flex flex-col items-center gap-1 py-1 px-1.5 rounded-lg text-[10px] font-medium transition-colors"
         :class="isActive(item.to) ? 'text-primary font-bold' : 'text-gray-500'"
       >
-        <component :is="resolveIcon(item.icon)" class="w-5 h-5" />
-        <span>{{ item.name }}</span>
+        <component :is="resolveIcon(item.icon)" class="w-5 h-5 shrink-0" />
+        <span class="truncate max-w-[62px] text-center leading-tight">{{ item.name }}</span>
       </NuxtLink>
 
       <!-- More Menu Button if menus > 4 -->
       <button
         v-if="hasMore"
         @click="showMore = !showMore"
-        class="flex flex-col items-center gap-1 py-1 px-2 rounded-lg text-[10px] font-medium text-gray-500"
+        class="flex flex-col items-center gap-1 py-1 px-1.5 rounded-lg text-[10px] font-medium text-gray-500 hover:text-gray-700"
       >
-        <MoreHorizontal class="w-5 h-5" />
-        <span>Lainnya</span>
+        <MoreHorizontal class="w-5 h-5 shrink-0" />
+        <span class="truncate max-w-[62px] text-center leading-tight">Lainnya</span>
       </button>
     </nav>
 

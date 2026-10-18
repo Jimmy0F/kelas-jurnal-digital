@@ -170,13 +170,29 @@
       <!-- ROLE: GURU PENGAJAR (Mockup 22)                 -->
       <!-- ============================================== -->
       <template v-else-if="authStore.user?.role === 'GURU_PENGAJAR'">
-        <!-- 4 Stat Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Kelas Diampu" :value="data?.stats?.kelas_diampu ?? '0 Kelas'" subtext="Kompetensi Terdaftar" color="blue" />
-          <StatCard title="Jam Mengajar Hari Ini" :value="data?.stats?.jam_mengajar ?? '0 Jam'" subtext="Pertemuan Terjadwal" color="blue" />
-          <StatCard title="Jurnal Terisi" :value="data?.stats?.jurnal_terisi ?? '0 Pertemuan'" subtext="Jurnal KBM Dilengkapi" color="orange" />
-          <StatCard title="Jurnal Belum Diisi" :value="data?.stats?.jurnal_belum_diisi ?? '0 Pertemuan'" subtext="Perlu Verifikasi/Pengisian" color="red" />
+      <!-- Main Content Cards with Safe Minimum Width -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white rounded-2xl border border-gray-150 p-4 shadow-2xs">
+          <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">Kelas Diampu</span>
+          <div class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">4 Kelas</div>
+          <p class="text-[10px] text-gray-400 mt-0.5 truncate">X dan XI - Kompetensi RPL</p>
         </div>
+        <div class="bg-white rounded-2xl border border-gray-150 p-4 shadow-2xs">
+          <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">Jam Mengajar</span>
+          <div class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">5 Jam</div>
+          <p class="text-[10px] text-gray-400 mt-0.5 truncate">Hari ini terjadwal</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-150 p-4 shadow-2xs">
+          <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">Jurnal Terisi</span>
+          <div class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{{ data?.stats?.jurnal_terisi ?? '0/3' }}</div>
+          <p class="text-[10px] text-gray-400 mt-0.5 truncate">Pertemuan KBM</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-150 p-4 shadow-2xs">
+          <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">Belum Diisi</span>
+          <div class="text-xl sm:text-2xl font-bold text-rose-600 mt-1">{{ data?.stats?.jurnal_belum ?? '3' }}</div>
+          <p class="text-[10px] text-gray-400 mt-0.5 truncate">Pertemuan Menunggu</p>
+        </div>
+      </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Jadwal Mengajar Hari Ini (2 cols) -->
@@ -191,8 +207,8 @@
               </NuxtLink>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto -mx-6 px-6">
+              <table class="w-full text-left text-xs whitespace-nowrap min-w-[500px]">
                 <thead>
                   <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100">
                     <th class="pb-3 font-semibold">Jam</th>
