@@ -43,6 +43,24 @@ Frontend Web App berjalan di: `http://localhost:3000`
 
 ## 👥 Akun Uji Coba & Hak Akses (Role)
 
+Semua akun default menggunakan password: `password123`
+
+| Role / Peran | Email Akun | Hak Akses Utama |
+| :--- | :--- | :--- |
+| **Guru Pembimbing** | `siti.aminah@gmail.com` | Menyetujui surat izin siswa, laporan rekap, manajemen akun user, dan manajemen WhatsApp Gateway (Fonte). |
+| **Guru Pengajar** | `budi.santoso@gmail.com` | Mengisi jurnal materi KBM, upload berkas modul PDF/DOCX, verifikasi/pengesahan presensi harian. |
+| **Sekretaris** | `rina.safitri@gmail.com` | Mengisi presensi harian kelas, penguncian sesi kehadiran, mengajukan surat izin sakit. |
+| **Siswa** | `ahmad.fadillah@gmail.com` | Mengunduh berkas modul pembelajaran, melihat riwayat kehadiran mandiri, reset kata sandi via OTP WA. |
+
+---
+
+## ⚡ Fitur Utama & Kepatuhan Industri
+- **Otentikasi & Keamanan:** Laravel Sanctum Token Auth, proteksi route global Nuxt (`auth.global.ts`), dan RBAC HTTP 403 ketat di backend.
+- **WhatsApp OTP Gateway:** Terintegrasi langsung dengan gateway mandiri untuk alur lupa kata sandi 3 langkah & auto-funnel.
+- **Multitenancy Isolasi Kelas:** Data kehadiran dan jurnal sekretaris/siswa terisolasi ketat sesuai kelas masing-masing.
+- **Unduh Modul Materi Nyata:** Berkas lampiran PDF modul ajar tersimpan di storage dan dapat diakses/diunduh langsung secara real-time.
+- **Clean Code & Zero Mock:** Seluruh data dashboard, rekapitulasi, dan audit log murni bersumber dari database dinamis tanpa data statis/dummy.
+
 Semua akun dev menggunakan kata sandi default: **`password123`** (atau gunakan tombol **Quick Login** 1-klik di halaman login):
 
 | Peran | Nama | Email | Hak Akses Utama |
