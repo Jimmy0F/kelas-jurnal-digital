@@ -36,6 +36,16 @@
         </span>
       </NuxtLink>
 
+      <!-- Profile Link Button -->
+      <NuxtLink
+        to="/profile"
+        class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-xl text-xs font-semibold text-gray-700 transition shadow-2xs cursor-pointer"
+        title="Pengaturan Profil Akun"
+      >
+        <User class="w-4 h-4 text-gray-500" />
+        <span class="hidden sm:inline">Profil</span>
+      </NuxtLink>
+
       <!-- Logout Button -->
       <button
         v-if="!hideLogout"
@@ -51,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { Bell, LogOut, ArrowLeft } from 'lucide-vue-next'
+import { Bell, LogOut, ArrowLeft, User } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 
 const props = withDefaults(
@@ -75,7 +85,7 @@ const props = withDefaults(
 
 const router = useRouter()
 const authStore = useAuthStore()
-const unreadCount = ref(2)
+const unreadCount = ref(0)
 
 onMounted(async () => {
   if (authStore.token) {

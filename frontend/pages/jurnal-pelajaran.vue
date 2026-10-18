@@ -240,85 +240,8 @@ const todayFormatted = computed(() => {
   }).format(new Date())
 })
 
-const defaultSchedules = [
-  {
-    id: 1,
-    time: '07:30 - 09:00',
-    subject: 'Pemrograman Web & Perangkat Bergerak',
-    teacher: 'Budi Santoso, S.Pd',
-    room: 'Lab. Komputer 1',
-    day: 'Senin'
-  },
-  {
-    id: 2,
-    time: '09:15 - 11:45',
-    subject: 'Basis Data & Desain Sistem',
-    teacher: 'Budi Santoso, S.Pd',
-    room: 'Lab. Komputer 2',
-    day: 'Senin'
-  },
-  {
-    id: 3,
-    time: '13:00 - 15:30',
-    subject: 'Proyek Perangkat Lunak Mandiri',
-    teacher: 'Amiruddin, S.T',
-    room: 'Lab. RPL',
-    day: 'Senin'
-  }
-]
-
-const todaySchedules = ref<any[]>(defaultSchedules)
-
-const defaultMaterials = [
-  {
-    id: 1,
-    date_time: '27 Feb, 07:30',
-    teacher: 'Budi Santoso, S.Pd',
-    subject: 'Pemrograman Web',
-    topic: 'Optimasi Query relasional dan teknik routing SPA.',
-    plan: 'Pembuatan komponen reactive dan pengelolaan router guard di Nuxt 3.',
-    assignment: 'Selesaikan latihan routing bertingkat pada repositori kelas.',
-    attachments_count: 2,
-    attachment_name: 'Modul_Web_SPA.pdf',
-    attachment_url: '#'
-  },
-  {
-    id: 2,
-    date_time: '27 Feb, 09:15',
-    teacher: 'Budi Santoso, S.Pd',
-    subject: 'Basis Data',
-    topic: 'Rancangan ERD lanjutan dan perbaikan Schema.',
-    plan: 'Normalisasi database 3NF dan pembuatan foreign key constraints.',
-    assignment: 'Kirimkan skema ERD format PDF ke google drive kelas.',
-    attachments_count: 1,
-    attachment_name: 'Panduan_ERD_Lanjutan.pdf',
-    attachment_url: '#'
-  },
-  {
-    id: 3,
-    date_time: '26 Feb, 10:30',
-    teacher: 'Amiruddin, S.T',
-    subject: 'Praktek Kerja Lapangan',
-    topic: 'Briefing persiapan pendelegasian magang di industri.',
-    plan: 'Tata tertib pelaksanaan PKL dan logbook harian industri.',
-    assignment: 'Lengkapi berkas surat pernyataan orang tua dan CV.',
-    attachments_count: 1,
-    attachment_name: 'Panduan_PKL_Industri.pdf',
-    attachment_url: '#'
-  },
-  {
-    id: 4,
-    date_time: '26 Feb, 13:00',
-    teacher: 'Siti Aminah, M.Pd',
-    subject: 'Kewirausahaan',
-    topic: 'Penyusunan laporan laba-rugi mockup bisnis.',
-    plan: 'Analisis BEP (Break Even Point) dan penetapan harga jual produk digital.',
-    assignment: 'Kerjakan lembar kerja kalkulasi biaya operasional kelompok.',
-    attachments_count: 1,
-    attachment_name: 'Template_Laba_Rugi.xlsx',
-    attachment_url: '#'
-  }
-]
+const todaySchedules = ref<any[]>([])
+const defaultMaterials: any[] = []
 
 const filteredMaterials = computed(() => {
   if (!search.value) return materials.value
@@ -368,11 +291,11 @@ const fetchMaterials = async () => {
     if (res && res.length > 0) {
       materials.value = res
     } else {
-      materials.value = defaultMaterials
+      materials.value = []
     }
   } catch (e) {
     console.warn('API materials note:', e)
-    materials.value = defaultMaterials
+    materials.value = []
   }
 }
 

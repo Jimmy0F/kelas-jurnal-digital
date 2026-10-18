@@ -10,6 +10,9 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <NuxtLink to="/profile" class="p-2 text-gray-600 hover:text-primary" title="Profil Akun">
+          <User class="w-5 h-5" />
+        </NuxtLink>
         <NuxtLink to="/notifikasi" class="relative p-2 text-gray-600">
           <Bell class="w-5 h-5" />
           <span v-if="unreadCount > 0" class="absolute top-1 right-1 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -93,6 +96,7 @@ import {
   Users,
   MoreHorizontal,
   X,
+  User,
 } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { ROLE_MENUS } from '~/config/access'
@@ -100,7 +104,22 @@ import { ROLE_MENUS } from '~/config/access'
 const route = useRoute()
 const authStore = useAuthStore()
 const showMore = ref(false)
-const unreadCount = ref(2)
+const unreadCount = ref(0)
+
+onMounted(async () => {
+  if (authStore.token) {
+    try {
+      const res = await $fetch<{ unread_count: number }>(`${authStore.apiBase}/notifications`, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      })
+      if (res && typeof res.unread_count === 'number') {
+        unreadCount.value = res.unread_count
+      }
+    } catch (e) {
+      // fallback
+    }
+  }
+})
 
 const allMenus = computed(() => {
   const role = authStore.user?.role || 'SISWA'

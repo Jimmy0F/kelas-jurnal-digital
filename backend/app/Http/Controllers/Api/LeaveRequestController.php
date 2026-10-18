@@ -44,7 +44,8 @@ class LeaveRequestController extends Controller
                 'recipient' => $lv->recipient,
                 'reason' => $lv->reason,
                 'status' => $lv->status,
-                'attachment' => $lv->attachment_path ? 'surat_dokter.pdf' : null,
+                'attachment' => $lv->attachment_path ? basename($lv->attachment_path) : null,
+                'attachment_url' => $lv->attachment_path ? url('storage/' . $lv->attachment_path) : null,
                 'review_note' => $lv->review_note,
                 'reviewer_name' => $lv->reviewer->name ?? null,
             ];
@@ -104,6 +105,9 @@ class LeaveRequestController extends Controller
     public function review(Request $request, $id)
     {
         $user = $request->user();
+        if ($user->role !== 'GURU_PEMBIMBING') {
+            return response()->json(['message' => 'Hanya Guru Pembimbing yang berhak memverifikasi surat izin.'], 403);
+        }
         $request->validate([
             'status' => 'required|in:APPROVED,REJECTED',
             'review_note' => 'nullable|string',
@@ -128,10 +132,22 @@ class LeaveRequestController extends Controller
             for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
                 if ($date->isWeekend()) continue;
 
-                $session = AttendanceSession::firstOrCreate(
-                    ['class_id' => $leave->student->class_id ?? 1, 'date' => $date->toDateString()],
-                    ['status' => 'DRAFT', 'verification_status' => 'BELUM_KONFIRMASI']
-                );
+                $classId = $leave->student->class_id ?? 1;
+                $dateStr = $date->toDateString();
+                $session = AttendanceSession::where('class_id', $classId)
+                    ->whereDate('date', $dateStr)
+                    ->first();
+
+                if (!$session) {
+                    $session = AttendanceSession::create([
+                        'class_id' => $classId,
+                        'date' => $dateStr,
+                        'status' => 'DRAFT',
+                        'verification_status' => 'BELUM_KONFIRMASI',
+                        'school_hours' => '07:30 - 15:30',
+                        'room' => 'Lab. 1',
+                    ]);
+                }
 
                 AttendanceRecord::updateOrCreate(
                     ['session_id' => $session->id, 'student_id' => $leave->student_id],
