@@ -185,4 +185,33 @@ class LeaveRequestController extends Controller
 
         return response()->json(['message' => 'Status surat izin berhasil diperbarui']);
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = $request->user();
+        $leave = LeaveRequest::findOrFail($id);
+
+        // Siswa only their own, Sekretaris or Guru Pembimbing
+        if ($user->role === 'SISWA' && $leave->student_id !== $user->id) {
+            return response()->json(['message' => 'Anda tidak memiliki hak untuk membatalkan izin ini.'], 403);
+        }
+
+        if ($user->role !== 'GURU_PEMBIMBING' && $leave->status !== 'PENDING') {
+            return response()->json(['message' => 'Surat izin yang telah diproses tidak dapat dibatalkan.'], 422);
+        }
+
+        if ($leave->attachment_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($leave->attachment_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($leave->attachment_path);
+        }
+
+        $leave->delete();
+
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'Membatalkan permohonan surat izin ID #' . $id,
+            'ip_address' => $request->ip(),
+        ]);
+
+        return response()->json(['message' => 'Permohonan surat izin berhasil dibatalkan']);
+    }
 }
