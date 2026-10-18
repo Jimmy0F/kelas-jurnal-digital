@@ -66,6 +66,11 @@ class LeaveRequestController extends Controller
             'signature' => 'nullable|string',
         ]);
 
+        $path = null;
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('leave_attachments', 'public');
+        }
+
         $leave = LeaveRequest::create([
             'student_id' => $request->student_id,
             'submitted_by_id' => $user->id,
@@ -74,6 +79,7 @@ class LeaveRequestController extends Controller
             'end_date' => $request->end_date,
             'recipient' => $request->recipient ?: 'Guru Pembimbing Sekolah / Wali Kelas',
             'reason' => $request->reason,
+            'attachment_path' => $path,
             'signature' => $request->signature,
             'status' => 'PENDING',
         ]);
