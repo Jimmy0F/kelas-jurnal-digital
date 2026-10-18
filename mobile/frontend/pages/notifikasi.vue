@@ -140,9 +140,14 @@
               <p class="text-xs text-gray-600 mt-1 line-clamp-2">
                 {{ item.body }}
               </p>
-              <div class="mt-2 flex items-center gap-1 text-[11px] font-semibold text-primary opacity-90 group-hover:opacity-100">
-                <span>Buka Rincian</span>
-                <span class="transition-transform group-hover:translate-x-0.5">→</span>
+              <div class="mt-2.5 flex items-center justify-between">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-brand-red text-brand-red hover:text-white border border-red-200 text-xs font-bold transition-all shadow-2xs group-hover:shadow-xs">
+                  <span>Buka Rincian</span>
+                  <span class="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+                <span v-if="!item.is_read" class="text-[10px] font-semibold text-brand-red bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
+                  Belum Dibaca
+                </span>
               </div>
             </div>
           </div>
