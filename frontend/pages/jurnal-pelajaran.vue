@@ -37,8 +37,8 @@
         </button>
       </div>
 
-      <!-- Main Material Table -->
-      <div class="bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs">
+      <!-- Main Material Section (Responsive Table on Desktop, Cards on Mobile) -->
+      <div class="bg-white rounded-2xl border border-gray-150 p-4 sm:p-6 shadow-2xs">
         <div class="flex items-center justify-between mb-4">
           <div>
             <h3 class="text-sm font-bold text-gray-900">Daftar Materi & Modul Pembelajaran</h3>
@@ -52,8 +52,52 @@
             Reset Pencarian
           </button>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
+
+        <!-- Mobile Card List View (Visible on < sm) -->
+        <div class="block sm:hidden space-y-3">
+          <div
+            v-for="item in filteredMaterials"
+            :key="item.id"
+            class="p-4 rounded-xl border border-gray-150 bg-gray-50/50 hover:bg-white hover:border-gray-200 transition space-y-2.5"
+          >
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-gray-900">{{ item.date_time }}</span>
+              <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                {{ item.attachments_count }} file
+              </span>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-bold uppercase text-brand-red tracking-wider block">{{ item.subject }}</span>
+              <h4 class="text-sm font-bold text-gray-900 mt-0.5">{{ item.topic }}</h4>
+              <p class="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1">
+                <User class="w-3 h-3 text-gray-400" />
+                <span>{{ item.teacher }}</span>
+              </p>
+            </div>
+
+            <div class="pt-2 border-t border-gray-150 flex items-center justify-between gap-2">
+              <span class="text-[10px] text-gray-400 italic truncate max-w-[170px]">
+                {{ item.attachment_name }}
+              </span>
+              <button
+                type="button"
+                @click="selectedMaterial = item"
+                class="px-3 py-1.5 rounded-lg border border-amber-500/70 text-amber-700 bg-amber-50/50 hover:bg-amber-100 text-xs font-semibold transition shrink-0 cursor-pointer"
+              >
+                Baca Materi
+              </button>
+            </div>
+          </div>
+
+          <div v-if="filteredMaterials.length === 0" class="py-8 text-center text-xs text-gray-400">
+            Tidak ada materi pelajaran untuk periode ini.
+          </div>
+        </div>
+
+        <!-- Desktop Table View (Visible on >= sm) -->
+        <div class="hidden sm:block overflow-x-auto">
+          <table class="w-full text-left text-xs min-w-[650px]">
             <thead>
               <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100">
                 <th class="pb-3 font-semibold">Tanggal / Jam</th>
@@ -226,7 +270,9 @@ import { useAuthStore } from '~/stores/auth'
 
 const authStore = useAuthStore()
 const search = ref('')
-const selectedMonth = ref('2026-02')
+const now = new Date()
+const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+const selectedMonth = ref(currentYearMonth)
 const materials = ref<any[]>([])
 const selectedMaterial = ref<any>(null)
 const showScheduleModal = ref(false)
