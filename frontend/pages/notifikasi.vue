@@ -22,60 +22,72 @@
       <!-- Card Section 1: Pemberitahuan Terbaru -->
       <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-5 md:p-6 space-y-4">
         <!-- Filter Pills: Semua, Belum Dibaca, Jurnal, Surat Izin (Matching mockups) -->
-        <div class="flex flex-wrap items-center gap-2 border-b border-gray-100 pb-3.5">
-          <button
-            @click="switchFilter('ALL')"
-            :class="[
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
-              filterType === 'ALL'
-                ? 'bg-brand-red text-white shadow-xs'
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-            ]"
-          >
-            Semua
-          </button>
-
-          <button
-            @click="switchFilter('UNREAD')"
-            :class="[
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5',
-              filterType === 'UNREAD'
-                ? 'bg-brand-red text-white shadow-xs'
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-            ]"
-          >
-            <span>Belum Dibaca</span>
-            <span
-              v-if="unreadCount > 0"
-              class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
-              :class="filterType === 'UNREAD' ? 'bg-white text-brand-red' : 'bg-red-100 text-brand-red'"
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3.5">
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <button
+              @click="switchFilter('ALL')"
+              :class="[
+                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
+                filterType === 'ALL'
+                  ? 'bg-brand-red text-white shadow-xs'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              ]"
             >
-              {{ unreadCount }}
-            </span>
-          </button>
+              Semua
+            </button>
+
+            <button
+              @click="switchFilter('UNREAD')"
+              :class="[
+                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5',
+                filterType === 'UNREAD'
+                  ? 'bg-brand-red text-white shadow-xs'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              ]"
+            >
+              <span>Belum Dibaca</span>
+              <span
+                v-if="unreadCount > 0"
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+                :class="filterType === 'UNREAD' ? 'bg-white text-brand-red' : 'bg-red-100 text-brand-red'"
+              >
+                {{ unreadCount }}
+              </span>
+            </button>
+
+            <button
+              @click="switchFilter('JURNAL')"
+              :class="[
+                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
+                filterType === 'JURNAL'
+                  ? 'bg-brand-red text-white shadow-xs'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              ]"
+            >
+              Jurnal
+            </button>
+
+            <button
+              @click="switchFilter('SURAT_IZIN')"
+              :class="[
+                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
+                filterType === 'SURAT_IZIN'
+                  ? 'bg-brand-red text-white shadow-xs'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              ]"
+            >
+              Surat Izin
+            </button>
+          </div>
 
           <button
-            @click="switchFilter('JURNAL')"
-            :class="[
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
-              filterType === 'JURNAL'
-                ? 'bg-brand-red text-white shadow-xs'
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-            ]"
+            @click="markAllRead"
+            type="button"
+            class="px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-[11px] font-semibold text-gray-700 transition flex items-center gap-1 cursor-pointer shrink-0"
+            title="Tandai semua pesan sebagai telah dibaca"
           >
-            Jurnal
-          </button>
-
-          <button
-            @click="switchFilter('SURAT_IZIN')"
-            :class="[
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
-              filterType === 'SURAT_IZIN'
-                ? 'bg-brand-red text-white shadow-xs'
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-            ]"
-          >
-            Surat Izin
+            <CheckCheckIcon class="w-3.5 h-3.5 text-emerald-600" />
+            <span>Tandai Dibaca</span>
           </button>
         </div>
 
@@ -93,16 +105,16 @@
           <div
             v-for="item in filteredNotifications"
             :key="item.id"
-            @click="markOneRead(item)"
-            class="p-4 rounded-xl border transition flex items-start gap-3.5 cursor-pointer"
+            @click="handleNotificationClick(item)"
+            class="p-4 rounded-xl border transition flex items-start gap-3.5 cursor-pointer hover:shadow-xs group"
             :class="[
               item.is_read
-                ? 'bg-white border-gray-100 hover:border-gray-200'
-                : 'bg-red-50/20 border-red-200/60 shadow-xs'
+                ? 'bg-white border-gray-150 hover:border-gray-200'
+                : 'bg-red-50/30 border-red-200/80 shadow-2xs hover:bg-red-50/50'
             ]"
           >
             <div
-              class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+              class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105"
               :class="[
                 item.type === 'JURNAL'
                   ? 'bg-blue-50 text-blue-600'
@@ -119,15 +131,19 @@
 
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between gap-2">
-                <h3 class="text-xs font-bold text-gray-900 truncate flex items-center gap-1.5">
+                <h3 class="text-xs font-bold text-gray-900 truncate flex items-center gap-1.5 group-hover:text-primary transition-colors">
                   <span>{{ item.title }}</span>
-                  <span v-if="!item.is_read" class="w-2 h-2 rounded-full bg-brand-red inline-block"></span>
+                  <span v-if="!item.is_read" class="w-2 h-2 rounded-full bg-brand-red inline-block shrink-0"></span>
                 </h3>
-                <span class="text-[11px] text-gray-400 shrink-0">{{ item.time_ago }}</span>
+                <span class="text-[11px] text-gray-400 shrink-0">{{ item.time || item.time_ago }}</span>
               </div>
-              <p class="text-xs text-gray-600 mt-1">
+              <p class="text-xs text-gray-600 mt-1 line-clamp-2">
                 {{ item.body }}
               </p>
+              <div class="mt-2 flex items-center gap-1 text-[11px] font-semibold text-primary opacity-90 group-hover:opacity-100">
+                <span>Buka Rincian</span>
+                <span class="transition-transform group-hover:translate-x-0.5">→</span>
+              </div>
             </div>
           </div>
         </div>
@@ -274,10 +290,51 @@ const markOneRead = async (item: any) => {
         method: 'POST',
         headers: { Authorization: `Bearer ${authStore.token}` }
       })
-      await fetchNotifications()
     } catch (err: any) {
       // Handled in state
     }
+  }
+}
+
+const handleNotificationClick = async (item: any) => {
+  await markOneRead(item)
+
+  const role = authStore.user?.role
+  const type = item.type
+  const title = (item.title || '').toLowerCase()
+  const body = (item.body || '').toLowerCase()
+
+  // Dynamic Routing Logic per role & notification context
+  if (type === 'SURAT_IZIN' || title.includes('surat izin') || body.includes('surat izin')) {
+    if (role === 'GURU_PEMBIMBING') {
+      navigateTo('/persetujuan-izin')
+    } else if (role === 'SISWA') {
+      navigateTo('/surat-izin')
+    } else {
+      navigateTo('/laporan-izin')
+    }
+  } else if (type === 'JURNAL' || title.includes('jurnal') || body.includes('materi')) {
+    if (role === 'SISWA') {
+      navigateTo('/jurnal-pelajaran')
+    } else if (role === 'GURU_PENGAJAR') {
+      navigateTo('/jurnal-materi')
+    } else if (role === 'SEKRETARIS') {
+      navigateTo('/jurnal-kelas')
+    } else {
+      navigateTo('/laporan-jurnal')
+    }
+  } else if (type === 'PRESENSI' || title.includes('presensi') || body.includes('presensi')) {
+    if (role === 'SISWA') {
+      navigateTo('/riwayat-kehadiran')
+    } else if (role === 'SEKRETARIS') {
+      navigateTo('/presensi')
+    } else {
+      navigateTo('/dashboard')
+    }
+  } else if (type === 'USER') {
+    navigateTo(role === 'GURU_PEMBIMBING' ? '/manajemen-user' : '/profile')
+  } else {
+    navigateTo('/dashboard')
   }
 }
 

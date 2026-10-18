@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Notifications & Audit Logs
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/read-all', [NotificationController::class, 'markAsRead']);
+    Route::put('/notifications/read-all', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::put('/notifications/{id?}/read', [NotificationController::class, 'markAsRead']);
     Route::get('/audit-logs', [NotificationController::class, 'auditLogs']);
