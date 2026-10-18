@@ -16,17 +16,17 @@
       <!-- User Card (Clickable to /profile) -->
       <NuxtLink
         to="/profile"
-        class="bg-gray-50 hover:bg-red-50/60 border border-gray-100 hover:border-red-100 rounded-2xl p-3 flex items-center gap-3 mb-6 transition group cursor-pointer"
+        class="bg-gray-50 hover:bg-red-50/60 border border-gray-100 hover:border-red-100 rounded-2xl p-3 flex items-center gap-2.5 mb-6 transition group cursor-pointer"
         title="Buka Pengaturan Profil"
       >
-        <div class="w-10 h-10 rounded-full bg-red-100 text-primary font-bold flex items-center justify-center text-sm flex-shrink-0 group-hover:ring-2 group-hover:ring-primary/20 transition">
+        <div class="w-9 h-9 rounded-full bg-red-100 text-primary font-bold flex items-center justify-center text-xs flex-shrink-0 group-hover:ring-2 group-hover:ring-primary/20 transition">
           {{ userInitial }}
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-sm font-semibold text-gray-900 group-hover:text-primary transition truncate">{{ authStore.user?.name || 'Pengguna' }}</p>
-          <p class="text-xs text-gray-500 truncate">{{ userSubtitle }}</p>
+          <p class="text-xs font-bold text-gray-900 group-hover:text-primary transition truncate" :title="authStore.user?.name">{{ authStore.user?.name || 'Pengguna' }}</p>
+          <p class="text-[11px] text-gray-500 truncate" :title="userSubtitle">{{ userSubtitle }}</p>
         </div>
-        <User class="w-4 h-4 text-gray-400 group-hover:text-primary transition flex-shrink-0" />
+        <User class="w-3.5 h-3.5 text-gray-400 group-hover:text-primary transition flex-shrink-0" />
       </NuxtLink>
 
       <!-- Navigation Menu -->

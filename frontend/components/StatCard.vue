@@ -6,12 +6,12 @@
     </div>
     
     <div class="my-0.5">
-      <div class="text-base sm:text-2xl font-extrabold text-gray-900 tracking-tight leading-snug break-words">
+      <div class="text-sm sm:text-2xl font-extrabold text-gray-900 tracking-tight leading-snug break-words">
         {{ value }}
       </div>
     </div>
 
-    <p v-if="subtext" class="text-[10px] sm:text-xs text-gray-400 font-medium truncate mt-0.5" :title="subtext">
+    <p v-if="subtext" class="text-[9px] sm:text-xs text-gray-400 font-medium truncate mt-0.5" :title="subtext">
       {{ subtext }}
     </p>
   </div>
