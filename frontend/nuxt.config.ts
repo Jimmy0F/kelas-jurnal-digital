@@ -35,9 +35,8 @@ export default defineNuxtConfig({
   },
   nitro: {
     routeRules: {
-      '/api/**': { proxy: 'http://127.0.0.1:8010/api/**' },
-      '/storage/**': { proxy: 'http://127.0.0.1:8010/storage/**' },
-      '/wa-gateway/**': { proxy: 'http://127.0.0.1:3000/**' }
+      '/api/**': { proxy: (process.env.BACKEND_PROXY_URL || 'http://127.0.0.1:8000') + '/api/**' },
+      '/storage/**': { proxy: (process.env.BACKEND_PROXY_URL || 'http://127.0.0.1:8000') + '/storage/**' }
     }
   }
 })
