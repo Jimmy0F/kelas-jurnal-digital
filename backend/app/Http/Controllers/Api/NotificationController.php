@@ -43,9 +43,13 @@ class NotificationController extends Controller
         });
 
         $unreadCount = Notification::where('user_id', $user->id)->whereNull('read_at')->count();
+        $unreadSuratIzinCount = Notification::where('user_id', $user->id)->where('type', 'SURAT_IZIN')->whereNull('read_at')->count();
+        $unreadJurnalCount = Notification::where('user_id', $user->id)->where('type', 'JURNAL')->whereNull('read_at')->count();
 
         return response()->json([
             'unread_count' => $unreadCount,
+            'unread_surat_izin_count' => $unreadSuratIzinCount,
+            'unread_jurnal_count' => $unreadJurnalCount,
             'notifications' => $notifications,
         ]);
     }
@@ -53,11 +57,16 @@ class NotificationController extends Controller
     public function markAsRead(Request $request, $id = null)
     {
         $user = $request->user();
+        $type = $request->input('type') ?? $request->query('type');
 
         if ($id && is_numeric($id)) {
             Notification::where('user_id', $user->id)->where('id', $id)->update(['read_at' => Carbon::now()]);
         } else {
-            Notification::where('user_id', $user->id)->whereNull('read_at')->update(['read_at' => Carbon::now()]);
+            $query = Notification::where('user_id', $user->id)->whereNull('read_at');
+            if ($type && in_array(strtoupper($type), ['JURNAL', 'SURAT_IZIN', 'PRESENSI'])) {
+                $query->where('type', strtoupper($type));
+            }
+            $query->update(['read_at' => Carbon::now()]);
         }
 
         return response()->json(['message' => 'Notifikasi ditandai telah dibaca']);

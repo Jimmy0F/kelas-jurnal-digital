@@ -3,7 +3,6 @@
     <AppHeader
       title="Profil Pengguna"
       subtitle="Kelola informasi akun, nomor WhatsApp OTP, dan keamanan kata sandi"
-      :show-back="true"
     />
 
     <main class="px-6 md:px-8 pb-10 max-w-4xl space-y-6">
@@ -275,14 +274,14 @@
             <p class="text-xs text-gray-500 mt-0.5">Tautkan nomor WhatsApp sekolah untuk pengiriman OTP & Auto-Funnel tanpa bayar.</p>
           </div>
           <span
-            :class="waStatus.status === 'connected' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'"
+            :class="(waStatus.status === 'connected' || waStatus.connected) ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'"
             class="text-[11px] font-bold px-2.5 py-1 rounded-full border"
           >
-            {{ waStatus.status === 'connected' ? '● WhatsApp Terhubung' : '○ Belum Terhubung' }}
+            {{ (waStatus.status === 'connected' || waStatus.connected) ? '● WhatsApp Terhubung' : '○ Belum Terhubung' }}
           </span>
         </div>
 
-        <div v-if="waStatus.status !== 'connected'" class="space-y-3">
+        <div v-if="waStatus.status !== 'connected' && !waStatus.connected" class="space-y-3">
           <p class="text-xs text-gray-600">
             Ketik nomor WhatsApp yang ingin dijadikan bot/pengirim OTP, lalu klik <strong>Minta Kode Pairing</strong>:
           </p>
@@ -326,18 +325,6 @@
             Putuskan Koneksi
           </button>
         </div>
-
-        <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-          <p class="text-[11px] text-gray-400">Pilihan alternatif: Scan QR Code langsung via panel mandiri.</p>
-          <a
-            href="/wa-gateway/qr"
-            target="_blank"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-bold border border-emerald-200 transition"
-          >
-            <span>Scan QR Code</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-          </a>
-        </div>
       </div>
     </main>
   </div>
@@ -375,14 +362,16 @@ const fetchWaStatus = async () => {
     const res: any = await $fetch(`${apiBase}/wa-gateway/status`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
-    if (res && res.data) {
-      waStatus.value = res.data
-      if (res.data.status === 'connected') {
+    if (res) {
+      const data = res.data || res
+      waStatus.value = data
+      if (data.status === 'connected' || data.connected === true) {
         pairingCode.value = ''
       }
     }
   } catch (e) {
     console.warn('Gagal memuat status WhatsApp gateway:', e)
+    waStatus.value = { status: 'disconnected', connected: false }
   }
 }
 
@@ -396,8 +385,8 @@ const requestWaPairing = async () => {
       headers: { Authorization: `Bearer ${authStore.token}` },
       body: { phone: waPhoneInput.value }
     })
-    if (res && res.data && res.data.code) {
-      pairingCode.value = res.data.code
+    if (res && (res.code || (res.data && res.data.code))) {
+      pairingCode.value = res.code || res.data.code
     } else if (res && res.message) {
       alert(res.message)
     }

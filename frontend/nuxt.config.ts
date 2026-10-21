@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: false,
+  devServer: {
+    port: 3001
+  },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
   srcDir: '.',

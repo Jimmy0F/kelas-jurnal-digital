@@ -102,7 +102,7 @@
 
       <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-card flex items-center justify-between">
         <div>
-          <p class="text-xs text-gray-500 font-medium">Alpha</p>
+          <p class="text-xs text-gray-500 font-medium">ALFA</p>
           <h3 class="text-2xl font-bold text-red-600 mt-1">{{ summary.alpha }}</h3>
           <p class="text-[11px] text-gray-400 mt-0.5">Tanpa keterangan</p>
         </div>

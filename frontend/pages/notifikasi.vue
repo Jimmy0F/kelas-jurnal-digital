@@ -58,33 +58,47 @@
             <button
               @click="switchFilter('JURNAL')"
               :class="[
-                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
+                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5',
                 filterType === 'JURNAL'
                   ? 'bg-brand-red text-white shadow-xs'
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               ]"
             >
-              Jurnal
+              <span>Jurnal</span>
+              <span
+                v-if="unreadJurnalCount > 0"
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+                :class="filterType === 'JURNAL' ? 'bg-white text-brand-red' : 'bg-red-100 text-brand-red'"
+              >
+                {{ unreadJurnalCount }}
+              </span>
             </button>
 
             <button
               @click="switchFilter('SURAT_IZIN')"
               :class="[
-                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
+                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5',
                 filterType === 'SURAT_IZIN'
                   ? 'bg-brand-red text-white shadow-xs'
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               ]"
             >
-              Surat Izin
+              <span>Surat Izin</span>
+              <span
+                v-if="unreadSuratIzinCount > 0"
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+                :class="filterType === 'SURAT_IZIN' ? 'bg-white text-brand-red' : 'bg-red-100 text-brand-red'"
+              >
+                {{ unreadSuratIzinCount }}
+              </span>
             </button>
           </div>
 
           <button
-            @click="markAllRead"
+            @click="markCategoryRead"
             type="button"
             class="px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-[11px] font-semibold text-gray-700 transition flex items-center gap-1 cursor-pointer shrink-0"
-            title="Tandai semua pesan sebagai telah dibaca"
+            :title="categoryMarkTooltip"
           >
             <CheckCheckIcon class="w-3.5 h-3.5 text-emerald-600" />
             <span>Tandai Dibaca</span>
@@ -225,6 +239,8 @@ const loading = ref(false)
 const loadingAudit = ref(false)
 
 const unreadCount = ref(0)
+const unreadSuratIzinCount = ref(0)
+const unreadJurnalCount = ref(0)
 
 const defaultNotifications: any[] = []
 
@@ -241,15 +257,27 @@ const switchFilter = (type: string) => {
   filterType.value = type
 }
 
+const categoryMarkTooltip = computed(() => {
+  if (filterType.value === 'SURAT_IZIN') return 'Tandai notifikasi Surat Izin telah dibaca'
+  if (filterType.value === 'JURNAL') return 'Tandai notifikasi Jurnal telah dibaca'
+  return 'Tandai notifikasi telah dibaca'
+})
+
 const fetchNotifications = async () => {
   loading.value = true
   try {
     const res: any = await $fetch(`${config.public.apiBase}/notifications`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
-      params: { filter: filterType.value }
+      params: { filter: 'ALL' }
     })
     notifications.value = res.notifications || []
-    unreadCount.value = res.unread_count || 0
+    unreadCount.value = res.unread_count ?? 0
+    unreadSuratIzinCount.value = typeof res.unread_surat_izin_count === 'number'
+      ? res.unread_surat_izin_count
+      : notifications.value.filter(n => n.type === 'SURAT_IZIN' && !n.is_read).length
+    unreadJurnalCount.value = typeof res.unread_jurnal_count === 'number'
+      ? res.unread_jurnal_count
+      : notifications.value.filter(n => n.type === 'JURNAL' && !n.is_read).length
   } catch (err: any) {
     // Keep empty
   } finally {
@@ -276,14 +304,62 @@ const fetchAuditLogs = async () => {
 const markAllRead = async () => {
   notifications.value.forEach(n => { n.is_read = true })
   unreadCount.value = 0
+  unreadSuratIzinCount.value = 0
+  unreadJurnalCount.value = 0
   try {
     await $fetch(`${config.public.apiBase}/notifications/read-all`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
-    await fetchNotifications()
   } catch (err: any) {
-    // Handled in state
+    console.error('Error marking all read:', err)
+  }
+}
+
+const markCategoryRead = async () => {
+  const currentFilter = filterType.value
+
+  if (currentFilter === 'SURAT_IZIN') {
+    const unreadSuratIzin = notifications.value.filter(n => n.type === 'SURAT_IZIN' && !n.is_read).length
+    if (unreadSuratIzin === 0) return
+
+    notifications.value.forEach(n => {
+      if (n.type === 'SURAT_IZIN') n.is_read = true
+    })
+    unreadSuratIzinCount.value = 0
+    unreadCount.value = Math.max(0, unreadCount.value - unreadSuratIzin)
+
+    try {
+      await $fetch(`${config.public.apiBase}/notifications/read-all`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${authStore.token}` },
+        body: { type: 'SURAT_IZIN' }
+      })
+    } catch (err: any) {
+      console.error('Error marking surat izin read:', err)
+    }
+  } else if (currentFilter === 'JURNAL') {
+    const unreadJurnal = notifications.value.filter(n => n.type === 'JURNAL' && !n.is_read).length
+    if (unreadJurnal === 0) return
+
+    notifications.value.forEach(n => {
+      if (n.type === 'JURNAL') n.is_read = true
+    })
+    unreadJurnalCount.value = 0
+    unreadCount.value = Math.max(0, unreadCount.value - unreadJurnal)
+
+    try {
+      await $fetch(`${config.public.apiBase}/notifications/read-all`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${authStore.token}` },
+        body: { type: 'JURNAL' }
+      })
+    } catch (err: any) {
+      console.error('Error marking jurnal read:', err)
+    }
+  } else {
+    // Current filter is 'ALL' or 'UNREAD' -> mark all as read
+    await markAllRead()
   }
 }
 
@@ -291,6 +367,11 @@ const markOneRead = async (item: any) => {
   if (!item.is_read) {
     item.is_read = true
     unreadCount.value = Math.max(0, unreadCount.value - 1)
+    if (item.type === 'SURAT_IZIN') {
+      unreadSuratIzinCount.value = Math.max(0, unreadSuratIzinCount.value - 1)
+    } else if (item.type === 'JURNAL') {
+      unreadJurnalCount.value = Math.max(0, unreadJurnalCount.value - 1)
+    }
     try {
       await $fetch(`${config.public.apiBase}/notifications/${item.id}/read`, {
         method: 'POST',

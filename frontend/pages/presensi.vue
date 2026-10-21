@@ -25,7 +25,7 @@
           <p class="text-2xl font-bold text-blue-600 mt-1">{{ summary.izin }}</p>
         </div>
         <div class="bg-white border border-gray-150 rounded-2xl p-4 shadow-2xs">
-          <p class="text-[11px] font-semibold text-red-600 uppercase">Alpha</p>
+          <p class="text-[11px] font-semibold text-red-600 uppercase">ALFA</p>
           <p class="text-2xl font-bold text-red-600 mt-1">{{ summary.alpha }}</p>
         </div>
       </div>
@@ -113,7 +113,7 @@
                           student.status === 'ALPHA' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
                         ]"
                       >
-                        Alpha
+                        ALFA
                       </button>
                     </div>
                   </td>

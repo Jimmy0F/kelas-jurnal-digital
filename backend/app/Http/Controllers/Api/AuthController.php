@@ -222,13 +222,33 @@ class AuthController extends Controller
         if ($request->user()->role !== 'GURU_PEMBIMBING') {
             return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing yang berhak mengakses WhatsApp Gateway.'], 403);
         }
+
+        $baseUrl = rtrim(env('WA_GATEWAY_BASE_URL', 'http://127.0.0.1:3000'), '/');
+        $token = env('WA_GATEWAY_TOKEN', env('FONNTE_TOKEN', 'rapiuw-admin-secret-2026'));
+
         try {
-            $resp = \Illuminate\Support\Facades\Http::timeout(3)
-                ->withHeaders(['x-admin-token' => 'rapiuw-admin-secret-2026'])
-                ->get('http://127.0.0.1:3000/api/device/status');
-            return response()->json($resp->json() ?? ['status' => false]);
+            $resp = \Illuminate\Support\Facades\Http::timeout(10)
+                ->withHeaders([
+                    'x-admin-token' => $token,
+                    'Authorization' => "Bearer {$token}",
+                ])
+                ->get("{$baseUrl}/api/device/status");
+
+            if ($resp->successful()) {
+                return response()->json($resp->json());
+            }
+
+            return response()->json([
+                'connected' => false,
+                'status' => 'disconnected',
+                'message' => 'Service WA Gateway offline',
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage()]);
+            return response()->json([
+                'connected' => false,
+                'status' => 'disconnected',
+                'message' => 'Service WA Gateway offline',
+            ]);
         }
     }
 
@@ -238,15 +258,35 @@ class AuthController extends Controller
             return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing yang berhak mengelola WhatsApp Gateway.'], 403);
         }
         $request->validate(['phone' => 'required|string']);
+
+        $baseUrl = rtrim(env('WA_GATEWAY_BASE_URL', 'http://127.0.0.1:3000'), '/');
+        $token = env('WA_GATEWAY_TOKEN', env('FONNTE_TOKEN', 'rapiuw-admin-secret-2026'));
+
         try {
-            $resp = \Illuminate\Support\Facades\Http::timeout(50)
-                ->withHeaders(['x-admin-token' => 'rapiuw-admin-secret-2026'])
-                ->post('http://127.0.0.1:3000/api/device/pairing-code', [
+            $resp = \Illuminate\Support\Facades\Http::timeout(10)
+                ->withHeaders([
+                    'x-admin-token' => $token,
+                    'Authorization' => "Bearer {$token}",
+                ])
+                ->post("{$baseUrl}/api/device/pairing-code", [
                     'phone' => $request->phone
                 ]);
-            return response()->json($resp->json(), $resp->status());
+
+            if ($resp->successful()) {
+                return response()->json($resp->json(), $resp->status());
+            }
+
+            return response()->json([
+                'connected' => false,
+                'status' => false,
+                'message' => $resp->json('message') ?? 'Service WA Gateway offline',
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'connected' => false,
+                'status' => false,
+                'message' => 'Service WA Gateway offline',
+            ]);
         }
     }
 
@@ -255,13 +295,33 @@ class AuthController extends Controller
         if ($request->user()->role !== 'GURU_PEMBIMBING') {
             return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing yang berhak memutuskan WhatsApp Gateway.'], 403);
         }
+
+        $baseUrl = rtrim(env('WA_GATEWAY_BASE_URL', 'http://127.0.0.1:3000'), '/');
+        $token = env('WA_GATEWAY_TOKEN', env('FONNTE_TOKEN', 'rapiuw-admin-secret-2026'));
+
         try {
-            $resp = \Illuminate\Support\Facades\Http::timeout(5)
-                ->withHeaders(['x-admin-token' => 'rapiuw-admin-secret-2026'])
-                ->post('http://127.0.0.1:3000/api/device/logout');
-            return response()->json($resp->json() ?? ['status' => true]);
+            $resp = \Illuminate\Support\Facades\Http::timeout(10)
+                ->withHeaders([
+                    'x-admin-token' => $token,
+                    'Authorization' => "Bearer {$token}",
+                ])
+                ->post("{$baseUrl}/api/device/logout");
+
+            if ($resp->successful()) {
+                return response()->json($resp->json() ?? ['status' => true]);
+            }
+
+            return response()->json([
+                'connected' => false,
+                'status' => false,
+                'message' => 'Service WA Gateway offline',
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'connected' => false,
+                'status' => false,
+                'message' => 'Service WA Gateway offline',
+            ]);
         }
     }
 
@@ -315,7 +375,7 @@ class AuthController extends Controller
         Log::info("Kode OTP: {$otp}");
         Log::info("============================");
 
-        $waGatewayUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3000/api/send');
+        $waGatewayUrl = env('WA_GATEWAY_URL', rtrim(env('WA_GATEWAY_BASE_URL', 'http://127.0.0.1:3000'), '/') . '/api/send');
         $waGatewayToken = env('WA_GATEWAY_TOKEN', env('FONNTE_TOKEN', 'rapiuw-82cfac01ed88f6676d8f4c49de902697'));
         $waSent = false;
         $waError = null;
@@ -329,9 +389,10 @@ class AuthController extends Controller
             $waError = 'Mode Uji: Nomor dummy tidak dikirim ke WhatsApp publik';
         } elseif ($waGatewayUrl && $user->phone) {
             try {
-                $response = \Illuminate\Support\Facades\Http::timeout(5)
+                $response = \Illuminate\Support\Facades\Http::timeout(10)
                     ->withHeaders([
                         'Authorization' => "Bearer {$waGatewayToken}",
+                        'x-admin-token' => $waGatewayToken,
                     ])->post($waGatewayUrl, [
                         'target' => $user->phone,
                         'message' => "🔒 *KODE OTP JURNAL KELAS*\n\nKode verifikasi Anda adalah: *{$otp}*\n\nKode ini berlaku selama 5 menit. JANGAN bagikan kode ini kepada siapa pun.",
@@ -342,7 +403,7 @@ class AuthController extends Controller
                 }
             } catch (\Exception $e) {
                 Log::warning("Self-hosted WA Gateway gagal: " . $e->getMessage());
-                $waError = $e->getMessage();
+                $waError = 'Service WA Gateway offline';
             }
         }
 

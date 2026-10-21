@@ -33,10 +33,12 @@
           <label class="block text-[11px] font-semibold text-gray-500 mb-1">Tahun Ajaran / Semester</label>
           <select
             v-model="filterTerm"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+            @change="fetchData"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white cursor-pointer"
           >
             <option value="2026-1">2026/2027 - Ganjil (Aktif)</option>
             <option value="2025-2">2025/2026 - Genap</option>
+            <option value="2025-1">2025/2026 - Ganjil</option>
           </select>
         </div>
         <div>
@@ -114,7 +116,7 @@
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <div>
           <h2 class="text-base font-bold text-gray-800">Daftar Kehadiran Kumulatif Siswa</h2>
-          <p class="text-xs text-gray-400 mt-0.5">Rincian angka presensi Hadir, Sakit, Izin, Alpha per siswa</p>
+          <p class="text-xs text-gray-400 mt-0.5">Rincian angka presensi Hadir, Sakit, Izin, ALFA per siswa</p>
         </div>
         <span class="text-xs text-gray-500 font-medium">{{ filteredStudents.length }} Siswa Ditampilkan</span>
       </div>
@@ -133,7 +135,7 @@
               <th class="py-3 px-4 text-center text-green-700">Hadir</th>
               <th class="py-3 px-4 text-center text-orange-700">Sakit</th>
               <th class="py-3 px-4 text-center text-blue-700">Izin</th>
-              <th class="py-3 px-4 text-center text-red-700">Alpha</th>
+              <th class="py-3 px-4 text-center text-red-700">ALFA</th>
               <th class="py-3 px-4 text-center">Persentase</th>
               <th class="py-3 px-4 text-center">Predikat</th>
             </tr>
@@ -211,7 +213,10 @@ const fetchData = async () => {
   try {
     const res: any = await $fetch(`${config.public.apiBase}/attendance/semester-recap`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
-      params: { class_id: filterClass.value }
+      params: {
+        class_id: filterClass.value,
+        term: filterTerm.value
+      }
     })
     effectiveDays.value = res.effective_days
     avgAttendance.value = res.average_attendance
@@ -232,7 +237,7 @@ const exportExcel = () => {
     return
   }
 
-  const headers = ['No', 'Nama Siswa', 'NIS / NISN', 'Hadir', 'Sakit', 'Izin', 'Alpha', 'Persentase', 'Predikat']
+  const headers = ['No', 'Nama Siswa', 'NIS / NISN', 'Hadir', 'Sakit', 'Izin', 'ALFA', 'Persentase', 'Predikat']
   const rows = filteredStudents.value.map((s, idx) => [
     idx + 1,
     `"${s.name}"`,
@@ -249,7 +254,7 @@ const exportExcel = () => {
   const encodedUri = encodeURI(csvContent)
   const link = document.createElement('a')
   link.setAttribute('href', encodedUri)
-  link.setAttribute('download', `rekap_presensi_semester_kelas_${filterClass.value}.csv`)
+  link.setAttribute('download', `rekap_presensi_semester_${filterTerm.value}_kelas_${filterClass.value}.csv`)
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)

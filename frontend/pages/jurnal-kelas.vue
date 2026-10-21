@@ -128,11 +128,11 @@
 
         <!-- Alfa -->
         <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-card flex items-center gap-3.5">
-          <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
             <AlertCircleIcon class="w-5 h-5" />
           </div>
           <div>
-            <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">Alfa</span>
+            <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">ALFA</span>
             <div class="text-base font-bold text-gray-900 flex items-baseline gap-1 mt-0.5">
               <span>{{ summary.alpha }}</span>
               <span class="text-[11px] font-normal text-gray-400">siswa</span>
@@ -199,26 +199,7 @@
                   {{ row.nis }}
                 </td>
                 <td class="py-3.5 px-4 text-center">
-                  <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border"
-                    :class="{
-                      'bg-emerald-50 text-emerald-700 border-emerald-200': row.status === 'HADIR',
-                      'bg-blue-50 text-blue-700 border-blue-200': row.status === 'SAKIT',
-                      'bg-amber-50 text-amber-700 border-amber-200': row.status === 'IZIN',
-                      'bg-rose-50 text-rose-700 border-rose-200': row.status === 'ALFA',
-                    }"
-                  >
-                    <span
-                      class="w-1.5 h-1.5 rounded-full"
-                      :class="{
-                        'bg-emerald-500': row.status === 'HADIR',
-                        'bg-blue-500': row.status === 'SAKIT',
-                        'bg-amber-500': row.status === 'IZIN',
-                        'bg-rose-500': row.status === 'ALFA',
-                      }"
-                    ></span>
-                    {{ formatStatusLabel(row.status) }}
-                  </span>
+                  <StatusBadge :status="row.status" :has-dot="true" />
                 </td>
                 <td class="py-3.5 px-4 text-gray-600">
                   {{ row.time_note }}
@@ -250,7 +231,7 @@
           <span>Hadir: <strong class="text-emerald-600">{{ summary.hadir }}</strong></span>
           <span>Izin: <strong class="text-amber-600">{{ summary.izin }}</strong></span>
           <span>Sakit: <strong class="text-blue-600">{{ summary.sakit }}</strong></span>
-          <span>Alfa: <strong class="text-rose-600">{{ summary.alpha }}</strong></span>
+          <span>ALFA: <strong class="text-red-600">{{ summary.alpha }}</strong></span>
         </div>
       </div>
 
@@ -417,11 +398,12 @@ const summary = ref({
 const records = ref<any[]>([])
 
 const formatStatusLabel = (st: string) => {
-  switch (st) {
+  switch (st?.toUpperCase()) {
     case 'HADIR': return 'Hadir'
     case 'SAKIT': return 'Sakit'
     case 'IZIN': return 'Izin'
-    case 'ALFA': return 'Alfa'
+    case 'ALFA':
+    case 'ALPHA': return 'ALFA'
     default: return st
   }
 }
@@ -512,7 +494,7 @@ const exportExcel = () => {
     idx + 1,
     `"${r.name}"`,
     `"${r.nis}"`,
-    r.status,
+    formatStatusLabel(r.status),
     `"${r.time_note || '-'}"`,
     'Terverifikasi'
   ])

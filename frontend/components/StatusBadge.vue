@@ -41,6 +41,7 @@ const badgeClass = computed(() => {
     case 'IZIN':
       return 'bg-blue-50 text-blue-700 border border-blue-200'
     case 'ALPHA':
+    case 'ALFA':
       return 'bg-red-50 text-red-700 border border-red-200'
     case 'DISPENSASI':
       return 'bg-purple-50 text-purple-700 border border-purple-200'
@@ -85,6 +86,7 @@ const dotClass = computed(() => {
     case 'IZIN':
       return 'bg-blue-500'
     case 'ALPHA':
+    case 'ALFA':
     case 'REJECTED':
       return 'bg-red-500'
     default:
@@ -103,6 +105,7 @@ const labelText = computed(() => {
   if (upper === 'BELUM_KONFIRMASI') return 'Belum Dikonfirmasi'
   if (upper === 'SUDAH DIISI') return 'Sudah Diisi'
   if (upper === 'BELUM DIISI') return 'Belum Diisi'
+  if (upper === 'ALPHA' || upper === 'ALFA') return 'ALFA'
 
   if (
     upper === 'MENUNGGU KONFIRMASI GURU PEMBIMBING' ||
