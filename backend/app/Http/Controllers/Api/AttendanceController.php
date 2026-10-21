@@ -111,8 +111,8 @@ class AttendanceController extends Controller
             ]);
         }
 
-        if ($session->status === 'LOCKED' && $user->role !== 'GURU_PEMBIMBING') {
-            return response()->json(['message' => 'Presensi telah terkunci. Hanya Guru Pembimbing yang dapat mengubah.'], 403);
+        if ($session->status === 'LOCKED' && !in_array($user->role, ['GURU_PEMBIMBING', 'SEKRETARIS'])) {
+            return response()->json(['message' => 'Presensi telah terkunci. Hanya Guru Pembimbing atau Sekretaris yang dapat mengubah.'], 403);
         }
 
         foreach ($request->records as $r) {
@@ -356,11 +356,25 @@ class AttendanceController extends Controller
             ->orderBy('name')
             ->get();
 
+        if (!$session) {
+            return response()->json([
+                'date_formatted' => Carbon::parse($date)->translatedFormat('l, d F Y'),
+                'class_name' => SchoolClass::find($classId)->name ?? 'XI RPL 1',
+                'summary' => [
+                    'hadir' => 0,
+                    'sakit' => 0,
+                    'izin' => 0,
+                    'alpha' => 0,
+                ],
+                'records' => [],
+                'is_empty' => true,
+                'message' => 'Belum ada data presensi yang diisi pada tanggal ini.'
+            ]);
+        }
+
         $recordsMap = [];
-        if ($session) {
-            foreach ($session->records as $r) {
-                $recordsMap[$r->student_id] = $r;
-            }
+        foreach ($session->records as $r) {
+            $recordsMap[$r->student_id] = $r;
         }
 
         $list = $students->map(function ($std, $idx) use ($recordsMap) {
@@ -369,8 +383,8 @@ class AttendanceController extends Controller
                 'no' => str_pad($idx + 1, 2, '0', STR_PAD_LEFT),
                 'name' => $std->name,
                 'nis' => $std->nip_nis ?? '-',
-                'status' => $rec ? $rec->status : 'HADIR',
-                'time_note' => $rec && $rec->note ? $rec->note : 'Tepat waktu - 06:52',
+                'status' => $rec ? $rec->status : 'ALPHA',
+                'time_note' => $rec && $rec->note ? $rec->note : ($rec && $rec->status === 'HADIR' ? 'Tepat waktu - 06:52' : '-'),
                 'verification' => 'Terverifikasi',
             ];
         });
@@ -390,6 +404,7 @@ class AttendanceController extends Controller
                 'alpha' => $alpha,
             ],
             'records' => $list,
+            'is_empty' => false,
         ]);
     }
 

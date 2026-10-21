@@ -169,6 +169,9 @@
                 {{ verificationStatus === 'TERVERIFIKASI' ? 'Terverifikasi' : 'Menunggu Pengesahan' }}
               </span>
             </div>
+            <p v-if="sessionStatus === 'LOCKED'" class="text-[11px] text-gray-500 italic pt-1 border-t border-gray-50">
+              * Presensi hari ini sudah pernah dikunci. Anda masih dapat mengubah data kehadiran lalu menekan "Kunci Ulang Presensi" dengan memasukkan password Anda.
+            </p>
           </div>
 
           <!-- Aksi untuk Guru Pengajar / Pembimbing: Konfirmasi Langsung -->
@@ -204,7 +207,7 @@
                 class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
               <p class="text-[10px] text-gray-400">
-                Masukkan password akun Anda untuk mengunci presensi harian.
+                Masukkan password akun Anda untuk mengunci atau memperbarui presensi harian.
               </p>
             </div>
 
@@ -213,17 +216,17 @@
               <button
                 type="button"
                 @click="handleLock"
-                :disabled="isSubmitting || sessionStatus === 'LOCKED'"
+                :disabled="isSubmitting"
                 class="w-full py-3 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
                 <Lock class="w-3.5 h-3.5" />
-                <span>{{ sessionStatus === 'LOCKED' ? 'Presensi Telah Dikunci' : 'Simpan & Kunci Presensi' }}</span>
+                <span>{{ sessionStatus === 'LOCKED' ? 'Kunci Ulang Presensi' : 'Simpan & Kunci Presensi' }}</span>
               </button>
 
               <button
                 type="button"
                 @click="handleDraft"
-                :disabled="isSubmitting || sessionStatus === 'LOCKED'"
+                :disabled="isSubmitting"
                 class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
               >
                 Simpan Draft

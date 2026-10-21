@@ -51,7 +51,7 @@
     <!-- Bottom Academic Year Footer -->
     <div class="p-6 border-t border-gray-100">
       <p class="text-[11px] text-gray-400 font-medium">Tahun Ajaran</p>
-      <p class="text-xs font-bold text-gray-800 mt-0.5">2025/2026 - Ganjil</p>
+      <p class="text-xs font-bold text-gray-800 mt-0.5">2026/2027 - Ganjil</p>
     </div>
   </aside>
 </template>

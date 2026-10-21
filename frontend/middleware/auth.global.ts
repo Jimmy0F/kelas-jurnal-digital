@@ -6,7 +6,6 @@ const ROLE_ALLOWED_ROUTES: Record<string, string[]> = {
     '/profile',
     '/jurnal-pelajaran',
     '/riwayat-kehadiran',
-    '/surat-izin',
     '/notifikasi',
   ],
   SEKRETARIS: [

@@ -14,14 +14,6 @@
           <PlusIcon class="w-3.5 h-3.5" />
           <span>Isi Jurnal KBM</span>
         </button>
-        <button
-          @click="exportPdf"
-          type="button"
-          class="px-3.5 py-2 rounded-xl bg-white border border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors text-xs font-semibold flex items-center gap-2 shadow-2xs cursor-pointer"
-        >
-          <FileTextIcon class="w-3.5 h-3.5" />
-          <span>Export PDF</span>
-        </button>
       </template>
     </AppHeader>
 
@@ -70,14 +62,24 @@
           </div>
         </div>
 
-        <button
-          @click="exportPdf"
-          type="button"
-          class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer"
-        >
-          <DownloadIcon class="w-3.5 h-3.5" />
-          <span>Export PDF</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            @click="exportExcel"
+            type="button"
+            class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer"
+          >
+            <FileSpreadsheetIcon class="w-3.5 h-3.5" />
+            <span>Export Excel</span>
+          </button>
+          <button
+            @click="exportPdf"
+            type="button"
+            class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer"
+          >
+            <DownloadIcon class="w-3.5 h-3.5" />
+            <span>Export PDF</span>
+          </button>
+        </div>
       </div>
 
       <!-- 4 Stat Summary Cards (Hadir, Sakit, Izin, Alfa) -->
@@ -161,6 +163,12 @@
       <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden">
         <div v-if="loading" class="py-16 text-center text-gray-400 text-xs">
           Memuat rekap data kehadiran kelas...
+        </div>
+
+        <div v-else-if="filteredRecords.length === 0" class="py-16 text-center space-y-2">
+          <CalendarIcon class="w-10 h-10 text-gray-300 mx-auto" />
+          <p class="text-sm font-semibold text-gray-700">Belum Ada Presensi Diisi</p>
+          <p class="text-xs text-gray-400">Tidak ada data kehadiran siswa yang tercatat pada tanggal ini.</p>
         </div>
 
         <div v-else class="overflow-x-auto">
@@ -375,7 +383,8 @@ import {
   BookOpen as BookOpenIcon,
   Plus as PlusIcon,
   CheckCircle2 as CheckCircle2Icon,
-  X as XIcon
+  X as XIcon,
+  FileSpreadsheet as FileSpreadsheetIcon
 } from 'lucide-vue-next'
 
 const config = useRuntimeConfig()
@@ -491,6 +500,31 @@ const fetchRecap = async () => {
 
 const exportPdf = () => {
   window.print()
+}
+
+const exportExcel = () => {
+  if (records.value.length === 0) {
+    alert('Tidak ada data presensi pada tanggal ini untuk diekspor.')
+    return
+  }
+  const headers = ['No', 'Nama Siswa', 'NIS', 'Status Kehadiran', 'Waktu & Catatan', 'Status Verifikasi']
+  const rows = filteredRecords.value.map((r, idx) => [
+    idx + 1,
+    `"${r.name}"`,
+    `"${r.nis}"`,
+    r.status,
+    `"${r.time_note || '-'}"`,
+    'Terverifikasi'
+  ])
+  const csvContent = 'data:text/csv;charset=utf-8,\uFEFF'
+    + [headers.join(','), ...rows.map(e => e.join(','))].join('\n')
+  const encodedUri = encodeURI(csvContent)
+  const link = document.createElement('a')
+  link.setAttribute('href', encodedUri)
+  link.setAttribute('download', `Rekap_Presensi_Kelas_${filterDate.value}.csv`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
 
 onMounted(() => {

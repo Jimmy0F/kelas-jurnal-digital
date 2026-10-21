@@ -224,7 +224,7 @@ const filterType = ref('ALL')
 const loading = ref(false)
 const loadingAudit = ref(false)
 
-const unreadCount = ref(2)
+const unreadCount = ref(0)
 
 const defaultNotifications: any[] = []
 
@@ -281,6 +281,7 @@ const markAllRead = async () => {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
+    await fetchNotifications()
   } catch (err: any) {
     // Handled in state
   }
@@ -314,6 +315,8 @@ const handleNotificationClick = async (item: any) => {
     if (role === 'GURU_PEMBIMBING') {
       navigateTo('/persetujuan-izin')
     } else if (role === 'SISWA') {
+      navigateTo('/riwayat-kehadiran')
+    } else if (role === 'SEKRETARIS') {
       navigateTo('/surat-izin')
     } else {
       navigateTo('/laporan-izin')
@@ -324,7 +327,12 @@ const handleNotificationClick = async (item: any) => {
     } else if (role === 'GURU_PENGAJAR') {
       navigateTo('/jurnal-materi')
     } else if (role === 'SEKRETARIS') {
-      navigateTo('/jurnal-kelas')
+      // Jika notifikasi tentang materi baru pembelajaran atau tugas, arahkan ke jurnal-pelajaran seperti siswa
+      if (title.includes('materi') || body.includes('materi') || title.includes('tugas') || body.includes('tugas')) {
+        navigateTo('/jurnal-pelajaran')
+      } else {
+        navigateTo('/jurnal-kelas')
+      }
     } else {
       navigateTo('/laporan-jurnal')
     }

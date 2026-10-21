@@ -54,7 +54,7 @@ class NotificationController extends Controller
     {
         $user = $request->user();
 
-        if ($id && $id !== 'all') {
+        if ($id && is_numeric($id)) {
             Notification::where('user_id', $user->id)->where('id', $id)->update(['read_at' => Carbon::now()]);
         } else {
             Notification::where('user_id', $user->id)->whereNull('read_at')->update(['read_at' => Carbon::now()]);

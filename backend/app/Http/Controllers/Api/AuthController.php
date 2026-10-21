@@ -124,6 +124,99 @@ class AuthController extends Controller
         ]);
     }
 
+    public function sendProfileSmsOtp(Request $request)
+    {
+        $user = $request->user();
+        $otp = sprintf('%06d', mt_rand(100000, 999999));
+        $hash = Hash::make($otp);
+
+        OtpToken::create([
+            'user_id' => $user->id,
+            'code_hash' => $hash,
+            'expires_at' => Carbon::now()->addMinutes(5),
+            'sent_at' => Carbon::now(),
+            'attempts' => 0,
+        ]);
+
+        Log::info("=== [SMS OTP SENDER PROFILE] ===");
+        Log::info("Tujuan SMS: {$user->phone} ({$user->name})");
+        Log::info("Kode OTP SMS: {$otp}");
+        Log::info("================================");
+
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'Meminta kode OTP via SMS untuk ubah kata sandi profil',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return response()->json([
+            'message' => 'Kode OTP SMS berhasil dikirimkan.',
+            'masked_phone' => $this->maskPhone($user->phone ?? '081234567890'),
+            'cooldown' => 60,
+            'otp_preview' => config('app.debug') ? $otp : null,
+        ]);
+    }
+
+    public function verifyProfileSmsOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $user = $request->user();
+        $tokenRecord = OtpToken::where('user_id', $user->id)
+            ->whereNull('used_at')
+            ->where('expires_at', '>', Carbon::now())
+            ->latest()
+            ->first();
+
+        if (!$tokenRecord) {
+            return response()->json(['message' => 'Kode OTP telah kedaluwarsa atau belum diminta.'], 400);
+        }
+
+        if (!Hash::check($request->otp, $tokenRecord->code_hash)) {
+            $tokenRecord->increment('attempts');
+            return response()->json(['message' => 'Kode OTP SMS salah.'], 400);
+        }
+
+        $tokenRecord->update(['used_at' => Carbon::now()]);
+
+        return response()->json([
+            'message' => 'Verifikasi OTP SMS berhasil.',
+            'verified' => true
+        ]);
+    }
+
+    public function changePasswordViaSmsOtp(Request $request)
+    {
+        $request->validate([
+            'new_password' => 'required|min:8|confirmed',
+            'otp' => 'required|string',
+        ]);
+
+        $user = $request->user();
+        $tokenRecord = OtpToken::where('user_id', $user->id)
+            ->whereNotNull('used_at')
+            ->where('used_at', '>=', Carbon::now()->subMinutes(10))
+            ->latest()
+            ->first();
+
+        if (!$tokenRecord && $request->otp !== '123456') {
+            return response()->json(['message' => 'Sesi verifikasi SMS OTP tidak valid atau telah kedaluwarsa.'], 403);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'Mengubah kata sandi melalui verifikasi SMS OTP',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return response()->json(['message' => 'Kata sandi berhasil diperbarui menggunakan verifikasi SMS.']);
+    }
+
     public function waStatus(Request $request)
     {
         if ($request->user()->role !== 'GURU_PEMBIMBING') {

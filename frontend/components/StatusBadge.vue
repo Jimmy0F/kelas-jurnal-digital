@@ -11,15 +11,25 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '~/stores/auth'
+
 const props = withDefaults(
   defineProps<{
     status: string
     hasDot?: boolean
+    role?: string
+    context?: string
+    customLabel?: string
   }>(),
   {
-    hasDot: false
+    hasDot: false,
+    role: '',
+    context: '',
+    customLabel: ''
   }
 )
+
+const authStore = useAuthStore()
 
 const badgeClass = computed(() => {
   const s = props.status?.toUpperCase() || ''
@@ -42,6 +52,9 @@ const badgeClass = computed(() => {
     case 'PENDING':
     case 'MENUNGGU':
     case 'MENUNGGU KONFIRMASI':
+    case 'MENUNGGU KONFIRMASI GURU PENGAJAR':
+    case 'MENUNGGU KONFIRMASI GURU PEMBIMBING':
+    case 'MENUNGGU_PEMBIMBING':
       return 'bg-amber-50 text-amber-700 border border-amber-200'
     case 'BELUM_KONFIRMASI':
     case 'BELUM DIISI':
@@ -59,9 +72,15 @@ const dotClass = computed(() => {
     case 'HADIR':
     case 'TERVERIFIKASI':
     case 'APPROVED':
+    case 'SUDAH DIISI':
       return 'bg-emerald-500'
     case 'SAKIT':
     case 'PENDING':
+    case 'MENUNGGU':
+    case 'MENUNGGU KONFIRMASI':
+    case 'MENUNGGU KONFIRMASI GURU PENGAJAR':
+    case 'MENUNGGU KONFIRMASI GURU PEMBIMBING':
+    case 'MENUNGGU_PEMBIMBING':
       return 'bg-amber-500'
     case 'IZIN':
       return 'bg-blue-500'
@@ -74,12 +93,42 @@ const dotClass = computed(() => {
 })
 
 const labelText = computed(() => {
+  if (props.customLabel) return props.customLabel
   const s = props.status || ''
-  if (s === 'APPROVED') return 'Disetujui'
-  if (s === 'REJECTED') return 'Ditolak'
-  if (s === 'PENDING') return 'Pending'
-  if (s === 'TERVERIFIKASI') return 'Terverifikasi'
-  if (s === 'BELUM_KONFIRMASI') return 'Belum Konfirmasi'
+  const upper = s.toUpperCase()
+
+  if (upper === 'APPROVED' || upper === 'DISETUJUI') return 'Disetujui'
+  if (upper === 'REJECTED' || upper === 'DITOLAK') return 'Ditolak'
+  if (upper === 'TERVERIFIKASI') return 'Terverifikasi'
+  if (upper === 'BELUM_KONFIRMASI') return 'Belum Dikonfirmasi'
+  if (upper === 'SUDAH DIISI') return 'Sudah Diisi'
+  if (upper === 'BELUM DIISI') return 'Belum Diisi'
+
+  if (
+    upper === 'MENUNGGU KONFIRMASI GURU PEMBIMBING' ||
+    upper === 'MENUNGGU_PEMBIMBING'
+  ) {
+    return 'Menunggu Konfirmasi Guru Pembimbing'
+  }
+
+  if (upper === 'MENUNGGU KONFIRMASI GURU PENGAJAR') {
+    return 'Menunggu Konfirmasi Guru Pengajar'
+  }
+
+  if (upper === 'PENDING' || upper === 'MENUNGGU KONFIRMASI' || upper === 'MENUNGGU') {
+    const isPembimbing =
+      props.context === 'pembimbing' ||
+      props.context === 'leave' ||
+      props.role === 'GURU_PEMBIMBING' ||
+      authStore.user?.role === 'GURU_PEMBIMBING'
+
+    if (isPembimbing) {
+      return 'Menunggu Konfirmasi Guru Pembimbing'
+    }
+
+    return 'Menunggu Konfirmasi Guru Pengajar'
+  }
+
   return s
 })
 </script>

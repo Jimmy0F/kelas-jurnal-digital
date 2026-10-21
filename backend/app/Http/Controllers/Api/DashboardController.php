@@ -96,9 +96,17 @@ class DashboardController extends Controller
         $classId = $user->class_id ?? 1;
 
         $session = AttendanceSession::where('class_id', $classId)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->with(['records.student'])
             ->first();
+
+        // If today has not been filled, use the latest session so realistic Sakit/Izin/Alpha records are shown
+        if (!$session) {
+            $session = AttendanceSession::where('class_id', $classId)
+                ->with(['records.student'])
+                ->latest('date')
+                ->first();
+        }
 
         $students = User::where('class_id', $classId)
             ->whereIn('role', ['SISWA', 'SEKRETARIS'])
@@ -145,6 +153,7 @@ class DashboardController extends Controller
 
         return response()->json([
             'class_name' => $user->schoolClass->name ?? 'XI RPL 1',
+            'session_date' => $session ? Carbon::parse($session->date)->translatedFormat('l, d M Y') : 'Hari ini',
             'stats' => [
                 'hadir_count' => $hadir . ' Siswa',
                 'hadir_percent' => $percentage . '% Tingkat Kehadiran',
@@ -153,8 +162,8 @@ class DashboardController extends Controller
                 'alpha_count' => $alpha . ' Siswa',
             ],
             'attendance_list' => $attendanceList,
-            'session_status' => $session->status ?? 'DRAFT',
-            'verification_status' => $session->verification_status ?? 'BELUM_KONFIRMASI',
+            'session_status' => $session ? $session->status : 'DRAFT',
+            'verification_status' => $session ? $session->verification_status : 'BELUM_KONFIRMASI',
         ]);
     }
 
@@ -279,7 +288,7 @@ class DashboardController extends Controller
                 'id' => $cls->id,
                 'class' => $cls->name,
                 'secretary' => $cls->secretary->name ?? 'Rina Safitri',
-                'journal_status' => $journal ? ($journal->verification_status === 'TERVERIFIKASI' ? 'Sudah Diisi' : 'Menunggu Konfirmasi') : 'Menunggu Konfirmasi',
+                'journal_status' => $journal ? ($journal->verification_status === 'TERVERIFIKASI' ? 'Sudah Diisi' : 'Menunggu Konfirmasi Guru Pengajar') : 'Belum Diisi',
                 'attendance_percent' => "{$pct}% Kehadiran",
             ];
         });
@@ -291,7 +300,8 @@ class DashboardController extends Controller
                 'class' => $lv->student->schoolClass->name ?? 'XI RPL 1',
                 'type' => $lv->type,
                 'reason' => $lv->reason,
-                'attachment' => $lv->attachment_path ? 'surat_dokter.pdf' : null,
+                'attachment' => $lv->attachment_path ? basename($lv->attachment_path) : null,
+                'attachment_url' => $lv->attachment_path ? url('api/leave-requests/file/' . basename($lv->attachment_path)) : null,
             ];
         });
 

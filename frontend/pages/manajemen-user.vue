@@ -333,15 +333,21 @@ const successMsg = ref('')
 const searchQuery = ref('')
 const roleFilter = ref('Semua Peran')
 
-const defaultMockUsers = [
-  { id: 1, name: 'Budi, S.Pd', nip_nis: '19840212001', role: 'GURU_PENGAJAR', class_name: '-' },
-  { id: 2, name: 'Siti Rahma, S.Kom', nip_nis: '19910314002', role: 'GURU_PEMBIMBING', class_name: '-' },
-  { id: 3, name: 'Rina Safitri', nip_nis: '102401', role: 'SEKRETARIS', class_name: 'XI RPL 1' },
-  { id: 4, name: 'Ahmad Fadillah', nip_nis: '102402', role: 'SISWA', class_name: 'XI RPL 1' },
-  { id: 5, name: 'Hendra Wijaya', nip_nis: '102403', role: 'SISWA', class_name: 'XI RPL 2' }
-]
+const defaultMockUsers = computed(() => [
+  {
+    id: authStore.user?.id || 1,
+    name: authStore.user?.name || 'Siti Aminah, M.Pd',
+    nip_nis: authStore.user?.nip_nis || '19890314002',
+    role: authStore.user?.role || 'GURU_PEMBIMBING',
+    class_name: '-'
+  },
+  { id: 101, name: 'Budi Santoso, S.Pd', nip_nis: '19840212001', role: 'GURU_PENGAJAR', class_name: '-' },
+  { id: 102, name: 'Rina Safitri', nip_nis: '102401', role: 'SEKRETARIS', class_name: 'XI RPL 1' },
+  { id: 103, name: 'Ahmad Fadillah', nip_nis: '102402', role: 'SISWA', class_name: 'XI RPL 1' },
+  { id: 104, name: 'Hendra Wijaya', nip_nis: '102403', role: 'SISWA', class_name: 'XI RPL 2' }
+])
 
-const users = ref<any[]>(defaultMockUsers)
+const users = ref<any[]>([])
 
 const newUser = ref({
   name: '',
@@ -376,19 +382,33 @@ const filteredUsers = computed(() => {
 const fetchUsers = async () => {
   loadingUsers.value = true
   try {
-    const res: any = await $fetch(`${config.public.apiBase}/users`, {
+    const res: any = await $fetch(`${config.public.apiBase}/users?per_page=100`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
-    if (res.data && res.data.length > 0) {
-      users.value = res.data.map((u: any) => ({
+    const rawData = res.data?.data || res.data || []
+    if (Array.isArray(rawData) && rawData.length > 0) {
+      let mapped = rawData.map((u: any) => ({
         ...u,
-        class_name: u.school_class?.name || '-'
+        class_name: u.school_class?.name || (u.class_id ? `Kelas ${u.class_id}` : '-')
       }))
+
+      // Pastikan akun Guru Pembimbing yang sedang login selalu tampil di daftar
+      if (authStore.user && !mapped.some((u: any) => u.id === authStore.user?.id || u.email === authStore.user?.email)) {
+        mapped.unshift({
+          id: authStore.user.id,
+          name: authStore.user.name,
+          nip_nis: authStore.user.nip_nis || '-',
+          role: authStore.user.role,
+          class_name: authStore.user.school_class?.name || '-'
+        })
+      }
+
+      users.value = mapped
     } else {
-      users.value = defaultMockUsers
+      users.value = [...defaultMockUsers.value]
     }
   } catch (err: any) {
-    users.value = defaultMockUsers
+    users.value = [...defaultMockUsers.value]
   } finally {
     loadingUsers.value = false
   }

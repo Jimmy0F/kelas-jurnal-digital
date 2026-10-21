@@ -32,11 +32,11 @@ class UserController extends Controller
             });
         }
 
-        if ($role && $role !== 'Semua Peran') {
+        if ($role && $role !== 'Semua Peran' && $role !== 'ALL') {
             $query->where('role', $role);
         }
 
-        $users = $query->paginate(15);
+        $users = $query->paginate(100);
 
         return response()->json($users);
     }

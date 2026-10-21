@@ -45,7 +45,7 @@ class LeaveRequestController extends Controller
                 'reason' => $lv->reason,
                 'status' => $lv->status,
                 'attachment' => $lv->attachment_path ? basename($lv->attachment_path) : null,
-                'attachment_url' => $lv->attachment_path ? url('storage/' . $lv->attachment_path) : null,
+                'attachment_url' => $lv->attachment_path ? url('api/leave-requests/file/' . basename($lv->attachment_path)) : null,
                 'review_note' => $lv->review_note,
                 'reviewer_name' => $lv->reviewer->name ?? null,
             ];
@@ -213,5 +213,18 @@ class LeaveRequestController extends Controller
         ]);
 
         return response()->json(['message' => 'Permohonan surat izin berhasil dibatalkan']);
+    }
+
+    public function downloadLeaveFile($filename)
+    {
+        $path = storage_path('app/public/leave_attachments/' . $filename);
+        if (!file_exists($path)) {
+            $altPath = storage_path('app/public/' . $filename);
+            if (file_exists($altPath)) {
+                return response()->file($altPath);
+            }
+            return response()->json(['message' => 'Berkas lampiran surat izin tidak ditemukan.'], 404);
+        }
+        return response()->file($path);
     }
 }

@@ -34,7 +34,7 @@
           >
             <option value="ALL">Semua Status</option>
             <option value="TERVERIFIKASI">Terverifikasi</option>
-            <option value="PENDING">Menunggu Konfirmasi</option>
+            <option value="PENDING">Menunggu Konfirmasi Guru Pengajar</option>
           </select>
         </div>
       </div>

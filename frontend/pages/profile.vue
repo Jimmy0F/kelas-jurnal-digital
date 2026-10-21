@@ -96,7 +96,17 @@
           </div>
 
           <div class="pt-4 border-t border-gray-100">
-            <h4 class="text-xs font-bold text-gray-900 mb-3">Ubah Kata Sandi (Opsional)</h4>
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-xs font-bold text-gray-900">Ubah Kata Sandi (Opsional)</h4>
+              <button
+                type="button"
+                @click="openSmsOtpModal"
+                class="text-[11px] text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span>Lupa kata sandi lama? Coba cara lain via SMS</span>
+              </button>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label class="block text-xs text-gray-600 mb-1">Kata Sandi Saat Ini</label>
@@ -138,6 +148,123 @@
             </button>
           </div>
         </form>
+      </div>
+
+      <!-- Modal Coba Cara Lain via SMS OTP -->
+      <div v-if="showSmsModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-gray-150 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-red-50 text-primary flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Ubah Kata Sandi via SMS</h3>
+                <p class="text-[11px] text-gray-500">Gunakan verifikasi nomor HP yang terdaftar</p>
+              </div>
+            </div>
+            <button type="button" @click="closeSmsModal" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <div v-if="smsError" class="p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl text-xs">
+            {{ smsError }}
+          </div>
+          <div v-if="smsSuccess" class="p-3 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs">
+            {{ smsSuccess }}
+          </div>
+
+          <!-- Step 1: Send SMS OTP -->
+          <div v-if="smsStep === 1" class="space-y-4">
+            <p class="text-xs text-gray-600 leading-relaxed">
+              Jika Anda lupa kata sandi lama, kami akan mengirimkan 6 digit kode OTP verifikasi ke nomor handphone terdaftar Anda:
+            </p>
+            <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-800 font-mono font-medium flex items-center justify-between">
+              <span>Nomor HP:</span>
+              <span class="font-bold text-gray-900">{{ authStore.user?.phone || form.phone || '081234567890' }}</span>
+            </div>
+            <button
+              type="button"
+              :disabled="smsLoading"
+              @click="requestSmsOtp"
+              class="w-full py-2.5 bg-primary hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-xs disabled:opacity-50 cursor-pointer"
+            >
+              {{ smsLoading ? 'Mengirim SMS...' : 'Kirim Kode OTP via SMS' }}
+            </button>
+          </div>
+
+          <!-- Step 2: Verify OTP -->
+          <div v-else-if="smsStep === 2" class="space-y-4">
+            <p class="text-xs text-gray-600 leading-relaxed">
+              Masukkan 6 digit kode OTP yang telah dikirimkan ke <strong>{{ smsMaskedPhone }}</strong>:
+            </p>
+            <div v-if="smsOtpPreview" class="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
+              <span class="font-semibold">Simulasi SMS Masuk:</span> Kode OTP Anda adalah <strong class="font-mono text-sm tracking-wider text-amber-900">{{ smsOtpPreview }}</strong>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Kode OTP SMS (6 Digit)</label>
+              <input
+                v-model="smsOtpInput"
+                type="text"
+                maxlength="6"
+                placeholder="123456"
+                class="w-full text-center text-lg font-mono font-bold tracking-widest px-3.5 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+              />
+            </div>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                :disabled="smsLoading || smsOtpInput.length !== 6"
+                @click="verifySmsOtp"
+                class="flex-1 py-2.5 bg-primary hover:bg-red-700 text-white rounded-xl text-xs font-bold transition disabled:opacity-50 cursor-pointer"
+              >
+                {{ smsLoading ? 'Memverifikasi...' : 'Verifikasi Kode OTP' }}
+              </button>
+              <button
+                type="button"
+                :disabled="smsCooldown > 0 || smsLoading"
+                @click="requestSmsOtp"
+                class="px-3 py-2.5 border border-gray-200 text-gray-600 hover:bg-gray-50 rounded-xl text-xs font-medium transition disabled:opacity-50"
+              >
+                {{ smsCooldown > 0 ? `${smsCooldown}s` : 'Kirim Ulang' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Enter New Password -->
+          <div v-else-if="smsStep === 3" class="space-y-4">
+            <p class="text-xs text-gray-600 leading-relaxed">
+              Verifikasi SMS berhasil! Silakan masukkan kata sandi baru Anda:
+            </p>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Kata Sandi Baru</label>
+              <input
+                v-model="smsNewPassword"
+                type="password"
+                placeholder="Min. 8 karakter"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Konfirmasi Kata Sandi Baru</label>
+              <input
+                v-model="smsNewPasswordConfirmation"
+                type="password"
+                placeholder="Ulangi kata sandi baru"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+              />
+            </div>
+            <button
+              type="button"
+              :disabled="smsLoading || !smsNewPassword || smsNewPassword !== smsNewPasswordConfirmation"
+              @click="submitNewPasswordViaSms"
+              class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs disabled:opacity-50 cursor-pointer"
+            >
+              {{ smsLoading ? 'Menyimpan Sandi Baru...' : 'Simpan Kata Sandi Baru' }}
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- WhatsApp Gateway Integration Box (Eksklusif GURU_PEMBIMBING selaku Wali/Admin Sekolah) -->
@@ -341,6 +468,115 @@ async function saveProfile() {
     errorMsg.value = err?.data?.message || 'Gagal menyimpan pembaruan profil.'
   } finally {
     saving.value = false
+  }
+}
+
+// SMS OTP Reset Password state & methods
+const showSmsModal = ref(false)
+const smsStep = ref(1)
+const smsLoading = ref(false)
+const smsError = ref('')
+const smsSuccess = ref('')
+const smsMaskedPhone = ref('')
+const smsOtpPreview = ref('')
+const smsOtpInput = ref('')
+const smsCooldown = ref(0)
+const smsNewPassword = ref('')
+const smsNewPasswordConfirmation = ref('')
+let smsCooldownInterval: any = null
+
+function openSmsOtpModal() {
+  showSmsModal.value = true
+  smsStep.value = 1
+  smsError.value = ''
+  smsSuccess.value = ''
+  smsOtpInput.value = ''
+  smsNewPassword.value = ''
+  smsNewPasswordConfirmation.value = ''
+}
+
+function closeSmsModal() {
+  showSmsModal.value = false
+}
+
+async function requestSmsOtp() {
+  smsLoading.value = true
+  smsError.value = ''
+  smsSuccess.value = ''
+  try {
+    const res: any = await $fetch(`${authStore.apiBase}/auth/profile/send-sms-otp`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    smsMaskedPhone.value = res.masked_phone || '08******'
+    smsOtpPreview.value = res.otp_preview || ''
+    smsStep.value = 2
+    smsCooldown.value = res.cooldown || 60
+    if (smsCooldownInterval) clearInterval(smsCooldownInterval)
+    smsCooldownInterval = setInterval(() => {
+      if (smsCooldown.value > 0) {
+        smsCooldown.value--
+      } else {
+        clearInterval(smsCooldownInterval)
+      }
+    }, 1000)
+    smsSuccess.value = res.message || 'Kode OTP telah dikirim ke nomor HP Anda.'
+  } catch (e: any) {
+    smsError.value = e?.data?.message || 'Gagal mengirim kode SMS OTP.'
+  } finally {
+    smsLoading.value = false
+  }
+}
+
+async function verifySmsOtp() {
+  if (smsOtpInput.value.length !== 6) return
+  smsLoading.value = true
+  smsError.value = ''
+  smsSuccess.value = ''
+  try {
+    const res: any = await $fetch(`${authStore.apiBase}/auth/profile/verify-sms-otp`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authStore.token}` },
+      body: { otp: smsOtpInput.value }
+    })
+    smsStep.value = 3
+    smsSuccess.value = res.message || 'Verifikasi SMS berhasil. Silakan masukkan sandi baru.'
+  } catch (e: any) {
+    smsError.value = e?.data?.message || 'Kode OTP salah atau kedaluwarsa.'
+  } finally {
+    smsLoading.value = false
+  }
+}
+
+async function submitNewPasswordViaSms() {
+  if (smsNewPassword.value.length < 8) {
+    smsError.value = 'Kata sandi minimal 8 karakter.'
+    return
+  }
+  if (smsNewPassword.value !== smsNewPasswordConfirmation.value) {
+    smsError.value = 'Konfirmasi kata sandi baru tidak cocok.'
+    return
+  }
+
+  smsLoading.value = true
+  smsError.value = ''
+  smsSuccess.value = ''
+  try {
+    const res: any = await $fetch(`${authStore.apiBase}/auth/profile/password-via-sms`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authStore.token}` },
+      body: {
+        otp: smsOtpInput.value,
+        new_password: smsNewPassword.value,
+        new_password_confirmation: smsNewPasswordConfirmation.value
+      }
+    })
+    successMsg.value = res.message || 'Kata sandi berhasil diperbarui via SMS.'
+    closeSmsModal()
+  } catch (e: any) {
+    smsError.value = e?.data?.message || 'Gagal mengubah kata sandi via SMS.'
+  } finally {
+    smsLoading.value = false
   }
 }
 </script>

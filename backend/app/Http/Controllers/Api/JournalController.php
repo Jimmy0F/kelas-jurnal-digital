@@ -38,6 +38,7 @@ class JournalController extends Controller
         $journals = $query->get()->map(function ($j) {
             return [
                 'id' => $j->id,
+                'schedule_id' => $j->schedule_id,
                 'date' => Carbon::parse($j->date)->format('Y-m-d'),
                 'date_time' => Carbon::parse($j->date)->translatedFormat('d M,') . ' ' . ($j->schedule->start_time ?? '07:30'),
                 'class' => $j->schoolClass->name ?? 'XI RPL 1',
@@ -49,6 +50,8 @@ class JournalController extends Controller
                 'status' => $j->verification_status,
                 'confirmed_at' => $j->confirmed_at ? Carbon::parse($j->confirmed_at)->format('d M Y H:i') : null,
                 'confirmed_by' => $j->confirmedBy->name ?? null,
+                'created_by' => $j->createdBy->name ?? 'Sekretaris',
+                'created_by_role' => $j->createdBy->role ?? 'SEKRETARIS',
             ];
         });
 
@@ -126,35 +129,44 @@ class JournalController extends Controller
         $date = $request->date ?? Carbon::today()->toDateString();
         $activity = $request->topic ? ($request->topic . ' - ' . $request->activity) : $request->activity;
 
+        $isTeacher = in_array($user->role, ['GURU_PENGAJAR', 'GURU_PEMBIMBING']);
+        $status = $isTeacher ? 'TERVERIFIKASI' : 'PENDING';
+        $confirmedById = $isTeacher ? $user->id : null;
+        $confirmedAt = $isTeacher ? Carbon::now() : null;
+
         $journal = ClassJournal::create([
             'class_id' => $classId,
             'schedule_id' => $request->schedule_id,
             'date' => $date,
             'activity' => $activity,
             'notes' => $request->notes,
-            'verification_status' => 'PENDING',
+            'verification_status' => $status,
+            'confirmed_by_id' => $confirmedById,
+            'confirmed_at' => $confirmedAt,
             'created_by_id' => $user->id,
         ]);
 
-        // Notify teacher of the schedule
-        $schedule = Schedule::find($request->schedule_id);
-        if ($schedule && $schedule->teacher_id) {
-            Notification::create([
-                'user_id' => $schedule->teacher_id,
-                'type' => 'JURNAL',
-                'title' => 'Jurnal Kelas Baru Menunggu Konfirmasi',
-                'body' => 'Sekretaris telah mengisi jurnal kelas untuk ' . ($schedule->subject->name ?? 'mapel Anda') . '.',
-            ]);
+        // Notify teacher only if submitted by secretary
+        if ($user->role === 'SEKRETARIS') {
+            $schedule = Schedule::find($request->schedule_id);
+            if ($schedule && $schedule->teacher_id) {
+                Notification::create([
+                    'user_id' => $schedule->teacher_id,
+                    'type' => 'JURNAL',
+                    'title' => 'Jurnal Kelas Baru Menunggu Konfirmasi Guru Pengajar',
+                    'body' => 'Sekretaris telah mengisi jurnal kelas untuk ' . ($schedule->subject->name ?? 'mapel Anda') . '. Silakan verifikasi.',
+                ]);
+            }
         }
 
         AuditLog::create([
             'user_id' => $user->id,
-            'action' => 'Mengisi Jurnal Kelas tanggal ' . $request->date,
+            'action' => 'Mengisi Jurnal Kelas tanggal ' . $date . ($isTeacher ? ' (Terverifikasi Otomatis)' : ''),
             'ip_address' => $request->ip(),
         ]);
 
         return response()->json([
-            'message' => 'Jurnal kelas berhasil dikirim dan menunggu verifikasi pengajar',
+            'message' => $isTeacher ? 'Jurnal kelas berhasil disimpan & diverifikasi resmi' : 'Jurnal kelas berhasil dikirim dan menunggu verifikasi pengajar',
             'journal' => $journal,
         ]);
     }

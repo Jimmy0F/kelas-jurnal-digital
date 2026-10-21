@@ -16,11 +16,17 @@ Route::post('/auth/forgot-password/step-1', [AuthController::class, 'forgotPassw
 Route::post('/auth/forgot-password/step-2', [AuthController::class, 'forgotPasswordStep2']);
 Route::post('/auth/forgot-password/step-3', [AuthController::class, 'forgotPasswordStep3']);
 
-// Public material file route (or auth)
+// Public file routes
 Route::get('/materials/file/{filename}', [JournalController::class, 'downloadMaterialFile']);
+Route::get('/leave-requests/file/{filename}', [LeaveRequestController::class, 'downloadLeaveFile']);
 
 // Protected routes (Sanctum)
 Route::middleware('auth:sanctum')->group(function () {
+    // Profile SMS OTP
+    Route::post('/auth/profile/send-sms-otp', [AuthController::class, 'sendProfileSmsOtp']);
+    Route::post('/auth/profile/verify-sms-otp', [AuthController::class, 'verifyProfileSmsOtp']);
+    Route::post('/auth/profile/password-via-sms', [AuthController::class, 'changePasswordViaSmsOtp']);
+
     // WhatsApp Gateway Management (Proxy ke Fonte lokal port 3000)
     Route::get('/wa-gateway/status', [AuthController::class, 'waStatus']);
     Route::post('/wa-gateway/pairing-code', [AuthController::class, 'waPairingCode']);
