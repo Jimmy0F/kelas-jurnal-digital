@@ -52,7 +52,7 @@ class AuthController extends Controller
     public function quickLogin(Request $request)
     {
         $request->validate([
-            'role' => 'required|in:SISWA,SEKRETARIS,GURU_PENGAJAR,GURU_PEMBIMBING',
+            'role' => 'required|in:SISWA,SEKRETARIS,GURU_PENGAJAR,GURU_PEMBIMBING,SUPERADMIN',
         ]);
 
         $user = User::with('schoolClass')->where('role', $request->role)->where('is_active', true)->first();
@@ -219,8 +219,8 @@ class AuthController extends Controller
 
     public function waStatus(Request $request)
     {
-        if ($request->user()->role !== 'GURU_PEMBIMBING') {
-            return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing yang berhak mengakses WhatsApp Gateway.'], 403);
+        if (!in_array($request->user()->role, ['GURU_PEMBIMBING', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing dan Superadmin yang berhak mengakses WhatsApp Gateway.'], 403);
         }
 
         $baseUrl = rtrim(env('WA_GATEWAY_BASE_URL', 'http://127.0.0.1:3000'), '/');
@@ -254,8 +254,8 @@ class AuthController extends Controller
 
     public function waPairingCode(Request $request)
     {
-        if ($request->user()->role !== 'GURU_PEMBIMBING') {
-            return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing yang berhak mengelola WhatsApp Gateway.'], 403);
+        if (!in_array($request->user()->role, ['GURU_PEMBIMBING', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing dan Superadmin yang berhak mengelola WhatsApp Gateway.'], 403);
         }
         $request->validate(['phone' => 'required|string']);
 
@@ -292,8 +292,8 @@ class AuthController extends Controller
 
     public function waLogout(Request $request)
     {
-        if ($request->user()->role !== 'GURU_PEMBIMBING') {
-            return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing yang berhak memutuskan WhatsApp Gateway.'], 403);
+        if (!in_array($request->user()->role, ['GURU_PEMBIMBING', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing dan Superadmin yang berhak memutuskan WhatsApp Gateway.'], 403);
         }
 
         $baseUrl = rtrim(env('WA_GATEWAY_BASE_URL', 'http://127.0.0.1:3000'), '/');

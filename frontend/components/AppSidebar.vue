@@ -73,6 +73,12 @@ import {
   FileSpreadsheet,
   Users,
   User,
+  Layers,
+  ShieldAlert,
+  Radio,
+  Settings,
+  GraduationCap,
+  MessageSquare,
 } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 import { ROLE_MENUS, ROLE_LABELS } from '~/config/access'
@@ -90,6 +96,9 @@ const userInitial = computed(() => {
 })
 
 const userSubtitle = computed(() => {
+  if (authStore.user?.role === 'SUPERADMIN') {
+    return 'Super Administrator'
+  }
   if (authStore.user?.role === 'SISWA') {
     return authStore.user.school_class?.name ? `Siswa ${authStore.user.school_class.name}` : 'Siswa'
   }
@@ -121,6 +130,12 @@ function resolveIcon(iconName: string) {
     MailCheck,
     FileSpreadsheet,
     Users,
+    Layers,
+    ShieldAlert,
+    Radio,
+    Settings,
+    GraduationCap,
+    MessageSquare,
   }
   return map[iconName] || Home
 }

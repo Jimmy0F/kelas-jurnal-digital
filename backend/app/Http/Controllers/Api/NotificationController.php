@@ -75,16 +75,31 @@ class NotificationController extends Controller
     public function auditLogs(Request $request)
     {
         $user = $request->user();
-        if ($user->role !== 'GURU_PEMBIMBING') {
-            return response()->json(['message' => 'Hanya Guru Pembimbing yang berhak mengakses log audit sistem.'], 403);
+        if (!in_array($user->role, ['GURU_PEMBIMBING', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Hanya Guru Pembimbing dan Superadmin yang berhak mengakses log audit sistem.'], 403);
         }
 
+        $search = $request->input('search');
         $query = AuditLog::with('user')->latest();
-        $logs = $query->take(50)->get()->map(function ($log) {
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('action', 'like', "%{$search}%")
+                  ->orWhere('ip_address', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%")
+                        ->orWhere('role', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $limit = $request->input('limit', 100);
+        $logs = $query->take($limit)->get()->map(function ($log) {
             return [
                 'id' => $log->id,
-                'time' => Carbon::parse($log->created_at)->translatedFormat('H:i') . ' WIB',
+                'time' => Carbon::parse($log->created_at)->translatedFormat('d M Y, H:i') . ' WIB',
                 'user' => $log->user ? $log->user->name . ' (' . $log->user->role . ')' : 'Sistem',
+                'raw_role' => $log->user ? $log->user->role : 'SYSTEM',
                 'action' => $log->action,
                 'ip_address' => $log->ip_address ?? '127.0.0.1',
             ];

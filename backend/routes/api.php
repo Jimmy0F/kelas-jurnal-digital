@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\JournalController;
 use App\Http\Controllers\Api\LeaveRequestController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\MasterDataController;
+use App\Http\Controllers\Api\SystemController;
 
 // Public Auth routes
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -43,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/attendance/today', [AttendanceController::class, 'getToday']);
     Route::post('/attendance/draft', [AttendanceController::class, 'saveDraft']);
     Route::post('/attendance/lock', [AttendanceController::class, 'lockSession']);
+    Route::post('/attendance/force-unlock', [AttendanceController::class, 'forceUnlock']);
     Route::post('/attendance/confirm', [AttendanceController::class, 'confirmSession']);
     Route::get('/attendance/history', [AttendanceController::class, 'studentHistory']);
     Route::get('/attendance/daily-recap', [AttendanceController::class, 'dailyRecap']);
@@ -81,12 +84,43 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/notifications/clear-all', [NotificationController::class, 'clearAll']);
     Route::get('/audit-logs', [NotificationController::class, 'auditLogs']);
 
-    // User Management (Pembimbing)
+    // User Management (Pembimbing & Superadmin)
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/users', [UserController::class, 'store']);
+    Route::post('/users/import', [UserController::class, 'bulkImport']);
+    Route::post('/users/{id}/impersonate', [UserController::class, 'impersonate']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::put('/users/{id}/toggle-active', [UserController::class, 'toggleActive']);
     Route::post('/users/{id}/reset-password', [UserController::class, 'resetPassword']);
     Route::get('/classes', [UserController::class, 'getClasses']);
+
+    // Master Data (Superadmin)
+    Route::get('/master/classes', [MasterDataController::class, 'getClasses']);
+    Route::post('/master/classes', [MasterDataController::class, 'storeClass']);
+    Route::put('/master/classes/{id}', [MasterDataController::class, 'updateClass']);
+    Route::delete('/master/classes/{id}', [MasterDataController::class, 'destroyClass']);
+    Route::post('/master/classes/promote', [MasterDataController::class, 'promoteStudents']);
+
+    Route::get('/master/subjects', [MasterDataController::class, 'getSubjects']);
+    Route::post('/master/subjects', [MasterDataController::class, 'storeSubject']);
+    Route::put('/master/subjects/{id}', [MasterDataController::class, 'updateSubject']);
+    Route::delete('/master/subjects/{id}', [MasterDataController::class, 'destroySubject']);
+
+    Route::get('/master/schedules', [MasterDataController::class, 'getSchedules']);
+    Route::post('/master/schedules', [MasterDataController::class, 'storeSchedule']);
+    Route::put('/master/schedules/{id}', [MasterDataController::class, 'updateSchedule']);
+    Route::delete('/master/schedules/{id}', [MasterDataController::class, 'destroySchedule']);
+
+    Route::get('/master/terms', [MasterDataController::class, 'getTerms']);
+    Route::post('/master/terms', [MasterDataController::class, 'storeTerm']);
+    Route::put('/master/terms/{id}/activate', [MasterDataController::class, 'activateTerm']);
+
+    // System Settings & Management (Superadmin)
+    Route::get('/system/settings', [SystemController::class, 'getSettings']);
+    Route::post('/system/settings', [SystemController::class, 'updateSettings']);
+    Route::get('/system/health', [SystemController::class, 'getHealth']);
+    Route::get('/system/broadcasts', [SystemController::class, 'getBroadcasts']);
+    Route::post('/system/broadcasts', [SystemController::class, 'sendBroadcast']);
+    Route::get('/system/backup', [SystemController::class, 'downloadBackup']);
 });

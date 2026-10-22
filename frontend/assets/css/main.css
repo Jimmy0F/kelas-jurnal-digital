@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+  }
   body {
     @apply bg-[#FAFAFA] text-gray-800 antialiased font-sans;
     -webkit-tap-highlight-color: transparent;

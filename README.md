@@ -47,6 +47,7 @@ Semua akun default menggunakan password: `password123`
 
 | Role / Peran | Email Akun | Hak Akses Utama |
 | :--- | :--- | :--- |
+| **Super Administrator** | `superadmin@sekolah.sch.id` | Kontrol sentral: Master Data (Kelas, Mapel, Jadwal, Semester), Force Unlock presensi, Broadcast WA & In-App, Impersonasi, Audit Log, dan Backup Database. |
 | **Guru Pembimbing** | `siti.aminah@gmail.com` | Menyetujui surat izin siswa, laporan rekap, manajemen akun user, dan manajemen WhatsApp Gateway (Fonte). |
 | **Guru Pengajar** | `budi.santoso@gmail.com` | Mengisi jurnal materi KBM, upload berkas modul PDF/DOCX, verifikasi/pengesahan presensi harian. |
 | **Sekretaris** | `rina.safitri@gmail.com` | Mengisi presensi harian kelas, penguncian sesi kehadiran, mengajukan surat izin sakit. |
@@ -55,6 +56,7 @@ Semua akun default menggunakan password: `password123`
 ---
 
 ## ⚡ Fitur Utama & Kepatuhan Industri
+- **Super Administrator Command Center:** Kontrol sentral akademik, force unlock presensi, broadcast pengumuman massal WhatsApp/In-App, impersonasi akun, dan backup data.
 - **Otentikasi & Keamanan:** Laravel Sanctum Token Auth, proteksi route global Nuxt (`auth.global.ts`), dan RBAC HTTP 403 ketat di backend.
 - **WhatsApp OTP Gateway:** Terintegrasi langsung dengan gateway mandiri untuk alur lupa kata sandi 3 langkah & auto-funnel.
 - **Multitenancy Isolasi Kelas:** Data kehadiran dan jurnal sekretaris/siswa terisolasi ketat sesuai kelas masing-masing.
@@ -65,6 +67,7 @@ Semua akun dev menggunakan kata sandi default: **`password123`** (atau gunakan t
 
 | Peran | Nama | Email | Hak Akses Utama |
 |---|---|---|---|
+| **Super Admin** | Administrator Sistem | `superadmin@sekolah.sch.id` | Executive Command Center, Master Data, Force Unlock Presensi, Broadcast WA/App, Audit Trail & Backup |
 | **Siswa** | Rina Safitri | `siswa@sekolah.sch.id` | Dashboard Siswa, Riwayat Kehadiran (Donut & Weekly Chart), Jurnal Pelajaran & Unduh Materi |
 | **Sekretaris** | Ahmad Fadillah | `sekretaris@sekolah.sch.id` | Input Presensi Harian (Segmented Buttons), Kunci Sesi (Verifikasi PIN 1234), Input Jurnal Kelas Harian, Pengajuan Surat Izin (Tanda Tangan Digital) |
 | **Guru Pengajar** | Budi Santoso, S.Pd | `pengajar@sekolah.sch.id` | Konfirmasi & Verifikasi Jurnal Kelas Masuk, Publikasi Rencana Belajar / Modul / Tugas |

@@ -206,8 +206,8 @@ class JournalController extends Controller
     public function confirmClassJournal(Request $request, $id)
     {
         $user = $request->user();
-        if ($user->role !== 'GURU_PENGAJAR') {
-            return response()->json(['message' => 'Hanya Guru Pengajar yang berhak mengonfirmasi jurnal KBM.'], 403);
+        if (!in_array($user->role, ['GURU_PENGAJAR', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Hanya Guru Pengajar atau Superadmin yang berhak mengonfirmasi jurnal KBM.'], 403);
         }
         $journal = ClassJournal::findOrFail($id);
 

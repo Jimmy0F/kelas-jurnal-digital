@@ -111,8 +111,8 @@ class LeaveRequestController extends Controller
     public function review(Request $request, $id)
     {
         $user = $request->user();
-        if ($user->role !== 'GURU_PEMBIMBING') {
-            return response()->json(['message' => 'Hanya Guru Pembimbing yang berhak memverifikasi surat izin.'], 403);
+        if (!in_array($user->role, ['GURU_PEMBIMBING', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Hanya Guru Pembimbing atau Superadmin yang berhak memverifikasi surat izin.'], 403);
         }
         $request->validate([
             'status' => 'required|in:APPROVED,REJECTED',

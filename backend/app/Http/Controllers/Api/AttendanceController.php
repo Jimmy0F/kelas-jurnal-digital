@@ -111,8 +111,8 @@ class AttendanceController extends Controller
             ]);
         }
 
-        if ($session->status === 'LOCKED' && !in_array($user->role, ['GURU_PEMBIMBING', 'SEKRETARIS'])) {
-            return response()->json(['message' => 'Presensi telah terkunci. Hanya Guru Pembimbing atau Sekretaris yang dapat mengubah.'], 403);
+        if ($session->status === 'LOCKED' && !in_array($user->role, ['GURU_PEMBIMBING', 'SEKRETARIS', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Presensi telah terkunci. Hanya Guru Pembimbing, Sekretaris, atau Superadmin yang dapat mengubah.'], 403);
         }
 
         foreach ($request->records as $r) {
@@ -136,11 +136,53 @@ class AttendanceController extends Controller
         return response()->json(['message' => 'Draft presensi berhasil disimpan']);
     }
 
+    public function forceUnlock(Request $request)
+    {
+        $user = $request->user();
+        if ($user->role !== 'SUPERADMIN') {
+            return response()->json(['message' => 'Hanya Superadmin yang berhak melakukan Force Unlock sesi presensi.'], 403);
+        }
+
+        $request->validate([
+            'class_id' => 'required|exists:classes,id',
+            'date' => 'required|date',
+        ]);
+
+        $session = AttendanceSession::where('class_id', $request->class_id)
+            ->whereDate('date', $request->date)
+            ->first();
+
+        if (!$session) {
+            return response()->json(['message' => 'Sesi presensi tidak ditemukan pada tanggal tersebut.'], 404);
+        }
+
+        $session->update([
+            'status' => 'DRAFT',
+            'verification_status' => 'BELUM_KONFIRMASI',
+            'locked_at' => null,
+            'locked_by_id' => null,
+        ]);
+
+        $schoolClass = SchoolClass::find($request->class_id);
+        $className = $schoolClass->name ?? 'Kelas';
+
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => "Force Unlock presensi kelas {$className} tanggal {$request->date} kembali ke DRAFT",
+            'ip_address' => $request->ip(),
+        ]);
+
+        return response()->json([
+            'message' => "Sesi presensi {$className} tanggal {$request->date} berhasil dibuka kembali (status DRAFT).",
+            'session' => $session,
+        ]);
+    }
+
     public function lockSession(Request $request)
     {
         $user = $request->user();
-        if (!in_array($user->role, ['SEKRETARIS', 'GURU_PEMBIMBING'])) {
-            return response()->json(['message' => 'Hanya Sekretaris Kelas atau Guru Pembimbing yang berhak mengunci presensi.'], 403);
+        if (!in_array($user->role, ['SEKRETARIS', 'GURU_PEMBIMBING', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Hanya Sekretaris Kelas, Guru Pembimbing, atau Superadmin yang berhak mengunci presensi.'], 403);
         }
         $classId = ($user->role === 'SEKRETARIS' || $user->role === 'SISWA') ? ($user->class_id ?: 1) : $request->class_id;
 
