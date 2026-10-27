@@ -21,21 +21,32 @@ export const useAuthStore = defineStore('auth', () => {
   const config = useRuntimeConfig()
   const apiBase = config.public.apiBase || '/api'
 
-  // Initialize from localStorage in client
-  if (import.meta.client) {
-    const savedToken = localStorage.getItem('token')
-    const savedUser = localStorage.getItem('user')
-    if (savedToken) token.value = savedToken
-    if (savedUser) {
-      try {
-        user.value = JSON.parse(savedUser)
-      } catch (e) {
-        console.error(e)
+  function ensureAuth() {
+    if (import.meta.client) {
+      if (!token.value) {
+        const savedToken = localStorage.getItem('token')
+        if (savedToken) token.value = savedToken
+      }
+      if (!user.value) {
+        const savedUser = localStorage.getItem('user')
+        if (savedUser) {
+          try {
+            user.value = JSON.parse(savedUser)
+          } catch (e) {
+            console.error(e)
+          }
+        }
       }
     }
   }
 
-  const isAuthenticated = computed(() => !!token.value && !!user.value)
+  // Initialize from localStorage in client
+  ensureAuth()
+
+  const isAuthenticated = computed(() => {
+    ensureAuth()
+    return !!token.value && !!user.value
+  })
   const role = computed(() => user.value?.role || 'SISWA')
 
   function setAuth(newUser: User, newToken: string) {
@@ -91,6 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
     role,
     isAuthenticated,
     apiBase,
+    ensureAuth,
     setAuth,
     login,
     quickLogin,

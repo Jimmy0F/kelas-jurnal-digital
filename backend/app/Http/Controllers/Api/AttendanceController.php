@@ -12,6 +12,7 @@ use App\Models\SchoolClass;
 use App\Models\Schedule;
 use App\Models\AuditLog;
 use App\Models\Notification;
+use App\Models\LeaveRequest;
 use Carbon\Carbon;
 
 class AttendanceController extends Controller
@@ -27,13 +28,15 @@ class AttendanceController extends Controller
             ->with(['records.student'])
             ->first();
 
+        $latestSession = null;
+
         $students = User::where('class_id', $classId)
             ->whereIn('role', ['SISWA', 'SEKRETARIS'])
             ->orderBy('name')
             ->get();
 
         $recordsMap = [];
-        if ($session) {
+        if ($session && $session->records->count() > 0) {
             foreach ($session->records as $r) {
                 $recordsMap[$r->student_id] = [
                     'status' => $r->status,
@@ -41,6 +44,37 @@ class AttendanceController extends Controller
                     'attachment_path' => $r->attachment_path,
                 ];
             }
+        } else {
+            // Fallback ke sesi presensi paling mutakhir agar tidak kosong dan konsisten dengan Dashboard
+            $latestSession = AttendanceSession::where('class_id', $classId)
+                ->with(['records.student'])
+                ->latest('date')
+                ->first();
+
+            if ($latestSession && $latestSession->records->count() > 0) {
+                foreach ($latestSession->records as $r) {
+                    $recordsMap[$r->student_id] = [
+                        'status' => $r->status,
+                        'note' => $r->note,
+                        'attachment_path' => $r->attachment_path,
+                    ];
+                }
+            }
+        }
+
+        // Otomatis sinkronisasi surat izin siswa yang telah disetujui untuk tanggal ini
+        $leaveRequests = LeaveRequest::where('status', 'APPROVED')
+            ->whereDate('start_date', '<=', $date)
+            ->whereDate('end_date', '>=', $date)
+            ->whereIn('student_id', $students->pluck('id'))
+            ->get();
+
+        foreach ($leaveRequests as $lr) {
+            $recordsMap[$lr->student_id] = [
+                'status' => in_array($lr->type, ['SAKIT', 'IZIN', 'DISPENSASI']) ? $lr->type : 'IZIN',
+                'note' => $lr->reason ?: 'Surat izin disetujui',
+                'attachment_path' => $lr->attachment_path,
+            ];
         }
 
         $list = $students->map(function ($std, $idx) use ($recordsMap) {
@@ -65,12 +99,12 @@ class AttendanceController extends Controller
 
         return response()->json([
             'session' => [
-                'id' => $session->id ?? null,
-                'date' => $date,
-                'status' => $session->status ?? 'DRAFT',
-                'verification_status' => $session->verification_status ?? 'BELUM_KONFIRMASI',
-                'school_hours' => $session->school_hours ?? '07:30 - 15:30',
-                'room' => $session->room ?? 'Lab. 1',
+                'id' => $session->id ?? ($latestSession->id ?? null),
+                'date' => $session ? $session->date : $date,
+                'status' => $session ? $session->status : ($latestSession ? $latestSession->status : 'DRAFT'),
+                'verification_status' => $session ? $session->verification_status : ($latestSession ? $latestSession->verification_status : 'BELUM_KONFIRMASI'),
+                'school_hours' => $session->school_hours ?? ($latestSession->school_hours ?? '07:30 - 15:30'),
+                'room' => $session->room ?? ($latestSession->room ?? 'Lab. 1'),
             ],
             'summary' => [
                 'total' => $total,

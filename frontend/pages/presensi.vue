@@ -30,16 +30,30 @@
         </div>
       </div>
 
-      <!-- Action Bar: Tandai Semua Hadir & Search -->
+      <!-- Action Bar: Tandai Semua Hadir, Refresh & Search -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <button
-          type="button"
-          @click="markAllPresent"
-          class="px-4 py-2.5 bg-primary hover:bg-primary-hover active:scale-[0.99] text-white rounded-xl text-xs font-semibold shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <Check class="w-4 h-4" />
-          <span>Tandai Semua Hadir</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            @click="markAllPresent"
+            :disabled="isLoading || students.length === 0"
+            class="px-4 py-2.5 bg-primary hover:bg-primary-hover active:scale-[0.99] disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-2xs flex items-center justify-center gap-2 cursor-pointer transition"
+          >
+            <Check class="w-4 h-4" />
+            <span>Tandai Semua Hadir</span>
+          </button>
+
+          <button
+            type="button"
+            @click="() => loadAttendance(false)"
+            :disabled="isRefreshing"
+            class="p-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-xl text-xs transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+            title="Segarkan data presensi"
+          >
+            <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin text-primary': isRefreshing }" />
+            <span class="hidden sm:inline text-[11px] font-medium">{{ isRefreshing ? 'Menyinkronkan...' : 'Segarkan' }}</span>
+          </button>
+        </div>
 
         <div class="relative w-full sm:w-72">
           <Search class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -47,7 +61,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Cari nama siswa..."
-            class="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            class="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-2xs"
           />
         </div>
       </div>
@@ -68,7 +82,17 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-50">
-                <tr v-for="student in filteredStudents" :key="student.student_id" class="hover:bg-gray-50/50">
+                <!-- Skeleton rows during initial loading -->
+                <tr v-if="isLoading && students.length === 0" v-for="i in 8" :key="'skel-' + i" class="animate-pulse">
+                  <td class="py-3.5"><div class="h-3 w-4 bg-gray-200 rounded"></div></td>
+                  <td class="py-3.5"><div class="h-3.5 w-36 bg-gray-200 rounded"></div></td>
+                  <td class="py-3.5"><div class="h-3 w-16 bg-gray-200 rounded"></div></td>
+                  <td class="py-3.5"><div class="h-7 w-48 bg-gray-200 rounded-xl mx-auto"></div></td>
+                  <td class="py-3.5"><div class="h-7 w-full bg-gray-100 rounded-lg"></div></td>
+                </tr>
+
+                <!-- Actual Student Rows -->
+                <tr v-else-if="filteredStudents.length > 0" v-for="student in filteredStudents" :key="student.student_id" class="hover:bg-gray-50/50 transition">
                   <td class="py-3 text-gray-400">{{ student.no }}</td>
                   <td class="py-3 font-semibold text-gray-900">{{ student.name }}</td>
                   <td class="py-3 text-gray-500">{{ student.nis }}</td>
@@ -123,8 +147,32 @@
                       v-model="student.note"
                       type="text"
                       placeholder="Catatan..."
-                      class="w-full px-2.5 py-1 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-primary"
+                      class="w-full px-2.5 py-1 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
                     />
+                  </td>
+                </tr>
+
+                <!-- Error or Empty Search -->
+                <tr v-else>
+                  <td colspan="5" class="py-12 text-center text-gray-500">
+                    <div v-if="loadError" class="space-y-3">
+                      <div class="inline-flex p-3 bg-red-50 text-red-600 rounded-full mb-1">
+                        <AlertCircle class="w-6 h-6" />
+                      </div>
+                      <p class="text-xs text-red-600 font-semibold max-w-sm mx-auto">{{ loadError }}</p>
+                      <div>
+                        <button
+                          type="button"
+                          @click="() => loadAttendance(false)"
+                          class="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-semibold rounded-xl shadow-2xs transition cursor-pointer"
+                        >
+                          Coba Lagi
+                        </button>
+                      </div>
+                    </div>
+                    <div v-else class="text-xs text-gray-400 py-6">
+                      Tidak ada siswa yang cocok dengan pencarian "{{ searchQuery }}".
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -245,28 +293,80 @@
 </template>
 
 <script setup lang="ts">
-import { Check, Search, Lock } from 'lucide-vue-next'
+import { Check, Search, Lock, RefreshCw, AlertCircle } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 
+const route = useRoute()
 const authStore = useAuthStore()
-const now = new Date()
-const todayFormatted = new Intl.DateTimeFormat('id-ID', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric'
-}).format(now)
 
-const dateFormatted = ref(todayFormatted)
+function getLocalDateString(d: Date = new Date()) {
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function formatReadableDate(dateStr: string) {
+  try {
+    const [y, m, d] = dateStr.split('-').map(Number)
+    const dateObj = new Date(y, m - 1, d)
+    return new Intl.DateTimeFormat('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(dateObj)
+  } catch {
+    return dateStr
+  }
+}
+
+const targetClassId = computed(() => {
+  return (route.query.class_id as string) || (authStore.user?.class_id ? String(authStore.user.class_id) : '1')
+})
+
+const targetDate = computed(() => {
+  return (route.query.date as string) || getLocalDateString()
+})
+
+const cacheKey = computed(() => `cache_presensi_class_${targetClassId.value}`)
+
+const dateFormatted = ref(formatReadableDate(targetDate.value))
 const searchQuery = ref('')
 const pin = ref('')
 const sessionStatus = ref('DRAFT')
 const verificationStatus = ref('BELUM_KONFIRMASI')
 const isSubmitting = ref(false)
+const isLoading = ref(true)
+const isRefreshing = ref(false)
+const loadError = ref('')
 const toastMessage = ref('')
 const toastError = ref(false)
 
 const students = ref<any[]>([])
+
+// 1. HIDRASI INSTAN DARI CACHE LOKAL (0ms DELAY)
+if (process.client) {
+  try {
+    const cached = localStorage.getItem(`cache_presensi_class_${authStore.user?.class_id || 1}`)
+    if (cached) {
+      const parsed = JSON.parse(cached)
+      if (parsed.students && Array.isArray(parsed.students) && parsed.students.length > 0) {
+        students.value = parsed.students
+        isLoading.value = false
+        if (parsed.session) {
+          sessionStatus.value = parsed.session.status || 'DRAFT'
+          verificationStatus.value = parsed.session.verification_status || 'BELUM_KONFIRMASI'
+          if (parsed.session.date) {
+            dateFormatted.value = formatReadableDate(parsed.session.date)
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Failed to parse presensi cache:', e)
+  }
+}
 
 const summary = computed(() => {
   const total = students.value.length
@@ -280,7 +380,7 @@ const summary = computed(() => {
 const filteredStudents = computed(() => {
   if (!searchQuery.value) return students.value
   const q = searchQuery.value.toLowerCase()
-  return students.value.filter(s => s.name.toLowerCase().includes(q) || s.nis.includes(q))
+  return students.value.filter(s => s.name?.toLowerCase().includes(q) || s.nis?.includes(q))
 })
 
 function setStudentStatus(student: any, status: string) {
@@ -293,27 +393,76 @@ function markAllPresent() {
   })
 }
 
-async function loadAttendance() {
+function getAuthToken(): string | null {
+  if (authStore.token) return authStore.token
+  if (process.client) {
+    const saved = localStorage.getItem('token')
+    if (saved) {
+      authStore.token = saved
+      return saved
+    }
+  }
+  return null
+}
+
+async function loadAttendance(silent = false) {
+  if (!silent && !students.value.length) {
+    isLoading.value = true
+  } else {
+    isRefreshing.value = true
+  }
+  loadError.value = ''
+
+  let token = getAuthToken()
+  if (!token) {
+    // Jeda sejenak mengantisipasi Pinia store hydrating dari localStorage
+    await new Promise(r => setTimeout(r, 100))
+    token = getAuthToken()
+  }
+
+  if (!token) {
+    isLoading.value = false
+    isRefreshing.value = false
+    loadError.value = 'Sesi autentikasi belum siap. Silakan klik tombol Coba Lagi.'
+    return
+  }
+
   try {
     const res = await $fetch<any>(`${authStore.apiBase}/attendance/today`, {
-      headers: { Authorization: `Bearer ${authStore.token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      params: {
+        class_id: targetClassId.value,
+        date: targetDate.value
+      }
     })
-    students.value = res.students || []
+
+    if (res.students && res.students.length > 0) {
+      students.value = res.students
+    }
+
     if (res.session) {
       sessionStatus.value = res.session.status || 'DRAFT'
       verificationStatus.value = res.session.verification_status || 'BELUM_KONFIRMASI'
       if (res.session.date) {
-        const d = new Date(res.session.date)
-        dateFormatted.value = new Intl.DateTimeFormat('id-ID', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        }).format(d)
+        dateFormatted.value = formatReadableDate(res.session.date)
       }
     }
-  } catch (e) {
-    console.error(e)
+
+    // Perbarui cache lokal agar kunjungan berikutnya instan
+    if (process.client && students.value.length > 0) {
+      localStorage.setItem(cacheKey.value, JSON.stringify({
+        students: students.value,
+        session: res.session
+      }))
+    }
+  } catch (e: any) {
+    console.error('Attendance fetch error:', e)
+    if (!students.value.length) {
+      loadError.value = e?.data?.message || 'Gagal memuat data presensi dari server. Periksa koneksi Anda.'
+    }
+  } finally {
+    isLoading.value = false
+    isRefreshing.value = false
   }
 }
 
@@ -321,20 +470,29 @@ async function handleDraft() {
   isSubmitting.value = true
   toastMessage.value = ''
   toastError.value = false
+  const token = getAuthToken()
   try {
     await $fetch(`${authStore.apiBase}/attendance/draft`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${authStore.token}` },
+      headers: { Authorization: `Bearer ${token}` },
       body: {
-        class_id: authStore.user?.class_id || 1,
-        date: new Date().toISOString().split('T')[0],
+        class_id: Number(targetClassId.value) || 1,
+        date: targetDate.value,
         records: students.value.map(s => ({ student_id: s.student_id, status: s.status, note: s.note }))
       }
     })
     toastMessage.value = 'Draft presensi berhasil disimpan!'
+    sessionStatus.value = 'DRAFT'
+    if (process.client) {
+      localStorage.setItem(cacheKey.value, JSON.stringify({
+        students: students.value,
+        session: { status: 'DRAFT', verification_status: verificationStatus.value, date: targetDate.value }
+      }))
+    }
+    loadAttendance(true)
   } catch (e: any) {
     toastError.value = true
-    toastMessage.value = e?.data?.message || 'Gagal menyimpan draft.'
+    toastMessage.value = e?.data?.message || 'Gagal menyimpan draft presensi.'
   } finally {
     isSubmitting.value = false
   }
@@ -349,13 +507,14 @@ async function handleLock() {
   isSubmitting.value = true
   toastMessage.value = ''
   toastError.value = false
+  const token = getAuthToken()
   try {
     await $fetch(`${authStore.apiBase}/attendance/lock`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${authStore.token}` },
+      headers: { Authorization: `Bearer ${token}` },
       body: {
-        class_id: authStore.user?.class_id || 1,
-        date: new Date().toISOString().split('T')[0],
+        class_id: Number(targetClassId.value) || 1,
+        date: targetDate.value,
         pin: pin.value,
         records: students.value.map(s => ({ student_id: s.student_id, status: s.status, note: s.note }))
       }
@@ -364,6 +523,13 @@ async function handleLock() {
     sessionStatus.value = 'LOCKED'
     verificationStatus.value = 'PENDING'
     pin.value = ''
+    if (process.client) {
+      localStorage.setItem(cacheKey.value, JSON.stringify({
+        students: students.value,
+        session: { status: 'LOCKED', verification_status: 'PENDING', date: targetDate.value }
+      }))
+    }
+    loadAttendance(true)
   } catch (e: any) {
     toastError.value = true
     toastMessage.value = e?.data?.message || 'Gagal mengunci presensi. Periksa PIN/password Anda.'
@@ -376,17 +542,19 @@ async function handleConfirmTeacher() {
   isSubmitting.value = true
   toastMessage.value = ''
   toastError.value = false
+  const token = getAuthToken()
   try {
     const res: any = await $fetch(`${authStore.apiBase}/attendance/confirm`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${authStore.token}` },
+      headers: { Authorization: `Bearer ${token}` },
       body: {
-        class_id: authStore.user?.class_id || 1,
-        date: new Date().toISOString().split('T')[0],
+        class_id: Number(targetClassId.value) || 1,
+        date: targetDate.value,
       }
     })
     toastMessage.value = res.message || 'Presensi harian berhasil disahkan!'
     verificationStatus.value = 'TERVERIFIKASI'
+    loadAttendance(true)
   } catch (e: any) {
     toastError.value = true
     toastMessage.value = e?.data?.message || 'Gagal mengesahkan presensi.'

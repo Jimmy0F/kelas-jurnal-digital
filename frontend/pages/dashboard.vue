@@ -597,6 +597,19 @@ const data = ref<any>(null)
 const isLoading = ref(true)
 const selectedMajorFilter = ref('ALL')
 
+// Hidrasi instan dari cache lokal (0ms delay)
+if (process.client) {
+  try {
+    const cached = localStorage.getItem(`cache_dashboard_${authStore.user?.role || 'default'}`)
+    if (cached) {
+      data.value = JSON.parse(cached)
+      isLoading.value = false
+    }
+  } catch (e) {
+    // ignore
+  }
+}
+
 const filteredClassesMonitoring = computed(() => {
   if (!data.value?.classes_monitoring) return []
   if (selectedMajorFilter.value === 'ALL') return data.value.classes_monitoring
@@ -623,14 +636,38 @@ const dashboardSubtitle = computed(() => {
   return ''
 })
 
-async function loadDashboard() {
-  if (!authStore.token) return
-  isLoading.value = true
+function getAuthToken(): string | null {
+  if (authStore.token) return authStore.token
+  if (process.client) {
+    const saved = localStorage.getItem('token')
+    if (saved) {
+      authStore.token = saved
+      return saved
+    }
+  }
+  return null
+}
+
+async function loadDashboard(silent = false) {
+  let token = getAuthToken()
+  if (!token) {
+    await new Promise(r => setTimeout(r, 100))
+    token = getAuthToken()
+  }
+  if (!token) return
+
+  if (!silent && !data.value) {
+    isLoading.value = true
+  }
+
   try {
     const res = await $fetch<any>(`${authStore.apiBase}/dashboard`, {
-      headers: { Authorization: `Bearer ${authStore.token}` }
+      headers: { Authorization: `Bearer ${token}` }
     })
     data.value = res
+    if (process.client) {
+      localStorage.setItem(`cache_dashboard_${authStore.user?.role || 'default'}`, JSON.stringify(res))
+    }
   } catch (e) {
     console.error(e)
   } finally {
