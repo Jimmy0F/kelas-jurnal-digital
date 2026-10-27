@@ -31,8 +31,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // WhatsApp Gateway Management (Proxy ke Fonte lokal port 3000)
     Route::get('/wa-gateway/status', [AuthController::class, 'waStatus']);
+    Route::get('/wa/status', [AuthController::class, 'waStatus']);
     Route::post('/wa-gateway/pairing-code', [AuthController::class, 'waPairingCode']);
+    Route::post('/wa/pairing-code', [AuthController::class, 'waPairingCode']);
     Route::post('/wa-gateway/logout', [AuthController::class, 'waLogout']);
+    Route::post('/wa/logout', [AuthController::class, 'waLogout']);
+    Route::post('/wa-gateway/send-test', [AuthController::class, 'waSendTest']);
+    Route::post('/wa/send-test', [AuthController::class, 'waSendTest']);
 
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::put('/auth/profile', [AuthController::class, 'updateProfile']);

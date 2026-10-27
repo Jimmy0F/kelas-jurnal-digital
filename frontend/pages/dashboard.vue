@@ -17,10 +17,10 @@
       <template v-else-if="authStore.user?.role === 'SISWA'">
         <!-- 4 Stat Cards -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Hadir Bulan Ini" :value="data?.stats?.hadir_hari ?? '0 Hari'" :subtext="data?.stats?.hadir_percent ?? '0% Kehadiran'" color="green" />
-          <StatCard title="Total Sakit" :value="data?.stats?.sakit_hari ?? '0 Hari'" subtext="Dilengkapi Surat Dokter" color="orange" />
-          <StatCard title="Total Izin Disetujui" :value="data?.stats?.izin_hari ?? '0 Hari'" subtext="Sesuai Permohonan Online" color="blue" />
-          <StatCard title="ALFA / Tanpa Kabar" :value="data?.stats?.alpha_hari ?? '0 Hari'" subtext="Catatan Presensi Riil" color="red" />
+          <StatCard title="Hadir" :value="data?.stats?.hadir_hari ?? '0 Hari'" :subtext="data?.stats?.hadir_percent ?? 'Bulan Ini'" color="green" />
+          <StatCard title="Sakit" :value="data?.stats?.sakit_hari ?? '0 Hari'" subtext="Surat Terlampir" color="orange" />
+          <StatCard title="Izin" :value="data?.stats?.izin_hari ?? '0 Hari'" subtext="Telah Disetujui" color="blue" />
+          <StatCard title="Alfa" :value="data?.stats?.alpha_hari ?? '0 Hari'" subtext="Tanpa Keterangan" color="red" />
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -96,10 +96,10 @@
       <template v-else-if="authStore.user?.role === 'SEKRETARIS'">
         <!-- 4 Stat Cards Hari Ini -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Hadir Hari Ini" :value="data?.stats?.hadir_count ?? '0 Siswa'" :subtext="data?.stats?.hadir_percent ?? '0% Tingkat Kehadiran'" color="green" />
-          <StatCard title="Izin Keperluan" :value="data?.stats?.izin_count ?? '0 Siswa'" subtext="Wajib Verifikasi Surat" color="blue" />
-          <StatCard title="Sakit (Disertai Surat)" :value="data?.stats?.sakit_count ?? '0 Siswa'" subtext="Dalam Konfirmasi Wali Kelas" color="orange" />
-          <StatCard title="ALFA (Tanpa Keterangan)" :value="data?.stats?.alpha_count ?? '0 Siswa'" subtext="Tindakan Lebih Lanjut" color="red" />
+          <StatCard title="Hadir" :value="data?.stats?.hadir_count ?? '0 Siswa'" :subtext="data?.stats?.hadir_percent ?? '0% Kehadiran'" color="green" />
+          <StatCard title="Izin" :value="data?.stats?.izin_count ?? '0 Siswa'" subtext="Verifikasi Surat" color="blue" />
+          <StatCard title="Sakit" :value="data?.stats?.sakit_count ?? '0 Siswa'" subtext="Konfirmasi Wali" color="orange" />
+          <StatCard title="Alfa" :value="data?.stats?.alpha_count ?? '0 Siswa'" subtext="Tanpa Keterangan" color="red" />
         </div>
 
         <!-- Presensi Kelas Hari Ini Table -->
@@ -293,9 +293,9 @@
       <template v-else-if="authStore.user?.role === 'GURU_PEMBIMBING'">
         <!-- 3 Stat Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatCard title="Total Kelas Binaan" :value="data?.stats?.total_kelas ?? '0 Kelas'" subtext="Kelas Binaan Terdaftar" color="blue" />
-          <StatCard title="Jurnal Terisi Hari Ini" :value="data?.stats?.jurnal_terisi ?? '0 Kelas'" subtext="Administrasi Terdata" color="green" />
-          <StatCard title="Surat Izin Pending" :value="data?.stats?.surat_izin_pending ?? '0 Permohonan'" subtext="Butuh Persetujuan" color="orange" />
+          <StatCard title="Kelas Binaan" :value="data?.stats?.total_kelas ?? '0 Kelas'" subtext="Semester Ini" color="blue" />
+          <StatCard title="Jurnal Terisi" :value="data?.stats?.jurnal_terisi ?? '0 Kelas'" subtext="Hari Ini" color="green" />
+          <StatCard title="Izin Menunggu" :value="data?.stats?.surat_izin_pending ?? '0 Permohonan'" subtext="Perlu Verifikasi" color="orange" />
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -377,12 +377,12 @@
       <template v-else-if="authStore.user?.role === 'SUPERADMIN'">
         <!-- 6 Academic Stat Cards -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
-          <StatCard title="Guru Pembimbing" :value="data?.stats?.total_guru_pembimbing ?? '0 Walas'" subtext="Wali Kelas Aktif" color="green" />
-          <StatCard title="Guru Pengajar" :value="data?.stats?.total_guru_pengajar ?? '0 Guru'" subtext="Mata Pelajaran" color="blue" />
-          <StatCard title="Total Siswa" :value="data?.stats?.total_siswa ?? '0 Siswa'" subtext="Terdata di Rombel" color="cyan" />
-          <StatCard title="Rombel / Kelas" :value="data?.stats?.total_kelas ?? '0 Rombel'" :subtext="`RPL: ${data?.stats?.majors?.rpl || 0} • DKV: ${data?.stats?.majors?.dkv || 0} • ANI: ${data?.stats?.majors?.animasi || 0}`" color="orange" />
-          <StatCard title="Rata-rata Presensi" :value="data?.stats?.kehadiran_rata_rata ?? '0%'" subtext="Kehadiran Hari Ini" color="emerald" />
-          <StatCard title="Jurnal KBM Terisi" :value="data?.stats?.jurnal_terisi_today ?? '0 Sesi'" subtext="Pertemuan Hari Ini" color="purple" />
+          <StatCard title="Guru Pembimbing" :value="data?.stats?.total_guru_pembimbing ?? '0'" subtext="Wali Kelas Aktif" color="green" />
+          <StatCard title="Guru Pengajar" :value="data?.stats?.total_guru_pengajar ?? '0'" subtext="Pengampu Mapel" color="blue" />
+          <StatCard title="Total Siswa" :value="data?.stats?.total_siswa ?? '0'" subtext="Terdata di Rombel" color="blue" />
+          <StatCard title="Rombel" :value="data?.stats?.total_kelas ?? '0'" :subtext="`RPL: ${data?.stats?.majors?.rpl || 0} • DKV: ${data?.stats?.majors?.dkv || 0} • ANI: ${data?.stats?.majors?.animasi || 0}`" color="orange" />
+          <StatCard title="Rata-rata Presensi" :value="data?.stats?.kehadiran_rata_rata ?? '0%'" subtext="Hari Ini" color="green" />
+          <StatCard title="Jurnal Terisi" :value="data?.stats?.jurnal_terisi_today ?? '0'" subtext="Hari Ini" color="blue" />
         </div>
 
         <!-- 2 Column Master Layout -->

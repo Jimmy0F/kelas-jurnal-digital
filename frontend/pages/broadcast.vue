@@ -359,17 +359,19 @@ async function handleSendTestWa() {
   if (!testPhoneInput.value) return
   sendingTest.value = true
   try {
-    const res: any = await $fetch(`${apiBase}/system/broadcasts`, {
+    const res: any = await $fetch(`${apiBase}/wa-gateway/send-test`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.token}` },
       body: {
-        title: 'Uji Coba Sistem WhatsApp',
+        phone: testPhoneInput.value,
         message: 'Ini adalah pesan uji coba konektivitas sistem WhatsApp Gateway Jurnal Digital. Jika Anda menerima pesan ini, gateway berfungsi normal.',
-        target_role: 'ALL',
-        channel: 'WHATSAPP',
       }
     })
-    successMsg.value = 'Uji coba pesan WhatsApp berhasil diproses.'
+    if (res?.status) {
+      successMsg.value = res.message || 'Uji coba pesan WhatsApp berhasil dikirim.'
+    } else {
+      errorMsg.value = res?.message || 'Gagal mengirim pesan uji coba WhatsApp.'
+    }
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal mengirim pesan uji coba.'
   } finally {

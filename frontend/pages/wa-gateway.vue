@@ -364,11 +364,16 @@ async function checkWaStatus() {
   if (!authStore.token) return
   checkingStatus.value = true
   try {
-    const res = await $fetch<any>(`${authStore.apiBase}/wa/status`, {
+    const res = await $fetch<any>(`${authStore.apiBase}/wa-gateway/status`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
     waStatus.value = res.connected ? 'connected' : 'disconnected'
-    waNumber.value = res.number || ''
+    waNumber.value = res.phone || res.number || (res.user?.id ? res.user.id.split('@')[0] : '')
+    if (res.connected) {
+      pairingCode.value = ''
+    } else if (res.pairing_code) {
+      pairingCode.value = res.pairing_code
+    }
   } catch (e) {
     waStatus.value = 'disconnected'
   } finally {
@@ -384,13 +389,18 @@ async function handleRequestPairing() {
   pairingLoading.value = true
   errorMsg.value = ''
   try {
-    const res = await $fetch<any>(`${authStore.apiBase}/wa/pairing-code`, {
+    const res = await $fetch<any>(`${authStore.apiBase}/wa-gateway/pairing-code`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.token}` },
       body: { phone: pairPhone.value }
     })
-    pairingCode.value = res.pairing_code || res.code || 'ABCD-1234'
-    successMsg.value = 'Kode pairing berhasil digenerate. Masukkan di WhatsApp HP Anda.'
+    const code = res.code || res.pairing_code || res.data?.code
+    if (code) {
+      pairingCode.value = code
+      successMsg.value = 'Kode pairing berhasil digenerate. Masukkan di WhatsApp HP Anda (Perangkat Tertaut).'
+    } else {
+      errorMsg.value = res.message || 'Gagal menghasilkan kode pairing.'
+    }
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal meminta kode pairing.'
   } finally {
@@ -401,12 +411,14 @@ async function handleRequestPairing() {
 async function handleLogoutWa() {
   if (!confirm('Putuskan koneksi bot WhatsApp?')) return
   try {
-    await $fetch(`${authStore.apiBase}/wa/logout`, {
+    await $fetch(`${authStore.apiBase}/wa-gateway/logout`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
     waStatus.value = 'disconnected'
+    pairingCode.value = ''
     successMsg.value = 'Koneksi WhatsApp berhasil diputuskan.'
+    await checkWaStatus()
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal memutuskan WhatsApp.'
   }
@@ -420,18 +432,19 @@ async function handleTestSend() {
   sendingTest.value = true
   errorMsg.value = ''
   try {
-    // We send test using broadcast endpoint or test endpoint
-    const res = await $fetch<any>(`${authStore.apiBase}/system/broadcasts`, {
+    const res = await $fetch<any>(`${authStore.apiBase}/wa-gateway/send-test`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.token}` },
       body: {
-        title: 'Uji Coba Pengiriman Pesan',
+        phone: testNumber.value,
         message: testMessage.value,
-        target_role: 'ALL',
-        channel: 'WHATSAPP',
       }
     })
-    successMsg.value = 'Pesan uji coba berhasil dikirim ke server gateway.'
+    if (res?.status) {
+      successMsg.value = res.message || 'Pesan uji coba berhasil dikirim via WhatsApp!'
+    } else {
+      errorMsg.value = res?.message || 'Gagal mengirim pesan uji coba WhatsApp.'
+    }
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal mengirim pesan uji coba.'
   } finally {

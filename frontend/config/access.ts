@@ -32,6 +32,7 @@ export const ROLE_MENUS: Record<string, MenuItem[]> = {
     { name: 'Manajemen Murid Kelas', to: '/manajemen-murid', icon: 'GraduationCap' },
     { name: 'Laporan Jurnal', to: '/laporan-jurnal', icon: 'FolderOpen' },
     { name: 'Rekap Otomatis', to: '/rekap-semester', icon: 'BarChart2' },
+    { name: 'WhatsApp Gateway', to: '/wa-gateway', icon: 'MessageSquare' },
   ],
   SUPERADMIN: [
     { name: 'Dashboard', to: '/dashboard', icon: 'Home' },

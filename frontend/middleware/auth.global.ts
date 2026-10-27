@@ -39,6 +39,8 @@ const ROLE_ALLOWED_ROUTES: Record<string, string[]> = {
     '/laporan-jurnal',
     '/rekap-semester',
     '/notifikasi',
+    '/wa-gateway',
+    '/broadcast',
   ],
   SUPERADMIN: [
     '/dashboard',
@@ -61,7 +63,7 @@ const ROLE_ALLOWED_ROUTES: Record<string, string[]> = {
 
 export default defineNuxtRouteMiddleware((to, from) => {
   // Public pages
-  if (to.path === '/login' || to.path.startsWith('/forgot-password')) {
+  if (to.path === '/' || to.path === '/login' || to.path.startsWith('/forgot-password')) {
     return
   }
 

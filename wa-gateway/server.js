@@ -91,7 +91,7 @@ async function startBaileys() {
 
       if (connection === 'connecting') {
         if (!deviceState.connected) {
-          deviceState.status = 'connecting';
+          deviceState.status = deviceState.pairingCode ? 'connecting' : 'disconnected';
         }
         console.log('[BAILEYS] Menghubungkan ke server WhatsApp WebSocket...');
       }
@@ -127,7 +127,7 @@ async function startBaileys() {
         // DILARANG menghapus session_auth! Langsung sambungkan kembali.
         if (statusCode === DisconnectReason.restartRequired || statusCode === 515) {
           console.log('[BAILEYS] >>> Handshake Meta restart diperlukan (Error 515). Reconnect instan dengan credentials tersimpan...');
-          deviceState.status = 'connecting';
+          deviceState.status = deviceState.pairingCode ? 'connecting' : 'disconnected';
           isStarting = false;
           await delay(1000);
           startBaileys();
@@ -141,7 +141,7 @@ async function startBaileys() {
           isStarting = false;
         } else {
           console.log(`[BAILEYS] Koneksi terputus (${statusCode}). Mencoba menghubungkan kembali dalam 3 detik...`);
-          deviceState.status = 'connecting';
+          deviceState.status = deviceState.pairingCode ? 'connecting' : 'disconnected';
           setTimeout(() => {
             isStarting = false;
             startBaileys();
@@ -203,15 +203,19 @@ const server = http.createServer((req, res) => {
           status: 'connected',
           connected: true,
           phone: deviceState.phone,
+          number: deviceState.phone,
           user: deviceState.user,
           paired_at: deviceState.pairedAt,
         });
       } else {
+        const isPairing = !!deviceState.pairingCode;
         return sendJson(200, {
-          status: deviceState.status || 'disconnected',
+          status: isPairing ? 'connecting' : 'disconnected',
           connected: false,
           pairing_code: deviceState.pairingCode,
-          message: deviceState.status === 'connecting'
+          phone: deviceState.phone,
+          number: deviceState.phone,
+          message: isPairing
             ? 'Menunggu input kode pairing di aplikasi WhatsApp HP...'
             : 'Perangkat belum tertaut ke WhatsApp',
         });
@@ -322,14 +326,21 @@ const server = http.createServer((req, res) => {
 
     // 4. Send Message / OTP
     if ((pathname === '/api/send' || pathname === '/api/send-message') && req.method === 'POST') {
-      const rawTarget = body.target || body.phone || '';
-      const message = body.message || '';
+      const rawTarget = body.target || body.phone || body.number || body.to || '';
+      const message = body.message || body.text || '';
       const formattedTarget = formatPhoneNumber(rawTarget);
 
       if (!deviceState.connected || !sock) {
         return sendJson(200, {
           status: false,
-          message: 'WhatsApp Gateway belum terhubung ke perangkat mana pun.',
+          message: 'WhatsApp Gateway belum terhubung ke perangkat mana pun. Silakan tautkan WhatsApp terlebih dahulu.',
+        });
+      }
+
+      if (!formattedTarget || formattedTarget.length < 8) {
+        return sendJson(400, {
+          status: false,
+          message: 'Nomor tujuan WhatsApp tidak valid.',
         });
       }
 
@@ -341,6 +352,7 @@ const server = http.createServer((req, res) => {
         return sendJson(200, {
           status: true,
           target: formattedTarget,
+          phone: formattedTarget,
           message: 'Pesan WhatsApp berhasil dikirim.',
         });
       } catch (err) {

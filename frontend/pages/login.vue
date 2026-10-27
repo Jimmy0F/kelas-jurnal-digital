@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-[#FAFAFA] flex flex-col justify-center items-center p-4">
+  <div class="min-h-screen bg-[#FAFAFA] flex flex-col justify-center items-center p-4 py-8">
     <!-- Auth Card -->
-    <div class="w-full max-w-md bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 shadow-sm text-center">
+    <div class="w-full max-w-md bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 shadow-sm text-center my-auto">
       <!-- Logo Icon -->
       <div class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white mx-auto mb-4 shadow-sm">
         <Book class="w-6 h-6" />
@@ -66,15 +66,18 @@
 
         <!-- Forgot Password Link -->
         <div class="text-center pt-2">
-          <NuxtLink to="/forgot-password" class="text-xs text-primary hover:underline font-medium">
+          <NuxtLink
+            to="/forgot-password"
+            class="inline-block text-xs text-primary hover:underline font-semibold py-1.5 px-3 rounded-lg hover:bg-red-50/50 transition cursor-pointer"
+          >
             Lupa kata sandi?
           </NuxtLink>
         </div>
       </form>
 
-      <!-- Quick Login Section (Dev & Demo) -->
+      <!-- Quick Login Section -->
       <div class="mt-8 pt-6 border-t border-gray-100">
-        <p class="text-[10px] uppercase font-bold text-gray-400 mb-3 tracking-wider">Akses Cepat (Demo Role)</p>
+        <p class="text-[10px] uppercase font-bold text-gray-400 mb-3 tracking-wider">Akses Cepat Pengguna</p>
         <div class="grid grid-cols-2 gap-2 text-xs">
           <button
             type="button"
@@ -110,7 +113,7 @@
             class="col-span-2 py-2 px-3 rounded-xl border border-red-200 bg-red-50/80 hover:bg-red-100 text-primary font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
           >
             <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-            <span>Masuk Cepat: Super Administrator (Semua Hak Akses)</span>
+            <span>Super Administrator</span>
           </button>
         </div>
       </div>

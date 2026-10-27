@@ -9,7 +9,7 @@
     <MobileNav />
 
     <!-- Main Content Area -->
-    <div class="flex-1 md:pl-64 pt-16 md:pt-0 pb-20 md:pb-8 flex flex-col">
+    <div class="flex-1 md:pl-64 pb-28 md:pb-8 flex flex-col min-w-0 max-w-full overflow-x-hidden">
       <slot />
     </div>
   </div>
@@ -24,7 +24,7 @@ onMounted(() => {
   // If not logged in and not on login / forgot-password, redirect
   if (!authStore.isAuthenticated) {
     const route = useRoute()
-    if (route.path !== '/login' && !route.path.startsWith('/forgot-password')) {
+    if (route.path !== '/' && route.path !== '/login' && !route.path.startsWith('/forgot-password')) {
       navigateTo('/login')
     }
   }

@@ -325,6 +325,53 @@ class AuthController extends Controller
         }
     }
 
+    public function waSendTest(Request $request)
+    {
+        if (!in_array($request->user()->role, ['GURU_PEMBIMBING', 'SUPERADMIN'])) {
+            return response()->json(['message' => 'Unauthorized: Hanya Guru Pembimbing dan Superadmin yang berhak menguji kirim pesan WhatsApp.'], 403);
+        }
+
+        $request->validate([
+            'phone' => 'nullable|string',
+            'target' => 'nullable|string',
+            'message' => 'required|string',
+        ]);
+
+        $target = $request->phone ?: $request->target;
+        if (!$target) {
+            return response()->json(['status' => false, 'message' => 'Nomor WhatsApp tujuan wajib diisi.'], 422);
+        }
+
+        $baseUrl = rtrim(env('WA_GATEWAY_BASE_URL', 'http://127.0.0.1:3000'), '/');
+        $token = env('WA_GATEWAY_TOKEN', env('FONNTE_TOKEN', 'rapiuw-admin-secret-2026'));
+
+        try {
+            $resp = \Illuminate\Support\Facades\Http::timeout(10)
+                ->withHeaders([
+                    'x-admin-token' => $token,
+                    'Authorization' => "Bearer {$token}",
+                ])
+                ->post("{$baseUrl}/api/send", [
+                    'target' => $target,
+                    'message' => $request->message,
+                ]);
+
+            if ($resp->successful()) {
+                return response()->json($resp->json());
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $resp->json('message') ?? 'Respon gateway tidak berhasil.',
+            ], $resp->status() ?: 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Service WA Gateway offline atau tidak merespon: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function logout(Request $request)
     {
         $user = $request->user();
