@@ -41,7 +41,7 @@ class JournalController extends Controller
                 'schedule_id' => $j->schedule_id,
                 'date' => Carbon::parse($j->date)->format('Y-m-d'),
                 'date_time' => Carbon::parse($j->date)->translatedFormat('d M,') . ' ' . ($j->schedule->start_time ?? '07:30'),
-                'class' => $j->schoolClass->name ?? 'XI RPL 1',
+                'class' => $j->schoolClass->name ?? 'Kelas Industri RPL',
                 'teacher' => $j->confirmedBy->name ?? ($j->schedule->teacher->name ?? 'Budi Santoso, S.Pd'),
                 'subject' => $j->schedule->subject->name ?? 'Pemrograman Web',
                 'topic' => $j->notes ? explode(' | ', $j->activity)[0] : $j->activity,

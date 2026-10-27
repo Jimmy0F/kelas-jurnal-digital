@@ -375,11 +375,11 @@ const form = ref({
 })
 
 const className = computed(() => {
-  return authStore.user?.guided_class?.name || authStore.user?.school_class?.name || 'XI RPL 1'
+  return authStore.user?.guided_class?.name || authStore.user?.school_class?.name || 'Kelas Industri RPL'
 })
 
 const pageTitle = computed(() => {
-  return `Manajemen Murid Kelas ${className.value}`
+  return `Manajemen Murid ${className.value.startsWith('Kelas') ? className.value : 'Kelas ' + className.value}`
 })
 
 const secretary = computed(() => students.value.find(s => s.role === 'SEKRETARIS'))

@@ -461,7 +461,7 @@
           <button @click="showPromoteModal = false" class="text-gray-400 hover:text-gray-600 p-1">✕</button>
         </div>
         <div class="space-y-3.5 text-xs">
-          <p class="text-gray-500">Pindahkan seluruh siswa dari satu rombel ke rombel berikutnya (misal kenaikan kelas XI RPL 1 ke XII RPL 1).</p>
+          <p class="text-gray-500">Pindahkan seluruh siswa dari satu rombel ke rombel berikutnya (misal kenaikan Kelas Industri RPL ke tingkat berikutnya).</p>
           <div>
             <label class="block font-semibold text-gray-700 mb-1">Kelas Asal (Sumber)</label>
             <select v-model="promoteForm.source_class_id" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 outline-none bg-white">

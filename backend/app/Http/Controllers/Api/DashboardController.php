@@ -156,7 +156,7 @@ class DashboardController extends Controller
         $percentage = round(($hadir / $total) * 100);
 
         return response()->json([
-            'class_name' => $user->schoolClass->name ?? 'XI RPL 1',
+            'class_name' => $user->schoolClass->name ?? 'Kelas Industri RPL',
             'session_date' => $session ? Carbon::parse($session->date)->translatedFormat('l, d M Y') : 'Hari ini',
             'stats' => [
                 'hadir_count' => $hadir . ' Siswa',
@@ -301,7 +301,7 @@ class DashboardController extends Controller
             return [
                 'id' => $lv->id,
                 'student_name' => $lv->student->name ?? 'Siswa',
-                'class' => $lv->student->schoolClass->name ?? 'XI RPL 1',
+                'class' => $lv->student->schoolClass->name ?? 'Kelas Industri RPL',
                 'type' => $lv->type,
                 'reason' => $lv->reason,
                 'attachment' => $lv->attachment_path ? basename($lv->attachment_path) : null,

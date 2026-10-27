@@ -40,7 +40,7 @@
             class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
             <option value="Semua">Semua Kelas</option>
-            <option value="1">XI RPL 1 (Kelas Industri)</option>
+            <option value="1">Kelas Industri RPL</option>
             <option value="2">XI RPL 2 (Kelas Industri)</option>
             <option value="3">XII RPL 1 (Kelas Industri)</option>
             <option value="4">XII RPL 2 (Kelas Industri)</option>

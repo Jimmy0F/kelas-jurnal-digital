@@ -47,7 +47,7 @@
               class="px-3.5 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 shadow-2xs flex items-center gap-1.5 whitespace-nowrap"
             >
               <span class="w-2 h-2 rounded-full bg-primary"></span>
-              <span>Kelas: {{ authStore.user?.class_name || (authStore.user?.class_id === 2 ? 'XI RPL 2' : 'XI RPL 1') }}</span>
+              <span>Kelas: {{ authStore.user?.school_class?.name || authStore.user?.class_name || 'Kelas Industri RPL' }}</span>
             </div>
             <select
               v-else
@@ -55,9 +55,10 @@
               @change="fetchRecap"
               class="px-3 py-2 pr-8 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-2xs cursor-pointer whitespace-nowrap"
             >
-              <option value="1">Kelas: XI RPL 1</option>
-              <option value="2">Kelas: XI RPL 2</option>
-              <option value="3">Kelas: XII RPL 1</option>
+              <option value="1">Kelas: Kelas Industri RPL</option>
+              <option value="12">Kelas: XI RPL 1</option>
+              <option value="13">Kelas: XI RPL 2</option>
+              <option value="18">Kelas: XII RPL 1</option>
             </select>
           </div>
         </div>

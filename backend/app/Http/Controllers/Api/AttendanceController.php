@@ -435,7 +435,7 @@ class AttendanceController extends Controller
         if (!$session) {
             return response()->json([
                 'date_formatted' => Carbon::parse($date)->translatedFormat('l, d F Y'),
-                'class_name' => SchoolClass::find($classId)->name ?? 'XI RPL 1',
+                'class_name' => SchoolClass::find($classId)->name ?? 'Kelas Industri RPL',
                 'summary' => [
                     'hadir' => 0,
                     'sakit' => 0,
@@ -472,7 +472,7 @@ class AttendanceController extends Controller
 
         return response()->json([
             'date_formatted' => Carbon::parse($date)->translatedFormat('l, d F Y'),
-            'class_name' => SchoolClass::find($classId)->name ?? 'XI RPL 1',
+            'class_name' => SchoolClass::find($classId)->name ?? 'Kelas Industri RPL',
             'summary' => [
                 'hadir' => $hadir,
                 'sakit' => $sakit,

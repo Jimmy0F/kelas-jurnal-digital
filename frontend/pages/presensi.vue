@@ -2,7 +2,7 @@
   <div class="flex-1 flex flex-col">
     <AppHeader
       title="Input Presensi Kehadiran Kelas"
-      :subtitle="dateFormatted + ' • ' + (authStore.user?.school_class?.name || 'XI RPL 1')"
+      :subtitle="dateFormatted + ' • ' + (authStore.user?.school_class?.name || 'Kelas Industri RPL')"
     />
 
     <main class="px-8 pb-8 space-y-6">

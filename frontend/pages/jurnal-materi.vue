@@ -22,7 +22,7 @@
           <div>
             <span class="text-xs font-semibold text-gray-500">Total Kelas Diampu</span>
             <div class="text-2xl font-bold text-gray-900 mt-1">4 Kelas</div>
-            <p class="text-[11px] text-gray-400 mt-1">XI RPL 1, XI RPL 2, XII RPL 1, XII RPL 2</p>
+            <p class="text-[11px] text-gray-400 mt-1">Kelas Industri RPL, XI RPL 2, XII RPL 1, XII RPL 2</p>
           </div>
           <div class="w-8 h-1 rounded-full bg-blue-500 mt-1"></div>
         </div>
@@ -210,9 +210,9 @@
               >
                 <option value="" disabled>Pilih Mapel & Kelas</option>
                 <option value="1">XI RPL 2 - Basis Data</option>
-                <option value="2">XI RPL 1 - Pemrograman Web</option>
+                <option value="2">Kelas Industri RPL - Pemrograman Web</option>
                 <option value="3">XII RPL 1 - Proyek Perangkat Lunak</option>
-                <option value="4">XI RPL 1 - PKL / Industri</option>
+                <option value="4">Kelas Industri RPL - PKL / Industri</option>
               </select>
             </div>
 
@@ -468,7 +468,7 @@
                 v-model="newScheduleForm.class_id"
                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white cursor-pointer"
               >
-                <option value="1">XI RPL 1</option>
+                <option value="1">Kelas Industri RPL</option>
                 <option value="2">XI RPL 2</option>
                 <option value="3">XII RPL 1</option>
                 <option value="4">XII RPL 2</option>
@@ -717,7 +717,7 @@ const fetchTeacherSchedulesAndJournals = async () => {
           id: sch.id,
           journal_id: match ? match.id : null,
           time: `${sch.start_time?.slice(0, 5) || '07:30'} - ${sch.end_time?.slice(0, 5) || '09:00'}`,
-          subject: `${sch.subject?.name || 'Mata Pelajaran'} (${sch.school_class?.name || 'XI RPL 1'})`,
+          subject: `${sch.subject?.name || 'Mata Pelajaran'} (${sch.school_class?.name || 'Kelas Industri RPL'})`,
           status,
           topic: match ? match.topic : '',
           activity: match ? match.activity : '',
@@ -731,7 +731,7 @@ const fetchTeacherSchedulesAndJournals = async () => {
           id: 1,
           journal_id: null,
           time: '07:30 - 09:00',
-          subject: 'Pemrograman Web (XI RPL 1)',
+          subject: 'Pemrograman Web (Kelas Industri RPL)',
           status: 'Terverifikasi',
           topic: 'Optimasi query dan routing Vue/Nuxt',
           notes: 'Praktikum berjalan lancar di Lab 1'
@@ -740,7 +740,7 @@ const fetchTeacherSchedulesAndJournals = async () => {
           id: 2,
           journal_id: null,
           time: '09:15 - 11:45',
-          subject: 'Basis Data (XI RPL 1)',
+          subject: 'Basis Data (Kelas Industri RPL)',
           status: 'Menunggu Konfirmasi',
           topic: 'Normalisasi Database 3NF dan perbaikan skema relasi',
           notes: 'Menunggu pengesahan dari guru pengajar'
@@ -830,7 +830,7 @@ const submitMaterial = async () => {
     const newMod = {
       id: Date.now(),
       title: materialForm.value.topic || 'Modul Pembelajaran Baru',
-      class: materialForm.value.schedule_id === '2' ? 'XI RPL 1 - Pemrograman Web' : 'XI RPL 2 - Basis Data',
+      class: materialForm.value.schedule_id === '2' ? 'Kelas Industri RPL - Pemrograman Web' : 'XI RPL 2 - Basis Data',
       filename: selectedFile.value?.name || 'materi-belajar.pdf'
     }
     publishedModules.value.unshift(newMod)

@@ -112,7 +112,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // Update advisor and secretary relationships on classes
-        $kelasIndustri = SchoolClass::where('name', 'Kelas Industri')->first();
+        $kelasIndustri = SchoolClass::where('name', 'like', '%Kelas Industri%')->first();
         if ($kelasIndustri) {
             $pembimbingIndustri = User::where('nip_nis', '198706152011012001')->first() // Nurhayatul Fadilla
                 ?? User::where('role', 'GURU_PEMBIMBING')->first();
@@ -206,7 +206,7 @@ class DatabaseSeeder extends Seeder
                     'locked_at' => $today->copy()->setTime(8, 0),
                     'verification_status' => 'TERVERIFIKASI',
                     'school_hours' => '07:30 - 15:30',
-                    'room' => $cls->name === 'Kelas Industri' ? 'Lab RPL Industri' : 'Lab. 1',
+                    'room' => str_contains($cls->name, 'Industri') ? 'Lab RPL Industri' : 'Lab. 1',
                 ]
             );
 
@@ -255,7 +255,7 @@ class DatabaseSeeder extends Seeder
                     'locked_at' => $yesterday->copy()->setTime(8, 5),
                     'verification_status' => 'TERVERIFIKASI',
                     'school_hours' => '07:30 - 15:30',
-                    'room' => $cls->name === 'Kelas Industri' ? 'Lab RPL Industri' : 'Lab. 1',
+                    'room' => str_contains($cls->name, 'Industri') ? 'Lab RPL Industri' : 'Lab. 1',
                 ]
             );
 

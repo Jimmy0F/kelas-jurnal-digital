@@ -104,7 +104,7 @@
         </div>
         <div class="mt-2 flex items-baseline gap-2">
           <span class="text-3xl font-extrabold text-gray-900">{{ students.length }}</span>
-          <span class="text-xs text-gray-500 font-medium">Siswa XI RPL 1</span>
+          <span class="text-xs text-gray-500 font-medium">Siswa Kelas Industri RPL</span>
         </div>
         <p class="text-[11px] text-gray-400 mt-1">Terdaftar resmi di database Dapodik</p>
       </div>
@@ -260,7 +260,7 @@ const exportExcel = () => {
 }
 
 const classOptions = ref<any[]>([
-  { id: 1, name: 'Kelas Industri' },
+  { id: 1, name: 'Kelas Industri RPL' },
   { id: 12, name: 'XI RPL 1' },
   { id: 13, name: 'XI RPL 2' },
   { id: 18, name: 'XII RPL 1' }

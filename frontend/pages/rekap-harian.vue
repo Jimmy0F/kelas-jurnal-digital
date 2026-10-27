@@ -189,7 +189,7 @@ const searchQuery = ref('')
 const loading = ref(false)
 
 const dateFormatted = ref('')
-const className = ref('XI RPL 1')
+const className = ref('Kelas Industri RPL')
 const summary = ref({ hadir: 0, sakit: 0, izin: 0, alpha: 0 })
 const records = ref<any[]>([])
 
@@ -248,7 +248,7 @@ const exportExcel = () => {
 }
 
 const classOptions = ref<any[]>([
-  { id: 1, name: 'Kelas Industri' },
+  { id: 1, name: 'Kelas Industri RPL' },
   { id: 12, name: 'XI RPL 1' },
   { id: 13, name: 'XI RPL 2' },
   { id: 18, name: 'XII RPL 1' }

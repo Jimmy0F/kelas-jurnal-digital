@@ -265,7 +265,7 @@
                   v-model="newUser.class_id"
                   class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white cursor-pointer"
                 >
-                  <option value="1">XI RPL 1 (Rekayasa Perangkat Lunak 1)</option>
+                  <option value="1">Kelas Industri RPL</option>
                   <option value="2">XI RPL 2 (Rekayasa Perangkat Lunak 2)</option>
                   <option value="3">XII RPL 1 (Rekayasa Perangkat Lunak 1)</option>
                   <option value="4">XII RPL 2 (Rekayasa Perangkat Lunak 2)</option>
@@ -477,8 +477,8 @@ const defaultMockUsers = computed(() => [
     class_name: '-'
   },
   { id: 101, name: 'Budi Santoso, S.Pd', nip_nis: '19840212001', role: 'GURU_PENGAJAR', class_name: '-' },
-  { id: 102, name: 'Rina Safitri', nip_nis: '102401', role: 'SEKRETARIS', class_name: 'XI RPL 1' },
-  { id: 103, name: 'Ahmad Fadillah', nip_nis: '102402', role: 'SISWA', class_name: 'XI RPL 1' },
+  { id: 102, name: 'Rina Safitri', nip_nis: '102401', role: 'SEKRETARIS', class_name: 'Kelas Industri RPL' },
+  { id: 103, name: 'Ahmad Fadillah', nip_nis: '102402', role: 'SISWA', class_name: 'Kelas Industri RPL' },
   { id: 104, name: 'Hendra Wijaya', nip_nis: '102403', role: 'SISWA', class_name: 'XI RPL 2' }
 ])
 
@@ -574,7 +574,7 @@ const submitCreateUser = async () => {
       name: newUser.value.name,
       nip_nis: newUser.value.nip_nis || '-',
       role: newUser.value.role,
-      class_name: newUser.value.class_id ? 'XI RPL 1' : '-'
+      class_name: newUser.value.class_id ? 'Kelas Industri RPL' : '-'
     })
 
     newUser.value = {
@@ -593,7 +593,7 @@ const submitCreateUser = async () => {
       name: newUser.value.name,
       nip_nis: newUser.value.nip_nis || '-',
       role: newUser.value.role,
-      class_name: newUser.value.class_id ? 'XI RPL 1' : '-'
+      class_name: newUser.value.class_id ? 'Kelas Industri RPL' : '-'
     })
     newUser.value = {
       name: '',

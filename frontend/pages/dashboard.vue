@@ -106,7 +106,7 @@
         <div class="bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
             <div>
-              <h3 class="text-sm font-bold text-gray-900">Isi Presensi Kelas {{ data?.class_name || 'XI RPL 1' }} Hari ini</h3>
+              <h3 class="text-sm font-bold text-gray-900">Isi Presensi {{ data?.class_name || 'Kelas Industri RPL' }} Hari ini</h3>
               <p class="text-xs text-gray-400 mt-0.5">Tanggal: Hari ini, status: {{ data?.session_status }}</p>
             </div>
             <div class="flex items-center gap-2">
@@ -583,7 +583,7 @@ const dashboardTitle = computed(() => {
   const role = authStore.user?.role
   if (role === 'SUPERADMIN') return 'Dashboard Super Administrator'
   if (role === 'SISWA') return 'Dashboard Presensi Mandiri Siswa'
-  if (role === 'SEKRETARIS') return 'Dashboard Presensi ' + (data.value?.class_name || 'Kelas XI RPL 1')
+  if (role === 'SEKRETARIS') return 'Dashboard Presensi ' + (data.value?.class_name || 'Kelas Industri RPL')
   if (role === 'GURU_PENGAJAR') return 'Dashboard Pengajar'
   if (role === 'GURU_PEMBIMBING') return authStore.user?.name || 'Siti Aminah, M.Pd'
   return 'Dashboard'

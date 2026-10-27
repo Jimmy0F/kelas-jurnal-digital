@@ -61,7 +61,7 @@ class AuthController extends Controller
             $user = User::with('schoolClass')
                 ->where('role', 'SEKRETARIS')
                 ->where('is_active', true)
-                ->whereHas('schoolClass', fn($q) => $q->where('name', 'Kelas Industri'))
+                ->whereHas('schoolClass', fn($q) => $q->where('name', 'like', '%Kelas Industri%'))
                 ->first();
         } elseif ($request->role === 'GURU_PEMBIMBING') {
             $user = User::with('schoolClass')
@@ -69,7 +69,7 @@ class AuthController extends Controller
                 ->where('is_active', true)
                 ->where(function($q) {
                     $q->where('name', 'like', '%Nurhayatul Fadilla%')
-                      ->orWhereHas('schoolClass', fn($sq) => $sq->where('name', 'Kelas Industri'));
+                      ->orWhereHas('schoolClass', fn($sq) => $sq->where('name', 'like', '%Kelas Industri%'));
                 })
                 ->first();
         } elseif ($request->role === 'SISWA') {
@@ -78,7 +78,7 @@ class AuthController extends Controller
                 ->where('is_active', true)
                 ->where(function($q) {
                     $q->where('name', 'like', '%Jimmy%')
-                      ->orWhereHas('schoolClass', fn($sq) => $sq->where('name', 'Kelas Industri'));
+                      ->orWhereHas('schoolClass', fn($sq) => $sq->where('name', 'like', '%Kelas Industri%'));
                 })
                 ->first();
         } elseif ($request->role === 'GURU_PENGAJAR') {
