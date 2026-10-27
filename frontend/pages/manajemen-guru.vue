@@ -138,28 +138,28 @@
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="bg-gray-50/70 border-b border-gray-150 text-gray-500 font-bold uppercase tracking-wider text-[10px]">
-                <th class="py-3 px-4 w-12 text-center">No</th>
-                <th class="py-3 px-4">Nama Guru & NIP</th>
-                <th class="py-3 px-4">Kontak (Email / WA)</th>
-                <th class="py-3 px-4">Tipe Peran & Penugasan</th>
-                <th class="py-3 px-4 text-center">Status</th>
-                <th class="py-3 px-4 text-center">Aksi Cepat</th>
+                <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+                <th class="py-3 px-4 whitespace-nowrap">Nama Guru & NIP</th>
+                <th class="py-3 px-4 whitespace-nowrap">Kontak (Email / WA)</th>
+                <th class="py-3 px-4 whitespace-nowrap">Tipe Peran & Penugasan</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Status</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Aksi Cepat</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
               <tr v-for="(t, idx) in teachers" :key="t.id" class="hover:bg-gray-50/60 transition">
-                <td class="py-3.5 px-4 text-center text-gray-400 font-medium">{{ idx + 1 }}</td>
-                <td class="py-3.5 px-4">
+                <td class="py-3.5 px-4 text-center text-gray-400 font-medium whitespace-nowrap">{{ idx + 1 }}</td>
+                <td class="py-3.5 px-4 whitespace-nowrap">
                   <div class="font-bold text-gray-900 text-sm">{{ t.name }}</div>
                   <div class="text-[11px] text-gray-500 font-mono mt-0.5">NIP: {{ t.nip_nis || '-' }}</div>
                 </td>
-                <td class="py-3.5 px-4">
+                <td class="py-3.5 px-4 whitespace-nowrap">
                   <div class="text-gray-800">{{ t.email }}</div>
                   <div class="text-[11px] text-gray-500 mt-0.5">{{ t.phone ? `WA: ${t.phone}` : 'No HP: -' }}</div>
                 </td>
-                <td class="py-3.5 px-4">
+                <td class="py-3.5 px-4 whitespace-nowrap">
                   <div v-if="t.role === 'GURU_PEMBIMBING'" class="space-y-1">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                       Guru Pembimbing
                     </span>
                     <p class="text-[11px] text-gray-600 font-medium">
@@ -167,7 +167,7 @@
                     </p>
                   </div>
                   <div v-else-if="t.role === 'GURU_PENGAJAR'" class="space-y-1">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
                       Guru Pengajar
                     </span>
                     <p class="text-[11px] text-gray-600 font-medium">
@@ -175,39 +175,38 @@
                     </p>
                   </div>
                   <div v-else-if="t.role === 'SUPERADMIN'" class="space-y-1">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap">
                       Super Administrator
                     </span>
                     <p class="text-[11px] text-gray-500">Pusat Tata Kelola Sistem</p>
                   </div>
                   <div v-else>
-                    <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 text-gray-600">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 text-gray-600 whitespace-nowrap">
                       {{ t.role }}
                     </span>
                   </div>
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3.5 px-4 text-center whitespace-nowrap">
                   <button
                     type="button"
                     @click="handleToggleActive(t)"
-                    class="px-2.5 py-1 rounded-full text-[10px] font-bold transition cursor-pointer"
+                    class="px-2.5 py-1 rounded-full text-[10px] font-bold transition cursor-pointer whitespace-nowrap"
                     :class="t.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-gray-100 text-gray-500 border border-gray-200 hover:bg-gray-200'"
                   >
                     {{ t.is_active ? '● Aktif' : '○ Nonaktif' }}
                   </button>
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3.5 px-4 text-center whitespace-nowrap">
                   <div class="inline-flex items-center gap-1.5">
                     <!-- Impersonate (Login As) -->
                     <button
                       type="button"
                       @click="handleImpersonate(t)"
-                      class="px-2.5 py-1 bg-gray-100 hover:bg-primary hover:text-white text-gray-700 rounded-lg text-[11px] font-semibold transition cursor-pointer"
+                      class="px-2.5 py-1 bg-gray-100 hover:bg-primary hover:text-white text-gray-700 rounded-lg text-[11px] font-semibold transition cursor-pointer whitespace-nowrap"
                       title="Masuk sebagai akun guru ini (Impersonasi)"
                     >
                       Login As
                     </button>
-
                     <!-- Edit -->
                     <button
                       type="button"

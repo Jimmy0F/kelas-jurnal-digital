@@ -122,7 +122,7 @@
             <MonthYearPicker v-model="selectedMonth" @change="fetchHistory" />
             <select
               v-model="statusFilter"
-              class="px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-700 font-medium bg-white focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red shadow-2xs cursor-pointer"
+              class="px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-700 font-medium bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-2xs cursor-pointer whitespace-nowrap"
             >
               <option value="ALL">Semua Status</option>
               <option value="HADIR">Hadir</option>
@@ -134,28 +134,28 @@
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
+          <table class="w-full text-left text-xs min-w-[650px]">
             <thead>
               <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100">
-                <th class="pb-3 font-semibold">Hari / Tanggal</th>
-                <th class="pb-3 font-semibold">Ruangan</th>
-                <th class="pb-3 font-semibold">Mata Pelajaran</th>
-                <th class="pb-3 font-semibold">Jam Sekolah</th>
-                <th class="pb-3 font-semibold">Status</th>
-                <th class="pb-3 font-semibold">Keterangan</th>
+                <th class="pb-3 font-semibold whitespace-nowrap">Hari / Tanggal</th>
+                <th class="pb-3 font-semibold whitespace-nowrap">Ruangan</th>
+                <th class="pb-3 font-semibold whitespace-nowrap">Mata Pelajaran</th>
+                <th class="pb-3 font-semibold whitespace-nowrap">Jam Sekolah</th>
+                <th class="pb-3 font-semibold whitespace-nowrap">Status</th>
+                <th class="pb-3 font-semibold whitespace-nowrap">Keterangan</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
               <tr v-for="row in filteredDetails" :key="row.id" class="hover:bg-gray-50/50">
-                <td class="py-3 font-bold text-gray-900">{{ row.day_date }}</td>
-                <td class="py-3">
-                  <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <td class="py-3 font-bold text-gray-900 whitespace-nowrap">{{ row.day_date }}</td>
+                <td class="py-3 whitespace-nowrap">
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                     {{ row.room }}
                   </span>
                 </td>
-                <td class="py-3 text-gray-700 font-medium">{{ row.subject }}</td>
-                <td class="py-3 text-gray-500">{{ row.hours }}</td>
-                <td class="py-3"><StatusBadge :status="row.status" /></td>
+                <td class="py-3 text-gray-700 font-medium whitespace-nowrap">{{ row.subject }}</td>
+                <td class="py-3 text-gray-500 whitespace-nowrap">{{ row.hours }}</td>
+                <td class="py-3 whitespace-nowrap"><StatusBadge :status="row.status" /></td>
                 <td class="py-3 text-gray-500">{{ row.note }}</td>
               </tr>
               <tr v-if="filteredDetails.length === 0">

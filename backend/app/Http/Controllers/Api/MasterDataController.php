@@ -26,14 +26,11 @@ class MasterDataController extends Controller
 
     public function getClasses(Request $request)
     {
-        $major = $request->input('major');
+        // Sistem dikhususkan secara eksklusif untuk Kelas Industri RPL
         $query = SchoolClass::with(['advisor', 'secretary'])
             ->withCount(['students', 'schedules'])
+            ->where('major', 'RPL')
             ->orderBy('name');
-
-        if ($major && $major !== 'ALL') {
-            $query->where('major', $major);
-        }
 
         return response()->json($query->get());
     }
@@ -44,14 +41,14 @@ class MasterDataController extends Controller
 
         $request->validate([
             'name' => 'required|string|unique:classes,name',
-            'major' => 'nullable|string|in:RPL,DKV,Animasi',
+            'major' => 'nullable|string|in:RPL',
             'advisor_id' => 'nullable|exists:users,id',
             'secretary_id' => 'nullable|exists:users,id',
         ]);
 
         $cls = SchoolClass::create([
             'name' => $request->name,
-            'major' => $request->major ?: 'RPL',
+            'major' => 'RPL',
             'advisor_id' => $request->advisor_id,
             'secretary_id' => $request->secretary_id,
         ]);
@@ -86,12 +83,17 @@ class MasterDataController extends Controller
 
         $request->validate([
             'name' => 'required|string|unique:classes,name,' . $cls->id,
-            'major' => 'nullable|string|in:RPL,DKV,Animasi',
+            'major' => 'nullable|string|in:RPL',
             'advisor_id' => 'nullable|exists:users,id',
             'secretary_id' => 'nullable|exists:users,id',
         ]);
 
-        $cls->update($request->only(['name', 'major', 'advisor_id', 'secretary_id']));
+        $cls->update([
+            'name' => $request->name,
+            'major' => 'RPL',
+            'advisor_id' => $request->advisor_id,
+            'secretary_id' => $request->secretary_id,
+        ]);
 
         if ($cls->advisor_id) {
             User::where('id', $cls->advisor_id)->update(['class_id' => $cls->id]);
@@ -103,7 +105,7 @@ class MasterDataController extends Controller
 
         AuditLog::create([
             'user_id' => $request->user()->id,
-            'action' => "Memperbarui data kelas: {$cls->name} ({$cls->major})",
+            'action' => "Memperbarui data kelas: {$cls->name} (RPL)",
             'ip_address' => $request->ip(),
         ]);
 
@@ -172,14 +174,11 @@ class MasterDataController extends Controller
 
     public function getSubjects(Request $request)
     {
-        $major = $request->input('major');
-        $query = Subject::with(['teacher'])->withCount('schedules')->orderBy('name');
-
-        if ($major && $major !== 'ALL') {
-            $query->where(function ($q) use ($major) {
-                $q->where('major', $major)->orWhere('major', 'UMUM');
-            });
-        }
+        // Khusus mata pelajaran kejuruan RPL dan muatan umum
+        $query = Subject::with(['teacher'])
+            ->withCount('schedules')
+            ->whereIn('major', ['RPL', 'UMUM'])
+            ->orderBy('name');
 
         return response()->json($query->get());
     }
@@ -191,7 +190,7 @@ class MasterDataController extends Controller
         $request->validate([
             'name' => 'required|string',
             'code' => 'nullable|string|max:20',
-            'major' => 'nullable|string',
+            'major' => 'nullable|string|in:RPL,UMUM',
             'teacher_id' => 'nullable|exists:users,id',
         ]);
 

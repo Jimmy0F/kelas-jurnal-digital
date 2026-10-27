@@ -134,30 +134,30 @@
             </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+          <div class="overflow-x-auto -mx-2 sm:mx-0">
+            <table class="w-full text-left text-xs min-w-[550px]">
               <thead>
-                <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100">
-                  <th class="pb-3 font-semibold">No</th>
-                  <th class="pb-3 font-semibold">Nama Siswa</th>
-                  <th class="pb-3 font-semibold">NIS</th>
-                  <th class="pb-3 font-semibold">Status Presensi</th>
-                  <th class="pb-3 font-semibold">Keterangan</th>
-                  <th class="pb-3 font-semibold text-right">TTD Digital</th>
+                <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100 font-bold">
+                  <th class="pb-3 px-2 font-semibold whitespace-nowrap w-10">No</th>
+                  <th class="pb-3 px-2 font-semibold whitespace-nowrap">Nama Siswa</th>
+                  <th class="pb-3 px-2 font-semibold whitespace-nowrap">NIS</th>
+                  <th class="pb-3 px-2 font-semibold whitespace-nowrap text-center">Status Presensi</th>
+                  <th class="pb-3 px-2 font-semibold whitespace-nowrap">Keterangan</th>
+                  <th class="pb-3 px-2 font-semibold whitespace-nowrap text-right">TTD Digital</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-50">
-                <tr v-for="item in data?.attendance_list || []" :key="item.student_id" class="hover:bg-gray-50/50">
-                  <td class="py-3 text-gray-400">{{ item.no }}</td>
-                  <td class="py-3 font-semibold text-gray-900">{{ item.name }}</td>
-                  <td class="py-3 text-gray-500">{{ item.nis }}</td>
-                  <td class="py-3"><StatusBadge :status="item.status" /></td>
-                  <td class="py-3 text-gray-500">{{ item.note || '-' }}</td>
-                  <td class="py-3 text-right">
-                    <span v-if="item.verified" class="inline-flex items-center text-emerald-600 font-semibold gap-1 text-[11px]">
+                <tr v-for="item in data?.attendance_list || []" :key="item.student_id" class="hover:bg-gray-50/50 transition">
+                  <td class="py-3 px-2 text-gray-400 whitespace-nowrap">{{ item.no }}</td>
+                  <td class="py-3 px-2 font-semibold text-gray-900 whitespace-nowrap">{{ item.name }}</td>
+                  <td class="py-3 px-2 text-gray-500 whitespace-nowrap">{{ item.nis }}</td>
+                  <td class="py-3 px-2 text-center whitespace-nowrap"><StatusBadge :status="item.status" /></td>
+                  <td class="py-3 px-2 text-gray-500 max-w-xs truncate" :title="item.note || '-'">{{ item.note || '-' }}</td>
+                  <td class="py-3 px-2 text-right whitespace-nowrap">
+                    <span v-if="item.verified" class="inline-flex items-center text-emerald-600 font-semibold gap-1 text-[11px] whitespace-nowrap">
                       <CheckCircle2 class="w-3.5 h-3.5" /> Terverifikasi
                     </span>
-                    <span v-else class="text-gray-400 text-[11px]">-</span>
+                    <span v-else class="text-gray-400 text-[11px] whitespace-nowrap">-</span>
                   </td>
                 </tr>
               </tbody>
@@ -380,7 +380,7 @@
           <StatCard title="Guru Pembimbing" :value="data?.stats?.total_guru_pembimbing ?? '0'" subtext="Wali Kelas Aktif" color="green" />
           <StatCard title="Guru Pengajar" :value="data?.stats?.total_guru_pengajar ?? '0'" subtext="Pengampu Mapel" color="blue" />
           <StatCard title="Total Siswa" :value="data?.stats?.total_siswa ?? '0'" subtext="Terdata di Rombel" color="blue" />
-          <StatCard title="Rombel" :value="data?.stats?.total_kelas ?? '0'" :subtext="`RPL: ${data?.stats?.majors?.rpl || 0} • DKV: ${data?.stats?.majors?.dkv || 0} • ANI: ${data?.stats?.majors?.animasi || 0}`" color="orange" />
+          <StatCard title="Rombel" :value="data?.stats?.total_kelas ?? '0'" subtext="Kelas Industri RPL" color="orange" />
           <StatCard title="Rata-rata Presensi" :value="data?.stats?.kehadiran_rata_rata ?? '0%'" subtext="Hari Ini" color="green" />
           <StatCard title="Jurnal Terisi" :value="data?.stats?.jurnal_terisi_today ?? '0'" subtext="Hari Ini" color="blue" />
         </div>
@@ -392,109 +392,72 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 class="text-sm font-bold text-gray-900">Pemantauan Presensi & Jurnal Kelas Hari Ini</h3>
-                <p class="text-xs text-gray-400 mt-0.5">Pantau status pengisian presensi dan jurnal per rombongan belajar</p>
+                <p class="text-xs text-gray-400 mt-0.5">Pantau status pengisian presensi dan jurnal rombongan belajar kelas industri RPL</p>
               </div>
 
-              <!-- Filter Jurusan -->
-              <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-xl text-xs select-none flex-shrink-0">
-                <button
-                  type="button"
-                  @click="selectedMajorFilter = 'ALL'"
-                  class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                  :class="selectedMajorFilter === 'ALL' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500 hover:text-gray-900'"
-                >
-                  Semua
-                </button>
-                <button
-                  type="button"
-                  @click="selectedMajorFilter = 'RPL'"
-                  class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                  :class="selectedMajorFilter === 'RPL' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-500 hover:text-red-600'"
-                >
-                  RPL
-                </button>
-                <button
-                  type="button"
-                  @click="selectedMajorFilter = 'DKV'"
-                  class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                  :class="selectedMajorFilter === 'DKV' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-gray-500 hover:text-emerald-600'"
-                >
-                  DKV
-                </button>
-                <button
-                  type="button"
-                  @click="selectedMajorFilter = 'Animasi'"
-                  class="w-18 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                  :class="selectedMajorFilter === 'Animasi' ? 'bg-amber-600 text-white shadow-2xs' : 'text-gray-500 hover:text-amber-600'"
-                >
-                  Animasi
-                </button>
+              <!-- Badge Kelas Industri RPL -->
+              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-bold shrink-0 self-start sm:self-center">
+                <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                <span>Kelas Industri RPL</span>
               </div>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border-collapse">
+            <div class="overflow-x-auto -mx-2 sm:mx-0">
+              <table class="w-full text-left text-xs border-collapse min-w-[620px]">
                 <thead>
                   <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100 font-bold bg-gray-50/50">
-                    <th class="py-2.5 px-3">Rombel</th>
-                    <th class="py-2.5 px-3">Jurusan</th>
-                    <th class="py-2.5 px-3">Wali / Pembimbing</th>
-                    <th class="py-2.5 px-3">Sekretaris</th>
-                    <th class="py-2.5 px-3 text-center">Status Sesi</th>
-                    <th class="py-2.5 px-3 text-right">Kehadiran</th>
-                    <th class="py-2.5 px-3">Jurnal KBM</th>
-                    <th class="py-2.5 px-3 text-center">Aksi</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap">Rombel</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap">Jurusan</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap">Wali / Pembimbing</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap">Sekretaris</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap text-center">Status Sesi</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap text-right">Kehadiran</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap text-center">Jurnal KBM</th>
+                    <th class="py-2.5 px-3 whitespace-nowrap text-center">Aksi</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                   <tr v-for="cls in filteredClassesMonitoring" :key="cls.id" class="hover:bg-gray-50/70 transition">
-                    <td class="py-3 px-3 font-bold text-gray-900">{{ cls.class_name }}</td>
-                    <td class="py-3 px-3">
-                      <span
-                        class="px-2 py-0.5 rounded-md text-[10px] font-bold"
-                        :class="[
-                          cls.major === 'RPL' ? 'bg-red-50 text-red-700 border border-red-200' :
-                          cls.major === 'DKV' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                          'bg-amber-50 text-amber-700 border border-amber-200'
-                        ]"
-                      >
-                        {{ cls.major }}
+                    <td class="py-3 px-3 font-bold text-gray-900 whitespace-nowrap">{{ cls.class_name }}</td>
+                    <td class="py-3 px-3 whitespace-nowrap">
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 whitespace-nowrap">
+                        RPL
                       </span>
                     </td>
-                    <td class="py-3 px-3 text-gray-600 truncate max-w-[130px]" :title="cls.advisor_name">{{ cls.advisor_name }}</td>
-                    <td class="py-3 px-3 text-gray-600 truncate max-w-[110px]" :title="cls.secretary_name">{{ cls.secretary_name }}</td>
-                    <td class="py-3 px-3 text-center">
+                    <td class="py-3 px-3 text-gray-600 truncate max-w-[130px] whitespace-nowrap" :title="cls.advisor_name">{{ cls.advisor_name }}</td>
+                    <td class="py-3 px-3 text-gray-600 truncate max-w-[110px] whitespace-nowrap" :title="cls.secretary_name">{{ cls.secretary_name }}</td>
+                    <td class="py-3 px-3 text-center whitespace-nowrap">
                       <span
                         v-if="cls.session_status === 'LOCKED'"
-                        class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200"
+                        class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 whitespace-nowrap inline-flex items-center gap-1"
                       >
                         🔒 Terkunci
                       </span>
                       <span
                         v-else-if="cls.session_status === 'DRAFT'"
-                        class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200"
+                        class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap inline-flex items-center gap-1"
                       >
                         📝 Draft
                       </span>
                       <span
                         v-else
-                        class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-50 text-gray-500 border border-gray-200"
+                        class="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-50 text-gray-500 border border-gray-200 whitespace-nowrap inline-flex items-center gap-1"
                       >
                         ○ Belum Buka
                       </span>
                     </td>
-                    <td class="py-3 px-3 text-right font-bold text-gray-800">
+                    <td class="py-3 px-3 text-right font-bold text-gray-800 whitespace-nowrap">
                       {{ cls.attendance_percent }}%
-                      <span class="block text-[10px] font-normal text-gray-400">{{ cls.present_ratio }}</span>
+                      <span class="block text-[10px] font-normal text-gray-400 whitespace-nowrap">{{ cls.present_ratio }}</span>
                     </td>
-                    <td class="py-3 px-3">
+                    <td class="py-3 px-3 text-center whitespace-nowrap">
                       <StatusBadge :status="cls.journal_status" />
                     </td>
-                    <td class="py-3 px-3 text-center">
+                    <td class="py-3 px-3 text-center whitespace-nowrap">
                       <button
                         v-if="cls.session_status === 'LOCKED'"
                         @click="handleForceUnlock(cls.id)"
-                        class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-[10px] font-bold transition cursor-pointer"
+                        class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-[10px] font-bold transition cursor-pointer whitespace-nowrap inline-flex items-center gap-1"
                         title="Buka kunci sesi presensi agar dapat diperbaiki"
                       >
                         Buka Kunci

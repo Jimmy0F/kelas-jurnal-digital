@@ -268,7 +268,7 @@ class DashboardController extends Controller
 
     private function pembimbingDashboard(User $user, $today)
     {
-        $allClasses = SchoolClass::with(['secretary'])->get();
+        $allClasses = SchoolClass::with(['secretary'])->where('major', 'RPL')->get();
         $pendingLeaves = LeaveRequest::with(['student.schoolClass'])
             ->where('status', 'PENDING')
             ->latest()
@@ -322,15 +322,16 @@ class DashboardController extends Controller
 
     private function superadminDashboard(User $user, $today)
     {
-        $allClasses = SchoolClass::with(['advisor', 'secretary'])->get();
-        $totalStudents = User::whereIn('role', ['SISWA', 'SEKRETARIS'])->count();
+        // Khusus monitoring kelas industri RPL
+        $allClasses = SchoolClass::with(['advisor', 'secretary'])->where('major', 'RPL')->get();
+        $totalStudents = User::whereHas('schoolClass', function ($q) {
+            $q->where('major', 'RPL');
+        })->whereIn('role', ['SISWA', 'SEKRETARIS'])->count() ?: User::whereIn('role', ['SISWA', 'SEKRETARIS'])->count();
         $totalPembimbing = User::where('role', 'GURU_PEMBIMBING')->count();
         $totalPengajar = User::where('role', 'GURU_PENGAJAR')->count();
         $totalClasses = $allClasses->count();
 
-        $classesRplCount = $allClasses->where('major', 'RPL')->count();
-        $classesDkvCount = $allClasses->where('major', 'DKV')->count();
-        $classesAnimCount = $allClasses->where('major', 'Animasi')->count();
+        $classesRplCount = $allClasses->count();
 
         // Calculate average attendance today
         $sessionsToday = AttendanceSession::whereDate('date', $today)->with('records')->get();
@@ -407,8 +408,8 @@ class DashboardController extends Controller
                 'surat_izin_pending' => $pendingLeavesCount . ' Menunggu',
                 'majors' => [
                     'rpl' => $classesRplCount,
-                    'dkv' => $classesDkvCount,
-                    'animasi' => $classesAnimCount,
+                    'dkv' => 0,
+                    'animasi' => 0,
                 ],
             ],
             'classes_monitoring' => $classesMonitoring,

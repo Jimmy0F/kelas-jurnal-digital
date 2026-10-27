@@ -130,39 +130,39 @@
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="bg-gray-50/70 border-b border-gray-150 text-gray-500 font-bold uppercase tracking-wider text-[10px]">
-                <th class="py-3 px-4 w-12 text-center">No</th>
-                <th class="py-3 px-4">Nama Siswa & NISN</th>
-                <th class="py-3 px-4">Kontak (Email / No WA)</th>
-                <th class="py-3 px-4 text-center">Peran Kelas</th>
-                <th class="py-3 px-4 text-center">Status Akun</th>
-                <th class="py-3 px-4 text-center">Aksi Cepat</th>
+                <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+                <th class="py-3 px-4 whitespace-nowrap">Nama Siswa & NISN</th>
+                <th class="py-3 px-4 whitespace-nowrap">Kontak (Email / No WA)</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Peran Kelas</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Status Akun</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Aksi Cepat</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
               <tr v-for="(s, idx) in filteredStudents" :key="s.id" class="hover:bg-gray-50/60 transition">
-                <td class="py-3.5 px-4 text-center text-gray-400 font-medium">{{ idx + 1 }}</td>
-                <td class="py-3.5 px-4">
+                <td class="py-3.5 px-4 text-center text-gray-400 font-medium whitespace-nowrap">{{ idx + 1 }}</td>
+                <td class="py-3.5 px-4 whitespace-nowrap">
                   <div class="font-bold text-gray-900 text-sm flex items-center gap-2">
                     <span>{{ s.name }}</span>
                     <span
                       v-if="s.role === 'SEKRETARIS'"
-                      class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200"
+                      class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap"
                     >
                       Sekretaris
                     </span>
                   </div>
                   <div class="text-[11px] text-gray-500 font-mono mt-0.5">NISN: {{ s.nip_nis || '-' }}</div>
                 </td>
-                <td class="py-3.5 px-4">
+                <td class="py-3.5 px-4 whitespace-nowrap">
                   <div class="text-gray-800">{{ s.email }}</div>
                   <div class="text-[11px] text-gray-500 mt-0.5">{{ s.phone ? `WA: ${s.phone}` : 'No HP: -' }}</div>
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3.5 px-4 text-center whitespace-nowrap">
                   <!-- Toggle Role: Siswa vs Sekretaris -->
                   <button
                     type="button"
                     @click="handleToggleRole(s)"
-                    class="px-3 py-1 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
+                    class="px-3 py-1 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 mx-auto cursor-pointer whitespace-nowrap"
                     :class="s.role === 'SEKRETARIS' ? 'bg-purple-100 hover:bg-purple-200 text-purple-800' : 'bg-gray-100 hover:bg-purple-50 hover:text-purple-700 text-gray-600'"
                     :title="s.role === 'SEKRETARIS' ? 'Klik untuk ubah menjadi Siswa Biasa' : 'Klik untuk jadikan Sekretaris Kelas'"
                   >
@@ -170,17 +170,17 @@
                     <span>{{ s.role === 'SEKRETARIS' ? 'Sekretaris' : 'Jadikan Sekretaris' }}</span>
                   </button>
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3.5 px-4 text-center whitespace-nowrap">
                   <button
                     type="button"
                     @click="handleToggleActive(s)"
-                    class="px-2.5 py-1 rounded-full text-[10px] font-bold transition cursor-pointer"
+                    class="px-2.5 py-1 rounded-full text-[10px] font-bold transition cursor-pointer whitespace-nowrap"
                     :class="s.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-gray-100 text-gray-500 border border-gray-200 hover:bg-gray-200'"
                   >
                     {{ s.is_active ? '● Aktif' : '○ Nonaktif' }}
                   </button>
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3.5 px-4 text-center whitespace-nowrap">
                   <div class="inline-flex items-center gap-1.5">
                     <!-- Edit -->
                     <button

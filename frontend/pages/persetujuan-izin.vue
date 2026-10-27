@@ -82,7 +82,7 @@
           <!-- Header Detail -->
           <div class="flex items-center justify-between border-b border-gray-100 pb-4">
             <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-brand-red bg-blue-50 px-2 py-0.5 rounded">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded">
                 Detail Permohonan Izin
               </span>
               <h2 class="text-lg font-bold text-gray-900 mt-1">{{ selectedItem.student_name }}</h2>
@@ -107,8 +107,8 @@
             </div>
             <div>
               <span class="text-gray-400 font-medium">Status Verifikasi:</span>
-              <p class="font-semibold text-gray-700 mt-0.5">
-                {{ selectedItem.status === 'PENDING' ? 'Menunggu Konfirmasi Guru Pembimbing' : (selectedItem.status === 'APPROVED' ? 'Disetujui' : (selectedItem.status === 'REJECTED' ? 'Ditolak' : selectedItem.status)) }}
+              <p class="font-semibold text-gray-700 mt-0.5 whitespace-nowrap">
+                {{ selectedItem.status === 'PENDING' ? 'Menunggu Konfirmasi' : (selectedItem.status === 'APPROVED' ? 'Disetujui' : (selectedItem.status === 'REJECTED' ? 'Ditolak' : selectedItem.status)) }}
               </p>
             </div>
           </div>
@@ -159,16 +159,16 @@
                 v-model="reviewNote"
                 rows="2"
                 placeholder="Tuliskan catatan verifikasi atau alasan bila menolak..."
-                class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red resize-none"
+                class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
               ></textarea>
             </div>
 
             <!-- Tombol Aksi -->
-            <div class="flex items-center justify-end gap-3 pt-2">
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2.5 pt-2">
               <button
                 @click="submitReview('REJECTED')"
                 :disabled="processingReview"
-                class="px-4 py-2.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 text-xs font-semibold transition flex items-center gap-1.5 disabled:opacity-50"
+                class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-semibold transition flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap cursor-pointer"
               >
                 <XIcon class="w-4 h-4" />
                 <span>Tolak Izin</span>
@@ -176,7 +176,7 @@
               <button
                 @click="submitReview('APPROVED')"
                 :disabled="processingReview"
-                class="px-5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-xs disabled:opacity-50 whitespace-nowrap cursor-pointer"
               >
                 <CheckIcon class="w-4 h-4" />
                 <span>Setujui Permohonan</span>

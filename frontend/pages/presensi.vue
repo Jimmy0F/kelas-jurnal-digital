@@ -74,36 +74,36 @@
             <table class="w-full text-left text-xs">
               <thead>
                 <tr class="text-gray-400 uppercase text-[10px] border-b border-gray-100">
-                  <th class="pb-3 font-semibold w-10">No</th>
-                  <th class="pb-3 font-semibold">Nama Siswa</th>
-                  <th class="pb-3 font-semibold">NIS</th>
-                  <th class="pb-3 font-semibold text-center">Status Kehadiran</th>
-                  <th class="pb-3 font-semibold">Keterangan</th>
+                  <th class="pb-3 font-semibold w-10 whitespace-nowrap">No</th>
+                  <th class="pb-3 font-semibold whitespace-nowrap">Nama Siswa</th>
+                  <th class="pb-3 font-semibold whitespace-nowrap">NIS</th>
+                  <th class="pb-3 font-semibold text-center whitespace-nowrap">Status Kehadiran</th>
+                  <th class="pb-3 font-semibold whitespace-nowrap">Keterangan</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-50">
                 <!-- Skeleton rows during initial loading -->
                 <tr v-if="isLoading && students.length === 0" v-for="i in 8" :key="'skel-' + i" class="animate-pulse">
-                  <td class="py-3.5"><div class="h-3 w-4 bg-gray-200 rounded"></div></td>
-                  <td class="py-3.5"><div class="h-3.5 w-36 bg-gray-200 rounded"></div></td>
-                  <td class="py-3.5"><div class="h-3 w-16 bg-gray-200 rounded"></div></td>
-                  <td class="py-3.5"><div class="h-7 w-48 bg-gray-200 rounded-xl mx-auto"></div></td>
-                  <td class="py-3.5"><div class="h-7 w-full bg-gray-100 rounded-lg"></div></td>
+                  <td class="py-3.5 whitespace-nowrap"><div class="h-3 w-4 bg-gray-200 rounded"></div></td>
+                  <td class="py-3.5 whitespace-nowrap"><div class="h-3.5 w-36 bg-gray-200 rounded"></div></td>
+                  <td class="py-3.5 whitespace-nowrap"><div class="h-3 w-16 bg-gray-200 rounded"></div></td>
+                  <td class="py-3.5 whitespace-nowrap"><div class="h-7 w-48 bg-gray-200 rounded-xl mx-auto"></div></td>
+                  <td class="py-3.5 whitespace-nowrap"><div class="h-7 w-full bg-gray-100 rounded-lg"></div></td>
                 </tr>
 
                 <!-- Actual Student Rows -->
                 <tr v-else-if="filteredStudents.length > 0" v-for="student in filteredStudents" :key="student.student_id" class="hover:bg-gray-50/50 transition">
-                  <td class="py-3 text-gray-400">{{ student.no }}</td>
-                  <td class="py-3 font-semibold text-gray-900">{{ student.name }}</td>
-                  <td class="py-3 text-gray-500">{{ student.nis }}</td>
+                  <td class="py-3 text-gray-400 whitespace-nowrap">{{ student.no }}</td>
+                  <td class="py-3 font-semibold text-gray-900 whitespace-nowrap">{{ student.name }}</td>
+                  <td class="py-3 text-gray-500 whitespace-nowrap">{{ student.nis }}</td>
                   <!-- Segmented Buttons for 4 statuses -->
-                  <td class="py-3">
+                  <td class="py-3 whitespace-nowrap text-center">
                     <div class="inline-flex p-1 bg-gray-100 rounded-xl gap-1">
                       <button
                         type="button"
                         @click="setStudentStatus(student, 'HADIR')"
                         :class="[
-                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
+                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap',
                           student.status === 'HADIR' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
                         ]"
                       >
@@ -113,7 +113,7 @@
                         type="button"
                         @click="setStudentStatus(student, 'SAKIT')"
                         :class="[
-                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
+                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap',
                           student.status === 'SAKIT' ? 'bg-amber-500 text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
                         ]"
                       >
@@ -123,7 +123,7 @@
                         type="button"
                         @click="setStudentStatus(student, 'IZIN')"
                         :class="[
-                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
+                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap',
                           student.status === 'IZIN' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
                         ]"
                       >
@@ -133,8 +133,8 @@
                         type="button"
                         @click="setStudentStatus(student, 'ALPHA')"
                         :class="[
-                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
-                          student.status === 'ALPHA' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
+                          'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap',
+                          student.status === 'ALPHA' ? 'bg-rose-600 text-white shadow-2xs' : 'text-gray-600 hover:text-gray-900'
                         ]"
                       >
                         ALFA

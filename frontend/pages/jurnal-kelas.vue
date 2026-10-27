@@ -2,14 +2,14 @@
   <div class="flex-1 flex flex-col">
     <AppHeader
       title="Rekap Kehadiran Siswa"
-      subtitle="Laporan dan ringkasan data presensi siswa kelas XI RPL 1"
+      subtitle="Laporan dan ringkasan data presensi siswa Kelas Industri RPL"
     >
       <template #actions>
         <button
           v-if="authStore.user?.role === 'SEKRETARIS' || authStore.user?.role === 'GURU_PENGAJAR'"
           @click="showAddJournalModal = true"
           type="button"
-          class="px-3.5 py-2 rounded-xl bg-brand-red text-white hover:bg-brand-red-dark transition-colors text-xs font-semibold flex items-center gap-2 shadow-2xs cursor-pointer"
+          class="px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white transition-colors text-xs font-semibold flex items-center gap-2 shadow-xs cursor-pointer whitespace-nowrap"
         >
           <PlusIcon class="w-3.5 h-3.5" />
           <span>Isi Jurnal KBM</span>
@@ -44,16 +44,16 @@
           <div class="relative">
             <div
               v-if="authStore.user?.role === 'SEKRETARIS' || authStore.user?.role === 'SISWA'"
-              class="px-3.5 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 shadow-2xs flex items-center gap-1.5"
+              class="px-3.5 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 shadow-2xs flex items-center gap-1.5 whitespace-nowrap"
             >
-              <span class="w-2 h-2 rounded-full bg-brand-red"></span>
+              <span class="w-2 h-2 rounded-full bg-primary"></span>
               <span>Kelas: {{ authStore.user?.class_name || (authStore.user?.class_id === 2 ? 'XI RPL 2' : 'XI RPL 1') }}</span>
             </div>
             <select
               v-else
               v-model="filterClass"
               @change="fetchRecap"
-              class="px-3 py-2 pr-8 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red shadow-2xs cursor-pointer"
+              class="px-3 py-2 pr-8 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-2xs cursor-pointer whitespace-nowrap"
             >
               <option value="1">Kelas: XI RPL 1</option>
               <option value="2">Kelas: XI RPL 2</option>
@@ -66,7 +66,7 @@
           <button
             @click="exportExcel"
             type="button"
-            class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer"
+            class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer whitespace-nowrap"
           >
             <FileSpreadsheetIcon class="w-3.5 h-3.5" />
             <span>Export Excel</span>
@@ -74,7 +74,7 @@
           <button
             @click="exportPdf"
             type="button"
-            class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer"
+            class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-primary text-primary hover:bg-primary hover:text-white transition-colors text-xs font-semibold shadow-2xs cursor-pointer whitespace-nowrap"
           >
             <DownloadIcon class="w-3.5 h-3.5" />
             <span>Export PDF</span>
@@ -149,11 +149,11 @@
             v-model="searchQuery"
             type="text"
             placeholder="Cari nama atau NIS..."
-            class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white shadow-2xs"
+            class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white shadow-2xs"
           />
         </div>
 
-        <div class="flex items-center gap-2 text-xs font-medium text-gray-500">
+        <div class="flex items-center gap-2 text-xs font-medium text-gray-500 whitespace-nowrap">
           <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
           <span>Read-only - Sumber: Presensi Kehadiran</span>
         </div>
@@ -175,12 +175,12 @@
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-400 uppercase text-[10px] tracking-wider font-semibold">
-                <th class="py-3 px-4 w-14">NO.</th>
-                <th class="py-3 px-4">NAMA SISWA</th>
-                <th class="py-3 px-4">NIS</th>
-                <th class="py-3 px-4 text-center">STATUS</th>
-                <th class="py-3 px-4">WAKTU & CATATAN</th>
-                <th class="py-3 px-4 text-center">KEHADIRAN</th>
+                <th class="py-3 px-4 w-14 whitespace-nowrap">NO.</th>
+                <th class="py-3 px-4 whitespace-nowrap">NAMA SISWA</th>
+                <th class="py-3 px-4 whitespace-nowrap">NIS</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">STATUS</th>
+                <th class="py-3 px-4 whitespace-nowrap">WAKTU & CATATAN</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">KEHADIRAN</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -189,25 +189,25 @@
                 :key="row.id || idx"
                 class="hover:bg-gray-50/50 transition"
               >
-                <td class="py-3.5 px-4 font-medium text-gray-400">
+                <td class="py-3.5 px-4 font-medium text-gray-400 whitespace-nowrap">
                   {{ String(idx + 1).padStart(2, '0') }}
                 </td>
-                <td class="py-3.5 px-4 font-bold text-gray-900">
+                <td class="py-3.5 px-4 font-bold text-gray-900 whitespace-nowrap">
                   {{ row.name }}
                 </td>
-                <td class="py-3.5 px-4 font-mono text-gray-500">
+                <td class="py-3.5 px-4 font-mono text-gray-500 whitespace-nowrap">
                   {{ row.nis }}
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3.5 px-4 text-center whitespace-nowrap">
                   <StatusBadge :status="row.status" :has-dot="true" />
                 </td>
-                <td class="py-3.5 px-4 text-gray-600">
+                <td class="py-3.5 px-4 text-gray-600 whitespace-nowrap">
                   {{ row.time_note }}
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3.5 px-4 text-center whitespace-nowrap">
                   <span
                     v-if="row.verification && row.verification !== '-'"
-                    class="inline-flex items-center gap-1 text-[11px] font-semibold"
+                    class="inline-flex items-center gap-1 text-[11px] font-semibold whitespace-nowrap"
                     :class="row.verification.includes('Terverifikasi') ? 'text-emerald-700' : 'text-gray-500'"
                   >
                     <CalendarCheck2Icon v-if="row.verification.includes('Terverifikasi')" class="w-3.5 h-3.5 text-emerald-600" />
@@ -221,17 +221,17 @@
         </div>
       </div>
 
-      <!-- Bottom Rekap Presensi Harian Card (Matching media_1791815124022.png) -->
-      <div class="rounded-2xl border-2 border-brand-red bg-white p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <!-- Bottom Rekap Presensi Harian Card -->
+      <div class="rounded-2xl border border-primary/20 bg-primary/5 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-center gap-3">
-          <BookOpenIcon class="w-5 h-5 text-brand-red shrink-0" />
-          <span class="text-sm font-bold text-brand-red">Rekap Presensi Harian</span>
+          <BookOpenIcon class="w-5 h-5 text-primary shrink-0" />
+          <span class="text-sm font-bold text-primary">Rekap Presensi Harian</span>
         </div>
         <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-700">
           <span>Hadir: <strong class="text-emerald-600">{{ summary.hadir }}</strong></span>
           <span>Izin: <strong class="text-amber-600">{{ summary.izin }}</strong></span>
           <span>Sakit: <strong class="text-blue-600">{{ summary.sakit }}</strong></span>
-          <span>ALFA: <strong class="text-red-600">{{ summary.alpha }}</strong></span>
+          <span>ALFA: <strong class="text-rose-600">{{ summary.alpha }}</strong></span>
         </div>
       </div>
 
@@ -263,7 +263,7 @@
               </label>
               <select
                 v-model="journalForm.schedule_id"
-                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                 required
               >
                 <option value="" disabled>-- Pilih Jadwal Pelajaran --</option>
@@ -281,7 +281,7 @@
               <input
                 v-model="journalForm.date"
                 type="date"
-                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                 required
               />
             </div>
@@ -295,7 +295,7 @@
                 v-model="journalForm.topic"
                 type="text"
                 placeholder="Contoh: Optimasi Query Relasional & Desain API"
-                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 required
               />
             </div>
@@ -309,7 +309,7 @@
                 v-model="journalForm.activity"
                 rows="3"
                 placeholder="Rangkuman jalannya pembelajaran kelas, topik bahasan, dan kegiatan siswa..."
-                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 required
               ></textarea>
             </div>
@@ -323,7 +323,7 @@
                 v-model="journalForm.notes"
                 type="text"
                 placeholder="Contoh: Praktikum berlangsung tertib di Lab Komputer 1"
-                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
 
@@ -331,14 +331,14 @@
               <button
                 type="button"
                 @click="showAddJournalModal = false"
-                class="px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer"
+                class="px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition cursor-pointer whitespace-nowrap"
               >
                 Batal
               </button>
               <button
                 type="submit"
                 :disabled="isSubmittingJournal"
-                class="px-5 py-2.5 rounded-xl bg-brand-red hover:bg-brand-red-dark text-white text-xs font-semibold shadow-sm transition disabled:opacity-50 cursor-pointer"
+                class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-xs transition disabled:opacity-50 cursor-pointer whitespace-nowrap"
               >
                 {{ isSubmittingJournal ? 'Mengirim...' : 'Kirim Jurnal KBM' }}
               </button>

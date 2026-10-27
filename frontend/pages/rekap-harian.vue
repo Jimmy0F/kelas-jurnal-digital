@@ -2,13 +2,13 @@
   <div class="flex-1 flex flex-col">
     <AppHeader
       title="Rekap Kehadiran Siswa"
-      subtitle="Laporan dan ringkasan data presensi siswa kelas XI RPL 1"
+      subtitle="Laporan dan ringkasan data presensi siswa Kelas Industri RPL"
     >
       <template #actions>
         <button
           @click="exportExcel"
           type="button"
-          class="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+          class="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition flex items-center gap-1.5 shadow-2xs cursor-pointer whitespace-nowrap"
         >
           <DownloadIcon class="w-3.5 h-3.5 text-gray-500" />
           <span class="hidden sm:inline">Ekspor Excel</span>
@@ -16,7 +16,7 @@
         <button
           @click="printReport"
           type="button"
-          class="px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+          class="px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-2xs cursor-pointer whitespace-nowrap"
         >
           <PrinterIcon class="w-3.5 h-3.5" />
           <span>Cetak PDF</span>
@@ -35,7 +35,7 @@
             v-model="filterDate"
             type="date"
             @change="fetchRecap"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           />
         </div>
         <div>
@@ -43,9 +43,11 @@
           <select
             v-model="filterClass"
             @change="fetchRecap"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
-            <option value="1">XI RPL 1 (Rekayasa Perangkat Lunak 1)</option>
+            <option value="1">XI RPL 1 (Kelas Industri)</option>
+            <option value="2">XI RPL 2 (Kelas Industri)</option>
+            <option value="3">XII RPL 1 (Kelas Industri)</option>
           </select>
         </div>
       </div>
@@ -59,7 +61,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Ketik nama atau NIS..."
-            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red"
+            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           />
         </div>
       </div>
@@ -103,10 +105,10 @@
       <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-card flex items-center justify-between">
         <div>
           <p class="text-xs text-gray-500 font-medium">ALFA</p>
-          <h3 class="text-2xl font-bold text-red-600 mt-1">{{ summary.alpha }}</h3>
+          <h3 class="text-2xl font-bold text-rose-600 mt-1">{{ summary.alpha }}</h3>
           <p class="text-[11px] text-gray-400 mt-0.5">Tanpa keterangan</p>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
+        <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
           A
         </div>
       </div>
@@ -130,12 +132,12 @@
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-500 uppercase tracking-wider font-semibold">
-              <th class="py-3 px-4 w-12 text-center">No</th>
-              <th class="py-3 px-4">Nama Siswa</th>
-              <th class="py-3 px-4">NIS / NISN</th>
-              <th class="py-3 px-4 text-center">Status</th>
-              <th class="py-3 px-4">Waktu / Keterangan</th>
-              <th class="py-3 px-4 text-center">Verifikasi</th>
+              <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+              <th class="py-3 px-4 whitespace-nowrap">Nama Siswa</th>
+              <th class="py-3 px-4 whitespace-nowrap">NIS / NISN</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Status</th>
+              <th class="py-3 px-4 whitespace-nowrap">Waktu / Keterangan</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Verifikasi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -144,19 +146,19 @@
               :key="item.no"
               class="hover:bg-gray-50/50 transition"
             >
-              <td class="py-3.5 px-4 text-center font-medium text-gray-500">{{ item.no }}</td>
-              <td class="py-3.5 px-4">
+              <td class="py-3.5 px-4 text-center font-medium text-gray-500 whitespace-nowrap">{{ item.no }}</td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
                 <div class="font-semibold text-gray-900 text-sm">{{ item.name }}</div>
               </td>
-              <td class="py-3.5 px-4 text-gray-500 font-mono">{{ item.nis }}</td>
-              <td class="py-3.5 px-4 text-center">
+              <td class="py-3.5 px-4 text-gray-500 font-mono whitespace-nowrap">{{ item.nis }}</td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <StatusBadge :status="item.status" />
               </td>
-              <td class="py-3.5 px-4 text-gray-600">
+              <td class="py-3.5 px-4 text-gray-600 whitespace-nowrap">
                 {{ item.time_note }}
               </td>
-              <td class="py-3.5 px-4 text-center">
-                <span class="inline-flex items-center gap-1 text-[11px] font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
                   <CheckCircle2Icon class="w-3 h-3" />
                   {{ item.verification }}
                 </span>

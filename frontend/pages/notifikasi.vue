@@ -1,35 +1,67 @@
 <template>
-  <div class="flex-1 flex flex-col">
-    <AppHeader
-      title="Pemberitahuan Terbaru"
-      subtitle="Pantau aktivitas terbaru, update materi, dan status persetujuan"
-      :show-back="true"
-      :hide-notifications="true"
+  <!-- Floating Centered Modal Card Container -->
+  <div
+    class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 md:p-6"
+    @click.self="handleClose"
+  >
+    <div
+      class="max-w-2xl w-full bg-white rounded-3xl shadow-2xl border border-gray-150 flex flex-col max-h-[90vh] overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150"
     >
-      <template #actions>
-        <button
-          @click="markAllRead"
-          type="button"
-          class="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
-        >
-          <CheckCheckIcon class="w-3.5 h-3.5 text-emerald-600" />
-          <span>Tandai Semua Dibaca</span>
-        </button>
-      </template>
-    </AppHeader>
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3 bg-white sticky top-0 z-10">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-2xl bg-blue-50 text-primary flex items-center justify-center shrink-0 shadow-2xs">
+            <BellIcon class="w-5 h-5" />
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <h2 class="text-base font-bold text-gray-900 truncate">Pemberitahuan</h2>
+              <span
+                v-if="unreadCount > 0"
+                class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-primary shrink-0"
+              >
+                {{ unreadCount }} baru
+              </span>
+            </div>
+            <p class="text-xs text-gray-500 truncate mt-0.5">Aktivitas pembelajaran, materi, dan persetujuan</p>
+          </div>
+        </div>
 
-    <main class="px-6 md:px-8 pb-10 space-y-6">
-      <!-- Card Section 1: Pemberitahuan Terbaru -->
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-5 md:p-6 space-y-4">
-        <!-- Filter Pills: Semua, Belum Dibaca, Jurnal, Surat Izin (Matching mockups) -->
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3.5">
-          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            @click="markAllRead"
+            type="button"
+            class="hidden sm:inline-flex px-3 py-1.5 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-xs font-semibold text-gray-700 transition items-center gap-1.5 shadow-2xs cursor-pointer"
+            title="Tandai semua notifikasi telah dibaca"
+          >
+            <CheckCheckIcon class="w-3.5 h-3.5 text-emerald-600" />
+            <span>Tandai Semua Dibaca</span>
+          </button>
+
+          <!-- Close Button -->
+          <button
+            @click="handleClose"
+            type="button"
+            class="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95"
+            title="Tutup jendela notifikasi"
+          >
+            <XIcon class="w-4 h-4 text-gray-500" />
+            <span>Tutup</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="p-5 overflow-y-auto space-y-4 flex-1">
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
+          <div class="flex flex-wrap items-center gap-1.5">
             <button
               @click="switchFilter('ALL')"
               :class="[
-                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer',
+                'px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer whitespace-nowrap',
                 filterType === 'ALL'
-                  ? 'bg-brand-red text-white shadow-xs'
+                  ? 'bg-primary text-white shadow-xs'
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               ]"
             >
@@ -39,9 +71,9 @@
             <button
               @click="switchFilter('UNREAD')"
               :class="[
-                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5',
+                'px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap',
                 filterType === 'UNREAD'
-                  ? 'bg-brand-red text-white shadow-xs'
+                  ? 'bg-primary text-white shadow-xs'
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               ]"
             >
@@ -49,7 +81,7 @@
               <span
                 v-if="unreadCount > 0"
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
-                :class="filterType === 'UNREAD' ? 'bg-white text-brand-red' : 'bg-blue-100 text-brand-red'"
+                :class="filterType === 'UNREAD' ? 'bg-white text-primary' : 'bg-blue-100 text-primary'"
               >
                 {{ unreadCount }}
               </span>
@@ -58,9 +90,9 @@
             <button
               @click="switchFilter('JURNAL')"
               :class="[
-                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5',
+                'px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap',
                 filterType === 'JURNAL'
-                  ? 'bg-brand-red text-white shadow-xs'
+                  ? 'bg-primary text-white shadow-xs'
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               ]"
             >
@@ -68,7 +100,7 @@
               <span
                 v-if="unreadJurnalCount > 0"
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
-                :class="filterType === 'JURNAL' ? 'bg-white text-brand-red' : 'bg-blue-100 text-brand-red'"
+                :class="filterType === 'JURNAL' ? 'bg-white text-primary' : 'bg-blue-100 text-primary'"
               >
                 {{ unreadJurnalCount }}
               </span>
@@ -77,9 +109,9 @@
             <button
               @click="switchFilter('SURAT_IZIN')"
               :class="[
-                'px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5',
+                'px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap',
                 filterType === 'SURAT_IZIN'
-                  ? 'bg-brand-red text-white shadow-xs'
+                  ? 'bg-primary text-white shadow-xs'
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               ]"
             >
@@ -87,7 +119,7 @@
               <span
                 v-if="unreadSuratIzinCount > 0"
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
-                :class="filterType === 'SURAT_IZIN' ? 'bg-white text-brand-red' : 'bg-blue-100 text-brand-red'"
+                :class="filterType === 'SURAT_IZIN' ? 'bg-white text-primary' : 'bg-blue-100 text-primary'"
               >
                 {{ unreadSuratIzinCount }}
               </span>
@@ -115,26 +147,26 @@
           Tidak ada notifikasi dalam kategori ini.
         </div>
 
-        <div v-else class="space-y-3">
+        <div v-else class="space-y-2.5">
           <div
             v-for="item in filteredNotifications"
             :key="item.id"
             @click="handleNotificationClick(item)"
-            class="p-4 rounded-xl border transition flex items-start gap-3.5 cursor-pointer hover:shadow-xs group"
+            class="p-3.5 rounded-2xl border transition flex items-start gap-3.5 cursor-pointer hover:shadow-xs group"
             :class="[
               item.is_read
                 ? 'bg-white border-gray-150 hover:border-gray-200'
-                : 'bg-blue-50/30 border-blue-200/80 shadow-2xs hover:bg-blue-50/50'
+                : 'bg-blue-50/40 border-blue-200 shadow-2xs hover:bg-blue-50/70'
             ]"
           >
             <div
               class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105"
               :class="[
                 item.type === 'JURNAL'
-                  ? 'bg-blue-50 text-blue-600'
+                  ? 'bg-blue-50 text-primary'
                   : item.type === 'SURAT_IZIN'
                     ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-blue-50 text-brand-red'
+                    : 'bg-blue-50 text-primary'
               ]"
             >
               <BookOpenIcon v-if="item.type === 'JURNAL'" class="w-4 h-4" />
@@ -147,76 +179,85 @@
               <div class="flex items-center justify-between gap-2">
                 <h3 class="text-xs font-bold text-gray-900 truncate flex items-center gap-1.5 group-hover:text-primary transition-colors">
                   <span>{{ item.title }}</span>
-                  <span v-if="!item.is_read" class="w-2 h-2 rounded-full bg-brand-red inline-block shrink-0"></span>
+                  <span v-if="!item.is_read" class="w-2 h-2 rounded-full bg-primary inline-block shrink-0"></span>
                 </h3>
-                <span class="text-[11px] text-gray-400 shrink-0">{{ item.time || item.time_ago }}</span>
+                <span class="text-[11px] text-gray-400 shrink-0 whitespace-nowrap">{{ item.time || item.time_ago }}</span>
               </div>
               <p class="text-xs text-gray-600 mt-1 line-clamp-2">
                 {{ item.body }}
               </p>
               <div class="mt-2.5 flex items-center justify-between">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-brand-red text-brand-red hover:text-white border border-blue-200 text-xs font-bold transition-all shadow-2xs group-hover:shadow-xs">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 group-hover:bg-primary text-primary group-hover:text-white border border-blue-200 text-[11px] font-bold transition-all shadow-2xs">
                   <span>Buka Rincian</span>
-                  <span class="transition-transform group-hover:translate-x-1">→</span>
+                  <span class="transition-transform group-hover:translate-x-0.5">→</span>
                 </span>
-                <span v-if="!item.is_read" class="text-[10px] font-semibold text-brand-red bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                <span v-if="!item.is_read" class="text-[10px] font-semibold text-primary bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200 whitespace-nowrap">
                   Belum Dibaca
                 </span>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Card Section 2: Log Audit Aktivitas Pengguna (Matching 05-Pembimbing.png) -->
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden">
-        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-          <div>
-            <h2 class="text-base font-bold text-gray-800">Log Audit Aktivitas Pengguna</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Catatan riwayat aksi dan aktivitas sistem secara real-time</p>
+        <!-- Log Audit Aktivitas Pengguna: HANYA TAMPIL UNTUK SUPERADMIN -->
+        <div v-if="authStore.user?.role === 'SUPERADMIN'" class="mt-6 pt-5 border-t border-gray-150 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xs font-bold text-gray-900">Log Audit Aktivitas Pengguna (Khusus Superadmin)</h3>
+              <p class="text-[11px] text-gray-400">Riwayat audit jejak aktivitas sistem real-time</p>
+            </div>
+            <button
+              @click="fetchAuditLogs"
+              class="text-xs text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              <RefreshCwIcon class="w-3.5 h-3.5" :class="{ 'animate-spin': loadingAudit }" />
+              <span>Segarkan</span>
+            </button>
           </div>
-          <button
-            @click="fetchAuditLogs"
-            class="text-xs text-brand-red hover:underline font-semibold flex items-center gap-1 cursor-pointer"
-          >
-            <RefreshCwIcon class="w-3.5 h-3.5" /> Segarkan
-          </button>
-        </div>
 
-        <div v-if="loadingAudit" class="py-12 text-center text-gray-400 text-xs">
-          Memuat log audit...
-        </div>
+          <div v-if="loadingAudit" class="py-6 text-center text-gray-400 text-xs">
+            Memuat log audit...
+          </div>
 
-        <div v-else class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-400 font-semibold uppercase text-[10px] tracking-wider">
-                <th class="py-3 px-4 w-36">Waktu Kejadian</th>
-                <th class="py-3 px-4 w-48">Pengguna</th>
-                <th class="py-3 px-4">Deskripsi Tindakan</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              <tr
-                v-for="log in auditLogs"
-                :key="log.id"
-                class="hover:bg-gray-50/50 transition"
-              >
-                <td class="py-3.5 px-4 font-medium text-gray-500 whitespace-nowrap">
-                  {{ log.time }}
-                </td>
-                <td class="py-3.5 px-4 font-bold text-gray-900">
-                  {{ log.user }}
-                </td>
-                <td class="py-3.5 px-4 text-gray-600">
-                  {{ log.action }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else-if="auditLogs.length === 0" class="py-6 text-center text-gray-400 text-xs">
+            Belum ada log audit aktivitas pengguna.
+          </div>
+
+          <div v-else class="border border-gray-150 rounded-xl overflow-hidden max-h-48 overflow-y-auto text-xs">
+            <table class="w-full text-left">
+              <thead class="bg-gray-50 border-b border-gray-150 text-[10px] text-gray-500 uppercase">
+                <tr>
+                  <th class="py-2 px-3">Waktu</th>
+                  <th class="py-2 px-3">Pengguna</th>
+                  <th class="py-2 px-3">Aktivitas</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <tr v-for="log in auditLogs" :key="log.id" class="hover:bg-gray-50/50">
+                  <td class="py-2 px-3 text-gray-400 text-[11px] whitespace-nowrap">{{ log.time }}</td>
+                  <td class="py-2 px-3 font-semibold text-gray-900 whitespace-nowrap">{{ log.user }}</td>
+                  <td class="py-2 px-3 text-gray-600">{{ log.action }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </main>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-gray-100 flex items-center justify-between bg-gray-50/70 text-xs">
+        <span class="text-gray-500 text-[11px]">
+          Menampilkan {{ filteredNotifications.length }} notifikasi
+        </span>
+        <button
+          @click="handleClose"
+          type="button"
+          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold rounded-xl transition cursor-pointer shadow-2xs"
+        >
+          Tutup Pemberitahuan
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -228,9 +269,16 @@ import {
   BookOpen as BookOpenIcon,
   CheckCircle2 as CheckCircle2Icon,
   UserPlus as UserPlusIcon,
-  RefreshCw as RefreshCwIcon
+  RefreshCw as RefreshCwIcon,
+  X as XIcon
 } from 'lucide-vue-next'
+import { useAuthStore } from '~/stores/auth'
 
+definePageMeta({
+  layout: false
+})
+
+const router = useRouter()
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
 
@@ -242,8 +290,6 @@ const unreadCount = ref(0)
 const unreadSuratIzinCount = ref(0)
 const unreadJurnalCount = ref(0)
 
-const defaultNotifications: any[] = []
-
 const notifications = ref<any[]>([])
 const auditLogs = ref<any[]>([])
 
@@ -252,6 +298,16 @@ const filteredNotifications = computed(() => {
   if (filterType.value === 'UNREAD') return notifications.value.filter(n => !n.is_read)
   return notifications.value.filter(n => n.type === filterType.value)
 })
+
+function handleClose() {
+  if (process.client) {
+    if (window.history.length > 1) {
+      router.back()
+    } else {
+      navigateTo('/dashboard')
+    }
+  }
+}
 
 const switchFilter = (type: string) => {
   filterType.value = type
@@ -265,9 +321,10 @@ const categoryMarkTooltip = computed(() => {
 
 const fetchNotifications = async () => {
   loading.value = true
+  const token = authStore.token || (process.client ? localStorage.getItem('token') : null)
   try {
     const res: any = await $fetch(`${config.public.apiBase}/notifications`, {
-      headers: { Authorization: `Bearer ${authStore.token}` },
+      headers: { Authorization: `Bearer ${token}` },
       params: { filter: 'ALL' }
     })
     notifications.value = res.notifications || []
@@ -286,10 +343,12 @@ const fetchNotifications = async () => {
 }
 
 const fetchAuditLogs = async () => {
+  if (authStore.user?.role !== 'SUPERADMIN') return
   loadingAudit.value = true
+  const token = authStore.token || (process.client ? localStorage.getItem('token') : null)
   try {
     const res: any = await $fetch(`${config.public.apiBase}/audit-logs`, {
-      headers: { Authorization: `Bearer ${authStore.token}` }
+      headers: { Authorization: `Bearer ${token}` }
     })
     if (res && res.length > 0) {
       auditLogs.value = res
@@ -306,10 +365,11 @@ const markAllRead = async () => {
   unreadCount.value = 0
   unreadSuratIzinCount.value = 0
   unreadJurnalCount.value = 0
+  const token = authStore.token || (process.client ? localStorage.getItem('token') : null)
   try {
     await $fetch(`${config.public.apiBase}/notifications/read-all`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${authStore.token}` }
+      headers: { Authorization: `Bearer ${token}` }
     })
   } catch (err: any) {
     console.error('Error marking all read:', err)
@@ -318,6 +378,7 @@ const markAllRead = async () => {
 
 const markCategoryRead = async () => {
   const currentFilter = filterType.value
+  const token = authStore.token || (process.client ? localStorage.getItem('token') : null)
 
   if (currentFilter === 'SURAT_IZIN') {
     const unreadSuratIzin = notifications.value.filter(n => n.type === 'SURAT_IZIN' && !n.is_read).length
@@ -332,7 +393,7 @@ const markCategoryRead = async () => {
     try {
       await $fetch(`${config.public.apiBase}/notifications/read-all`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` },
+        headers: { Authorization: `Bearer ${token}` },
         body: { type: 'SURAT_IZIN' }
       })
     } catch (err: any) {
@@ -351,14 +412,13 @@ const markCategoryRead = async () => {
     try {
       await $fetch(`${config.public.apiBase}/notifications/read-all`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` },
+        headers: { Authorization: `Bearer ${token}` },
         body: { type: 'JURNAL' }
       })
     } catch (err: any) {
       console.error('Error marking jurnal read:', err)
     }
   } else {
-    // Current filter is 'ALL' or 'UNREAD' -> mark all as read
     await markAllRead()
   }
 }
@@ -372,10 +432,11 @@ const markOneRead = async (item: any) => {
     } else if (item.type === 'JURNAL') {
       unreadJurnalCount.value = Math.max(0, unreadJurnalCount.value - 1)
     }
+    const token = authStore.token || (process.client ? localStorage.getItem('token') : null)
     try {
       await $fetch(`${config.public.apiBase}/notifications/${item.id}/read`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` }
+        headers: { Authorization: `Bearer ${token}` }
       })
     } catch (err: any) {
       // Handled in state
@@ -391,7 +452,6 @@ const handleNotificationClick = async (item: any) => {
   const title = (item.title || '').toLowerCase()
   const body = (item.body || '').toLowerCase()
 
-  // Dynamic Routing Logic per role & notification context
   if (type === 'SURAT_IZIN' || title.includes('surat izin') || body.includes('surat izin')) {
     if (role === 'GURU_PEMBIMBING') {
       navigateTo('/persetujuan-izin')
@@ -408,7 +468,6 @@ const handleNotificationClick = async (item: any) => {
     } else if (role === 'GURU_PENGAJAR') {
       navigateTo('/jurnal-materi')
     } else if (role === 'SEKRETARIS') {
-      // Jika notifikasi tentang materi baru pembelajaran atau tugas, arahkan ke jurnal-pelajaran seperti siswa
       if (title.includes('materi') || body.includes('materi') || title.includes('tugas') || body.includes('tugas')) {
         navigateTo('/jurnal-pelajaran')
       } else {
@@ -432,8 +491,25 @@ const handleNotificationClick = async (item: any) => {
   }
 }
 
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') {
+    handleClose()
+  }
+}
+
 onMounted(() => {
   fetchNotifications()
-  fetchAuditLogs()
+  if (authStore.user?.role === 'SUPERADMIN') {
+    fetchAuditLogs()
+  }
+  if (process.client) {
+    window.addEventListener('keydown', handleKeydown)
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('keydown', handleKeydown)
+  }
 })
 </script>

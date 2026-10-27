@@ -30,11 +30,11 @@
           <label class="block text-[11px] font-semibold text-gray-500 mb-1">Status Verifikasi</label>
           <select
             v-model="statusFilter"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
             <option value="ALL">Semua Status</option>
             <option value="TERVERIFIKASI">Terverifikasi</option>
-            <option value="PENDING">Menunggu Konfirmasi Guru Pengajar</option>
+            <option value="PENDING">Menunggu Konfirmasi</option>
           </select>
         </div>
       </div>
@@ -47,7 +47,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Cari topik atau nama guru..."
-            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red"
+            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           />
         </div>
       </div>
@@ -76,12 +76,12 @@
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-500 uppercase tracking-wider font-semibold">
-              <th class="py-3 px-4">Tanggal & Waktu</th>
-              <th class="py-3 px-4">Mata Pelajaran</th>
-              <th class="py-3 px-4">Guru Pengajar</th>
-              <th class="py-3 px-4">Rangkuman Aktivitas</th>
-              <th class="py-3 px-4 text-center">Status</th>
-              <th class="py-3 px-4 text-center">Aksi</th>
+              <th class="py-3 px-4 whitespace-nowrap">Tanggal & Waktu</th>
+              <th class="py-3 px-4 whitespace-nowrap">Mata Pelajaran</th>
+              <th class="py-3 px-4 whitespace-nowrap">Guru Pengajar</th>
+              <th class="py-3 px-4 whitespace-nowrap">Rangkuman Aktivitas</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Status</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -93,22 +93,22 @@
               <td class="py-3.5 px-4 font-medium text-gray-700 whitespace-nowrap">
                 {{ j.date_time }}
               </td>
-              <td class="py-3.5 px-4 font-semibold text-gray-900">
+              <td class="py-3.5 px-4 font-semibold text-gray-900 whitespace-nowrap">
                 {{ j.subject }}
               </td>
-              <td class="py-3.5 px-4 text-gray-600">
+              <td class="py-3.5 px-4 text-gray-600 whitespace-nowrap">
                 {{ j.teacher }}
               </td>
               <td class="py-3.5 px-4 text-gray-600 max-w-xs truncate">
                 {{ j.activity }}
               </td>
-              <td class="py-3.5 px-4 text-center">
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <StatusBadge :status="j.status" />
               </td>
-              <td class="py-3.5 px-4 text-center">
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <button
                   @click="selectedJournal = j"
-                  class="px-2.5 py-1 rounded-lg text-brand-red bg-blue-50 hover:bg-blue-100 text-[11px] font-semibold transition"
+                  class="px-2.5 py-1 rounded-lg text-primary bg-primary/10 hover:bg-primary/20 text-[11px] font-semibold transition cursor-pointer whitespace-nowrap"
                 >
                   Detail
                 </button>

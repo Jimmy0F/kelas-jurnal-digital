@@ -44,7 +44,7 @@
             <div class="text-2xl font-bold text-gray-900 mt-1">{{ pendingCount }} Jurnal</div>
             <p class="text-[11px] text-gray-400 mt-1">Perlu Tanda Tangan Anda</p>
           </div>
-          <div class="w-8 h-1 rounded-full bg-brand-red mt-1"></div>
+          <div class="w-8 h-1 rounded-full bg-primary mt-1"></div>
         </div>
       </div>
 
@@ -62,17 +62,17 @@
               <button
                 type="button"
                 @click="openAddScheduleModal = true"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 hover:border-brand-red bg-white hover:bg-blue-50/40 text-gray-700 hover:text-brand-red text-xs font-semibold shadow-2xs transition cursor-pointer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 hover:border-primary bg-white hover:bg-primary/5 text-gray-700 hover:text-primary text-xs font-semibold shadow-2xs transition cursor-pointer whitespace-nowrap"
               >
-                <PlusIcon class="w-3.5 h-3.5 text-brand-red" />
+                <PlusIcon class="w-3.5 h-3.5 text-primary" />
                 <span>Tambah Jadwal</span>
               </button>
               <NuxtLink
                 to="/laporan-jurnal"
-                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-gray-500 hover:text-brand-red hover:bg-gray-50 transition"
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-gray-500 hover:text-primary hover:bg-gray-50 transition whitespace-nowrap"
               >
                 <span>Laporan Jurnal</span>
-                <span class="text-brand-red">→</span>
+                <span class="text-primary">→</span>
               </NuxtLink>
             </div>
           </div>
@@ -109,7 +109,7 @@
                 <!-- Status Badge (Pojok kanan atas, bersih tanpa tertiban) -->
                 <div class="shrink-0 self-start sm:self-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide select-none shadow-2xs"
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide select-none shadow-2xs whitespace-nowrap"
                     :class="{
                       'bg-emerald-50 text-emerald-700 border border-emerald-200/80': item.status === 'Terverifikasi',
                       'bg-amber-50 text-amber-700 border border-amber-200/80': item.status.includes('Menunggu'),
@@ -141,7 +141,7 @@
                   <button
                     type="button"
                     @click="openJournalDetail(item)"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold transition cursor-pointer shadow-2xs"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap"
                   >
                     <EyeIcon class="w-3.5 h-3.5 text-gray-500" />
                     <span>Detail Jurnal</span>
@@ -152,7 +152,7 @@
                     v-if="item.status.includes('Menunggu')"
                     type="button"
                     @click="openFillJournal(item)"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 text-xs font-semibold transition cursor-pointer shadow-2xs"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap"
                   >
                     <Edit2Icon class="w-3.5 h-3.5 text-amber-700" />
                     <span>Edit</span>
@@ -163,7 +163,7 @@
                     v-if="item.status.includes('Menunggu')"
                     type="button"
                     @click="openConfirmModal(item)"
-                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-brand-red bg-blue-50 text-brand-red hover:bg-brand-red hover:text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-primary bg-primary/10 text-primary hover:bg-primary hover:text-white text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap"
                   >
                     <CheckIcon class="w-3.5 h-3.5" />
                     <span>Konfirmasi</span>
@@ -174,7 +174,7 @@
                     v-if="item.status === 'Belum Diisi'"
                     type="button"
                     @click="openFillJournal(item)"
-                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-brand-red bg-brand-red text-white hover:bg-brand-red-dark text-xs font-semibold transition cursor-pointer shadow-2xs"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-primary bg-primary text-white hover:bg-primary-hover text-xs font-semibold transition cursor-pointer shadow-2xs whitespace-nowrap"
                   >
                     <PlusIcon class="w-3.5 h-3.5 text-white" />
                     <span>Isi Jurnal</span>
@@ -374,7 +374,7 @@
           >
             <AlertCircleIcon class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <p class="font-bold text-amber-900">Status: Menunggu Konfirmasi Guru Pengajar</p>
+              <p class="font-bold text-amber-900">Status: Menunggu Konfirmasi</p>
               <p class="text-[11px] text-amber-700 mt-0.5">
                 Data jurnal ini telah diisi dan menunggu konfirmasi pengesahan Anda sebagai guru pengajar. Anda dapat menyunting atau langsung mengesahkannya.
               </p>
@@ -710,7 +710,7 @@ const fetchTeacherSchedulesAndJournals = async () => {
 
         let status = 'Belum Diisi'
         if (match) {
-          status = match.status === 'TERVERIFIKASI' ? 'Terverifikasi' : 'Menunggu Konfirmasi Guru Pengajar'
+          status = match.status === 'TERVERIFIKASI' ? 'Terverifikasi' : 'Menunggu Konfirmasi'
         }
 
         return {
@@ -741,7 +741,7 @@ const fetchTeacherSchedulesAndJournals = async () => {
           journal_id: null,
           time: '09:15 - 11:45',
           subject: 'Basis Data (XI RPL 1)',
-          status: 'Menunggu Konfirmasi Guru Pengajar',
+          status: 'Menunggu Konfirmasi',
           topic: 'Normalisasi Database 3NF dan perbaikan skema relasi',
           notes: 'Menunggu pengesahan dari guru pengajar'
         }

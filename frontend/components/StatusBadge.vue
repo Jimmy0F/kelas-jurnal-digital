@@ -1,12 +1,12 @@
 <template>
   <span
     :class="[
-      'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold select-none',
+      'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold select-none whitespace-nowrap shrink-0 text-center justify-center leading-normal',
       badgeClass
     ]"
   >
-    <span v-if="hasDot" :class="['w-1.5 h-1.5 rounded-full mr-1.5', dotClass]"></span>
-    {{ labelText }}
+    <span v-if="hasDot" :class="['w-1.5 h-1.5 rounded-full mr-1.5 shrink-0', dotClass]"></span>
+    <span>{{ labelText }}</span>
   </span>
 </template>
 
@@ -107,29 +107,40 @@ const labelText = computed(() => {
   if (upper === 'BELUM DIISI') return 'Belum Diisi'
   if (upper === 'ALPHA' || upper === 'ALFA') return 'ALFA'
 
-  if (
+  const currentRole = authStore.user?.role
+
+  // Deteksi target pihak yang harus mengonfirmasi
+  const isAwaitingPembimbing =
     upper === 'MENUNGGU KONFIRMASI GURU PEMBIMBING' ||
-    upper === 'MENUNGGU_PEMBIMBING'
-  ) {
+    upper === 'MENUNGGU_PEMBIMBING' ||
+    ((upper === 'PENDING' || upper === 'MENUNGGU KONFIRMASI' || upper === 'MENUNGGU') &&
+      (props.context === 'pembimbing' || props.context === 'leave' || props.role === 'GURU_PEMBIMBING'))
+
+  const isAwaitingPengajar =
+    upper === 'MENUNGGU KONFIRMASI GURU PENGAJAR' ||
+    ((upper === 'PENDING' || upper === 'MENUNGGU KONFIRMASI' || upper === 'MENUNGGU') &&
+      (props.context === 'pengajar' || props.context === 'journal' || props.role === 'GURU_PENGAJAR'))
+
+  // Aturan spesifik: jika konfirmasi yang ditunggu adalah diri sendiri, cukup tampilkan "Menunggu Konfirmasi"
+  if (currentRole === 'GURU_PEMBIMBING' && isAwaitingPembimbing) {
+    return 'Menunggu Konfirmasi'
+  }
+
+  if (currentRole === 'GURU_PENGAJAR' && isAwaitingPengajar) {
+    return 'Menunggu Konfirmasi'
+  }
+
+  // Jika dilihat oleh pihak lain yang sedang menunggu persetujuan:
+  if (isAwaitingPembimbing) {
     return 'Menunggu Konfirmasi Guru Pembimbing'
   }
 
-  if (upper === 'MENUNGGU KONFIRMASI GURU PENGAJAR') {
+  if (isAwaitingPengajar) {
     return 'Menunggu Konfirmasi Guru Pengajar'
   }
 
   if (upper === 'PENDING' || upper === 'MENUNGGU KONFIRMASI' || upper === 'MENUNGGU') {
-    const isPembimbing =
-      props.context === 'pembimbing' ||
-      props.context === 'leave' ||
-      props.role === 'GURU_PEMBIMBING' ||
-      authStore.user?.role === 'GURU_PEMBIMBING'
-
-    if (isPembimbing) {
-      return 'Menunggu Konfirmasi Guru Pembimbing'
-    }
-
-    return 'Menunggu Konfirmasi Guru Pengajar'
+    return 'Menunggu Konfirmasi'
   }
 
   return s

@@ -25,10 +25,10 @@
           <label class="block text-[11px] font-semibold text-gray-500 mb-1">Filter Status</label>
           <select
             v-model="statusFilter"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
             <option value="Semua">Semua Status</option>
-            <option value="PENDING">Menunggu Konfirmasi Guru Pembimbing</option>
+            <option value="PENDING">Menunggu Konfirmasi</option>
             <option value="APPROVED">Disetujui</option>
             <option value="REJECTED">Ditolak</option>
           </select>
@@ -37,13 +37,13 @@
           <label class="block text-[11px] font-semibold text-gray-500 mb-1">Pilih Kelas</label>
           <select
             v-model="classFilter"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white cursor-pointer"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
             <option value="Semua">Semua Kelas</option>
-            <option value="1">XI RPL 1</option>
-            <option value="2">XI RPL 2</option>
-            <option value="3">XII RPL 1</option>
-            <option value="4">XII RPL 2</option>
+            <option value="1">XI RPL 1 (Kelas Industri)</option>
+            <option value="2">XI RPL 2 (Kelas Industri)</option>
+            <option value="3">XII RPL 1 (Kelas Industri)</option>
+            <option value="4">XII RPL 2 (Kelas Industri)</option>
           </select>
         </div>
       </div>
@@ -56,7 +56,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Ketik nama atau alasan..."
-            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red"
+            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           />
         </div>
       </div>
@@ -83,15 +83,15 @@
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-500 uppercase tracking-wider font-semibold">
-              <th class="py-3 px-4 w-12 text-center">No</th>
-              <th class="py-3 px-4">Nama Siswa</th>
-              <th class="py-3 px-4">Kelas / NIS</th>
-              <th class="py-3 px-4 text-center">Jenis</th>
-              <th class="py-3 px-4">Tanggal Izin</th>
-              <th class="py-3 px-4">Alasan</th>
-              <th class="py-3 px-4 text-center">Lampiran</th>
-              <th class="py-3 px-4 text-center">Status</th>
-              <th class="py-3 px-4">Diverifikasi Oleh</th>
+              <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+              <th class="py-3 px-4 whitespace-nowrap">Nama Siswa</th>
+              <th class="py-3 px-4 whitespace-nowrap">Kelas / NIS</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Jenis</th>
+              <th class="py-3 px-4 whitespace-nowrap">Tanggal Izin</th>
+              <th class="py-3 px-4 whitespace-nowrap">Alasan</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Lampiran</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Status</th>
+              <th class="py-3 px-4 whitespace-nowrap">Diverifikasi Oleh</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -100,16 +100,16 @@
               :key="item.id"
               class="hover:bg-gray-50/50 transition"
             >
-              <td class="py-3.5 px-4 text-center font-medium text-gray-500">{{ idx + 1 }}</td>
-              <td class="py-3.5 px-4">
+              <td class="py-3.5 px-4 text-center font-medium text-gray-500 whitespace-nowrap">{{ idx + 1 }}</td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
                 <span class="font-bold text-gray-900">{{ item.student_name }}</span>
               </td>
-              <td class="py-3.5 px-4 text-gray-600">
+              <td class="py-3.5 px-4 text-gray-600 whitespace-nowrap">
                 {{ item.class }} • <span class="font-mono text-gray-400">{{ item.nis }}</span>
               </td>
-              <td class="py-3.5 px-4 text-center">
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <span
-                  class="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                  class="px-2 py-0.5 rounded text-[10px] font-bold uppercase whitespace-nowrap"
                   :class="item.type === 'SAKIT' ? 'bg-orange-50 text-orange-700' : 'bg-blue-50 text-blue-700'"
                 >
                   {{ item.type }}
@@ -121,13 +121,13 @@
               <td class="py-3.5 px-4 text-gray-600 max-w-xs truncate">
                 {{ item.reason }}
               </td>
-              <td class="py-3.5 px-4 text-center">
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <a
                   v-if="item.attachment || item.attachment_url"
                   :href="item.attachment_url || `/api/leave-requests/file/${item.attachment}`"
                   target="_blank"
                   download
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold border border-blue-200 transition"
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold border border-blue-200 transition whitespace-nowrap cursor-pointer"
                   title="Unduh berkas lampiran"
                 >
                   <FileTextIcon class="w-3 h-3 text-blue-600" />
@@ -135,10 +135,10 @@
                 </a>
                 <span v-else class="text-gray-300">-</span>
               </td>
-              <td class="py-3.5 px-4 text-center">
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
                 <StatusBadge :status="item.status" context="pembimbing" />
               </td>
-              <td class="py-3.5 px-4 text-gray-600">
+              <td class="py-3.5 px-4 text-gray-600 whitespace-nowrap">
                 {{ item.reviewer_name || '-' }}
               </td>
             </tr>

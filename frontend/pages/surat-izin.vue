@@ -21,7 +21,7 @@
       <div class="lg:col-span-6 bg-white rounded-2xl border border-gray-100 shadow-card p-5 md:p-6 space-y-4">
         <div class="border-b border-gray-100 pb-3">
           <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
-            <MailIcon class="w-5 h-5 text-brand-red" />
+            <MailIcon class="w-5 h-5 text-primary" />
             Detail Permohonan Izin
           </h2>
           <p class="text-xs text-gray-400 mt-0.5">Lengkapi formulir permohonan dengan tanda tangan valid</p>
@@ -35,7 +35,7 @@
             </label>
             <select
               v-model.number="form.student_id"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white cursor-pointer"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
               required
             >
               <option :value="''" disabled>-- Pilih Siswa yang Berhalangan --</option>
@@ -55,7 +55,7 @@
                 type="button"
                 @click="form.type = 'SAKIT'"
                 :class="[
-                  'py-2 rounded-xl text-xs font-semibold border transition text-center',
+                  'py-2 rounded-xl text-xs font-semibold border transition text-center cursor-pointer',
                   form.type === 'SAKIT'
                     ? 'bg-orange-50 border-orange-500 text-orange-700 shadow-xs'
                     : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
@@ -67,7 +67,7 @@
                 type="button"
                 @click="form.type = 'IZIN'"
                 :class="[
-                  'py-2 rounded-xl text-xs font-semibold border transition text-center',
+                  'py-2 rounded-xl text-xs font-semibold border transition text-center cursor-pointer',
                   form.type === 'IZIN'
                     ? 'bg-blue-50 border-blue-500 text-blue-700 shadow-xs'
                     : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
@@ -79,7 +79,7 @@
                 type="button"
                 @click="form.type = 'DISPENSASI'"
                 :class="[
-                  'py-2 rounded-xl text-xs font-semibold border transition text-center',
+                  'py-2 rounded-xl text-xs font-semibold border transition text-center cursor-pointer',
                   form.type === 'DISPENSASI'
                     ? 'bg-purple-50 border-purple-500 text-purple-700 shadow-xs'
                     : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
@@ -99,7 +99,7 @@
               <input
                 v-model="form.start_date"
                 type="date"
-                class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+                class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                 required
               />
             </div>
@@ -110,7 +110,7 @@
               <input
                 v-model="form.end_date"
                 type="date"
-                class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white"
+                class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
                 required
               />
             </div>
@@ -125,7 +125,7 @@
               v-model="form.reason"
               rows="3"
               placeholder="Contoh: Mengalami demam tinggi dan flu, disarankan istirahat oleh dokter..."
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition resize-none"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition resize-none"
               required
             ></textarea>
           </div>
@@ -146,16 +146,16 @@
               <button
                 type="button"
                 @click="fileInputRef?.click()"
-                class="px-3.5 py-2 rounded-xl border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-1.5 transition"
+                class="px-3.5 py-2 rounded-xl border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-1.5 transition cursor-pointer"
               >
-                <UploadCloudIcon class="w-4 h-4 text-brand-red" />
+                <UploadCloudIcon class="w-4 h-4 text-primary" />
                 <span>{{ selectedFile ? selectedFile.name : 'Pilih Berkas (PDF, JPG, PNG)' }}</span>
               </button>
               <button
                 v-if="selectedFile"
                 type="button"
                 @click="selectedFile = null"
-                class="text-xs text-red-600 hover:underline font-semibold"
+                class="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
               >
                 Batal
               </button>
@@ -166,7 +166,7 @@
           <button
             type="submit"
             :disabled="submitting"
-            class="w-full py-2.5 px-4 rounded-xl bg-brand-red hover:bg-brand-red-dark text-white font-medium text-sm transition shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-50"
+            class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-white font-medium text-sm transition shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             <SendIcon class="w-4 h-4" />
             <span>{{ submitting ? 'Mengirimkan...' : 'Kirim Permohonan Surat Izin' }}</span>
@@ -183,7 +183,7 @@
           </div>
           <button
             @click="fetchLeaves"
-            class="text-xs text-brand-red hover:underline font-semibold flex items-center gap-1"
+            class="text-xs text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer"
           >
             <RefreshCwIcon class="w-3.5 h-3.5" /> Segarkan
           </button>

@@ -34,7 +34,7 @@
           <select
             v-model="filterTerm"
             @change="fetchData"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white cursor-pointer"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
             <option value="2026-1">2026/2027 - Ganjil (Aktif)</option>
             <option value="2025-2">2025/2026 - Genap</option>
@@ -46,12 +46,12 @@
           <select
             v-model="filterClass"
             @change="fetchData"
-            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red bg-white cursor-pointer"
+            class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
-            <option value="1">XI RPL 1 (Rekayasa Perangkat Lunak 1)</option>
-            <option value="2">XI RPL 2 (Rekayasa Perangkat Lunak 2)</option>
-            <option value="3">XII RPL 1 (Rekayasa Perangkat Lunak 1)</option>
-            <option value="4">XII RPL 2 (Rekayasa Perangkat Lunak 2)</option>
+            <option value="1">XI RPL 1 (Kelas Industri)</option>
+            <option value="2">XI RPL 2 (Kelas Industri)</option>
+            <option value="3">XII RPL 1 (Kelas Industri)</option>
+            <option value="4">XII RPL 2 (Kelas Industri)</option>
           </select>
         </div>
       </div>
@@ -64,7 +64,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Ketik nama atau NIS..."
-            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red"
+            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           />
         </div>
       </div>
@@ -75,7 +75,7 @@
       <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-card">
         <div class="flex items-center justify-between">
           <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Hari Efektif</span>
-          <CalendarIcon class="w-5 h-5 text-brand-red" />
+          <CalendarIcon class="w-5 h-5 text-primary" />
         </div>
         <div class="mt-2 flex items-baseline gap-2">
           <span class="text-3xl font-extrabold text-gray-900">{{ effectiveDays }}</span>
@@ -129,15 +129,15 @@
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-500 uppercase tracking-wider font-semibold">
-              <th class="py-3 px-4 w-12 text-center">No</th>
-              <th class="py-3 px-4">Nama Siswa</th>
-              <th class="py-3 px-4">NIS / NISN</th>
-              <th class="py-3 px-4 text-center text-green-700">Hadir</th>
-              <th class="py-3 px-4 text-center text-orange-700">Sakit</th>
-              <th class="py-3 px-4 text-center text-blue-700">Izin</th>
-              <th class="py-3 px-4 text-center text-red-700">ALFA</th>
-              <th class="py-3 px-4 text-center">Persentase</th>
-              <th class="py-3 px-4 text-center">Predikat</th>
+              <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+              <th class="py-3 px-4 whitespace-nowrap">Nama Siswa</th>
+              <th class="py-3 px-4 whitespace-nowrap">NIS / NISN</th>
+              <th class="py-3 px-4 text-center text-emerald-700 whitespace-nowrap">Hadir</th>
+              <th class="py-3 px-4 text-center text-amber-700 whitespace-nowrap">Sakit</th>
+              <th class="py-3 px-4 text-center text-blue-700 whitespace-nowrap">Izin</th>
+              <th class="py-3 px-4 text-center text-rose-700 whitespace-nowrap">ALFA</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Persentase</th>
+              <th class="py-3 px-4 text-center whitespace-nowrap">Predikat</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -146,22 +146,22 @@
               :key="st.id"
               class="hover:bg-gray-50/50 transition"
             >
-              <td class="py-3 px-4 text-center font-medium text-gray-500">{{ index + 1 }}</td>
-              <td class="py-3 px-4">
+              <td class="py-3 px-4 text-center font-medium text-gray-500 whitespace-nowrap">{{ index + 1 }}</td>
+              <td class="py-3 px-4 whitespace-nowrap">
                 <div class="font-bold text-gray-900">{{ st.name }}</div>
               </td>
-              <td class="py-3 px-4 text-gray-500 font-mono">{{ st.nis }}</td>
-              <td class="py-3 px-4 text-center font-bold text-green-600">{{ st.hadir }}</td>
-              <td class="py-3 px-4 text-center font-semibold text-orange-600">{{ st.sakit }}</td>
-              <td class="py-3 px-4 text-center font-semibold text-blue-600">{{ st.izin }}</td>
-              <td class="py-3 px-4 text-center font-semibold text-red-600">{{ st.alpha }}</td>
-              <td class="py-3 px-4 text-center">
+              <td class="py-3 px-4 text-gray-500 font-mono whitespace-nowrap">{{ st.nis }}</td>
+              <td class="py-3 px-4 text-center font-bold text-emerald-600 whitespace-nowrap">{{ st.hadir }}</td>
+              <td class="py-3 px-4 text-center font-semibold text-amber-600 whitespace-nowrap">{{ st.sakit }}</td>
+              <td class="py-3 px-4 text-center font-semibold text-blue-600 whitespace-nowrap">{{ st.izin }}</td>
+              <td class="py-3 px-4 text-center font-semibold text-rose-600 whitespace-nowrap">{{ st.alpha }}</td>
+              <td class="py-3 px-4 text-center whitespace-nowrap">
                 <span class="font-bold text-gray-900">{{ st.percentage }}</span>
               </td>
-              <td class="py-3 px-4 text-center">
+              <td class="py-3 px-4 text-center whitespace-nowrap">
                 <span
-                  class="px-2.5 py-1 rounded-full text-[10px] font-bold"
-                  :class="parseFloat(st.percentage) >= 90 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-amber-50 text-amber-700 border border-amber-200'"
+                  class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap"
+                  :class="parseFloat(st.percentage) >= 90 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'"
                 >
                   {{ parseFloat(st.percentage) >= 90 ? 'Sangat Baik' : 'Cukup' }}
                 </span>

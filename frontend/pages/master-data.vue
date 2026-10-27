@@ -50,19 +50,19 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h2 class="text-sm font-bold text-gray-900">Daftar Rombongan Belajar (Kelas)</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Kelola kelas per jurusan (RPL, DKV, Animasi), penugasan wali kelas, dan sekretaris</p>
+            <p class="text-xs text-gray-400 mt-0.5">Kelola rombongan belajar Kelas Industri RPL, penugasan wali kelas, dan sekretaris</p>
           </div>
           <div class="flex items-center gap-2 flex-shrink-0">
             <button
               @click="showPromoteModal = true"
-              class="px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              class="px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-2xs cursor-pointer whitespace-nowrap"
             >
               <ArrowRightLeft class="w-4 h-4 text-gray-500" />
               <span>Mutasi Siswa</span>
             </button>
             <button
               @click="openAddClassModal"
-              class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+              class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap"
             >
               <Plus class="w-4 h-4" />
               <span>Tambah Rombel Baru</span>
@@ -70,48 +70,18 @@
           </div>
         </div>
 
-        <!-- Dedicated Filter Bar: Stable Switch & Stats -->
+        <!-- Dedicated Header Bar: Program Keahlian & Stats -->
         <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-2.5 rounded-2xl border border-gray-150 shadow-2xs">
           <div class="flex items-center gap-2">
-            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-1">Jurusan:</span>
-            <div class="inline-flex items-center bg-gray-100 p-1 rounded-xl text-xs select-none">
-              <button
-                type="button"
-                @click="filterClassByMajor('ALL')"
-                class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="classMajorFilter === 'ALL' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500 hover:text-gray-900'"
-              >
-                Semua
-              </button>
-              <button
-                type="button"
-                @click="filterClassByMajor('RPL')"
-                class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="classMajorFilter === 'RPL' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-500 hover:text-red-700'"
-              >
-                RPL
-              </button>
-              <button
-                type="button"
-                @click="filterClassByMajor('DKV')"
-                class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="classMajorFilter === 'DKV' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-gray-500 hover:text-emerald-700'"
-              >
-                DKV
-              </button>
-              <button
-                type="button"
-                @click="filterClassByMajor('Animasi')"
-                class="w-18 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="classMajorFilter === 'Animasi' ? 'bg-amber-600 text-white shadow-2xs' : 'text-gray-500 hover:text-amber-700'"
-              >
-                Animasi
-              </button>
-            </div>
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-1">Program Keahlian:</span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-primary/10 text-primary border border-primary/20">
+              <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              Kelas Industri RPL
+            </span>
           </div>
 
           <div class="text-xs text-gray-500 font-medium px-2">
-            Menampilkan <span class="font-bold text-gray-900">{{ filteredClasses.length }}</span> dari {{ classes.length }} Rombel
+            Total <span class="font-bold text-gray-900">{{ classes.length }}</span> Rombel Aktif
           </div>
         </div>
 
@@ -123,37 +93,30 @@
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-gray-50/70 border-b border-gray-150 text-gray-500 font-bold uppercase tracking-wider text-[10px]">
-                  <th class="py-3 px-4 w-12 text-center">No</th>
-                  <th class="py-3 px-4">Nama Rombel</th>
-                  <th class="py-3 px-4">Jurusan</th>
-                  <th class="py-3 px-4">Guru Pembimbing (Wali)</th>
-                  <th class="py-3 px-4">Sekretaris Kelas</th>
-                  <th class="py-3 px-4 text-center">Jumlah Siswa</th>
-                  <th class="py-3 px-4 text-center">Total Jadwal</th>
-                  <th class="py-3 px-4 text-center">Aksi</th>
+                  <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Nama Rombel</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Jurusan</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Guru Pembimbing (Wali)</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Sekretaris Kelas</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Jumlah Siswa</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Total Jadwal</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
                 <tr v-for="(cls, idx) in filteredClasses" :key="cls.id" class="hover:bg-gray-50/50 transition">
-                  <td class="py-3.5 px-4 text-center font-medium text-gray-400">{{ idx + 1 }}</td>
-                  <td class="py-3.5 px-4 font-bold text-gray-900 text-sm">{{ cls.name }}</td>
-                  <td class="py-3.5 px-4">
-                    <span
-                      class="px-2 py-0.5 rounded-md text-[10px] font-bold"
-                      :class="[
-                        cls.major === 'RPL' ? 'bg-red-50 text-red-700 border border-red-200' :
-                        cls.major === 'DKV' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                        'bg-amber-50 text-amber-700 border border-amber-200'
-                      ]"
-                    >
-                      {{ cls.major || 'RPL' }}
+                  <td class="py-3.5 px-4 text-center font-medium text-gray-400 whitespace-nowrap">{{ idx + 1 }}</td>
+                  <td class="py-3.5 px-4 font-bold text-gray-900 text-sm whitespace-nowrap">{{ cls.name }}</td>
+                  <td class="py-3.5 px-4 whitespace-nowrap">
+                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 whitespace-nowrap">
+                      {{ cls.major || 'RPL' }} (Kelas Industri)
                     </span>
                   </td>
-                  <td class="py-3.5 px-4 text-gray-700 font-medium">{{ cls.advisor?.name || '-' }}</td>
-                  <td class="py-3.5 px-4 text-gray-700">{{ cls.secretary?.name || '-' }}</td>
-                  <td class="py-3.5 px-4 text-center font-bold text-primary">{{ cls.students_count || 0 }} Siswa</td>
-                  <td class="py-3.5 px-4 text-center font-semibold text-gray-600">{{ cls.schedules_count || 0 }} Mapel</td>
-                  <td class="py-3.5 px-4 text-center">
+                  <td class="py-3.5 px-4 text-gray-700 font-medium whitespace-nowrap">{{ cls.advisor?.name || '-' }}</td>
+                  <td class="py-3.5 px-4 text-gray-700 whitespace-nowrap">{{ cls.secretary?.name || '-' }}</td>
+                  <td class="py-3.5 px-4 text-center font-bold text-primary whitespace-nowrap">{{ cls.students_count || 0 }} Siswa</td>
+                  <td class="py-3.5 px-4 text-center font-semibold text-gray-600 whitespace-nowrap">{{ cls.schedules_count || 0 }} Mapel</td>
+                  <td class="py-3.5 px-4 text-center whitespace-nowrap">
                     <div class="inline-flex items-center gap-1.5">
                       <button
                         @click="editClass(cls)"
@@ -186,11 +149,11 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h2 class="text-sm font-bold text-gray-900">Master Mata Pelajaran & Pengajar</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Daftar mata pelajaran kejuruan (RPL, DKV, Animasi) dan guru pengampunya</p>
+            <p class="text-xs text-gray-400 mt-0.5">Daftar mata pelajaran kejuruan Kelas Industri RPL & muatan umum beserta guru pengampunya</p>
           </div>
           <button
             @click="openAddSubjectModal"
-            class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer flex-shrink-0"
+            class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer flex-shrink-0 whitespace-nowrap"
           >
             <Plus class="w-4 h-4" />
             <span>Tambah Mapel Baru</span>
@@ -200,12 +163,12 @@
         <!-- Dedicated Filter Bar: Stable Switch & Stats -->
         <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-2.5 rounded-2xl border border-gray-150 shadow-2xs">
           <div class="flex items-center gap-2">
-            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-1">Jurusan:</span>
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-1">Kategori:</span>
             <div class="inline-flex items-center bg-gray-100 p-1 rounded-xl text-xs select-none">
               <button
                 type="button"
                 @click="filterSubjectByMajor('ALL')"
-                class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                class="px-3 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer whitespace-nowrap"
                 :class="subjectMajorFilter === 'ALL' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500 hover:text-gray-900'"
               >
                 Semua
@@ -213,26 +176,18 @@
               <button
                 type="button"
                 @click="filterSubjectByMajor('RPL')"
-                class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="subjectMajorFilter === 'RPL' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-500 hover:text-red-700'"
+                class="px-3 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer whitespace-nowrap"
+                :class="subjectMajorFilter === 'RPL' ? 'bg-primary text-white shadow-2xs' : 'text-gray-500 hover:text-primary'"
               >
-                RPL
+                RPL Kejuruan
               </button>
               <button
                 type="button"
-                @click="filterSubjectByMajor('DKV')"
-                class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="subjectMajorFilter === 'DKV' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-gray-500 hover:text-emerald-700'"
+                @click="filterSubjectByMajor('UMUM')"
+                class="px-3 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer whitespace-nowrap"
+                :class="subjectMajorFilter === 'UMUM' ? 'bg-gray-800 text-white shadow-2xs' : 'text-gray-500 hover:text-gray-800'"
               >
-                DKV
-              </button>
-              <button
-                type="button"
-                @click="filterSubjectByMajor('Animasi')"
-                class="w-18 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="subjectMajorFilter === 'Animasi' ? 'bg-amber-600 text-white shadow-2xs' : 'text-gray-500 hover:text-amber-700'"
-              >
-                Animasi
+                Muatan Umum
               </button>
             </div>
           </div>
@@ -250,38 +205,33 @@
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-gray-50/70 border-b border-gray-150 text-gray-500 font-bold uppercase tracking-wider text-[10px]">
-                  <th class="py-3 px-4 w-12 text-center">No</th>
-                  <th class="py-3 px-4">Kode</th>
-                  <th class="py-3 px-4">Nama Mata Pelajaran</th>
-                  <th class="py-3 px-4">Jurusan</th>
-                  <th class="py-3 px-4">Guru Pengajar Utama</th>
-                  <th class="py-3 px-4 text-center">Jadwal Aktif</th>
-                  <th class="py-3 px-4 text-center">Aksi</th>
+                  <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Kode</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Nama Mata Pelajaran</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Bidang / Kategori</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Guru Pengajar Utama</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Jadwal Aktif</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
                 <tr v-for="(sub, idx) in filteredSubjects" :key="sub.id" class="hover:bg-gray-50/50 transition">
-                  <td class="py-3.5 px-4 text-center font-medium text-gray-400">{{ idx + 1 }}</td>
-                  <td class="py-3.5 px-4 font-mono font-bold text-primary">{{ sub.code || '-' }}</td>
-                  <td class="py-3.5 px-4 font-bold text-gray-900">{{ sub.name }}</td>
-                  <td class="py-3.5 px-4">
+                  <td class="py-3.5 px-4 text-center font-medium text-gray-400 whitespace-nowrap">{{ idx + 1 }}</td>
+                  <td class="py-3.5 px-4 font-mono font-bold text-primary whitespace-nowrap">{{ sub.code || '-' }}</td>
+                  <td class="py-3.5 px-4 font-bold text-gray-900 whitespace-nowrap">{{ sub.name }}</td>
+                  <td class="py-3.5 px-4 whitespace-nowrap">
                     <span
-                      class="px-2 py-0.5 rounded-md text-[10px] font-bold"
-                      :class="[
-                        sub.major === 'RPL' ? 'bg-red-50 text-red-700 border border-red-200' :
-                        sub.major === 'DKV' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                        sub.major === 'Animasi' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                        'bg-gray-100 text-gray-700 border border-gray-200'
-                      ]"
+                      class="px-2.5 py-1 rounded-lg text-[10px] font-bold whitespace-nowrap"
+                      :class="sub.major === 'RPL' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-gray-100 text-gray-700 border border-gray-200'"
                     >
-                      {{ sub.major || 'UMUM' }}
+                      {{ sub.major === 'RPL' ? 'RPL Kejuruan' : (sub.major || 'UMUM') }}
                     </span>
                   </td>
-                  <td class="py-3.5 px-4 text-gray-700 font-medium">
+                  <td class="py-3.5 px-4 text-gray-700 font-medium whitespace-nowrap">
                     {{ sub.teacher?.name || '-' }}
                   </td>
-                  <td class="py-3.5 px-4 text-center font-semibold text-gray-600">{{ sub.schedules_count || 0 }} Sesi</td>
-                  <td class="py-3.5 px-4 text-center">
+                  <td class="py-3.5 px-4 text-center font-semibold text-gray-600 whitespace-nowrap">{{ sub.schedules_count || 0 }} Sesi</td>
+                  <td class="py-3.5 px-4 text-center whitespace-nowrap">
                     <div class="inline-flex items-center gap-1.5">
                       <button
                         @click="editSubject(sub)"
@@ -342,27 +292,27 @@
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-500 font-bold uppercase tracking-wider text-[10px]">
-                  <th class="py-3 px-4 w-12 text-center">No</th>
-                  <th class="py-3 px-4">Hari & Jam</th>
-                  <th class="py-3 px-4">Rombel / Kelas</th>
-                  <th class="py-3 px-4">Mata Pelajaran</th>
-                  <th class="py-3 px-4">Guru Pengajar</th>
-                  <th class="py-3 px-4">Ruang</th>
-                  <th class="py-3 px-4 text-center">Aksi</th>
+                  <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Hari & Jam</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Rombel / Kelas</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Mata Pelajaran</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Guru Pengajar</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Ruang</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
                 <tr v-for="(sch, idx) in schedules" :key="sch.id" class="hover:bg-gray-50/50 transition">
-                  <td class="py-3.5 px-4 text-center font-medium text-gray-400">{{ idx + 1 }}</td>
-                  <td class="py-3.5 px-4">
+                  <td class="py-3.5 px-4 text-center font-medium text-gray-400 whitespace-nowrap">{{ idx + 1 }}</td>
+                  <td class="py-3.5 px-4 whitespace-nowrap">
                     <p class="font-bold text-gray-900">{{ sch.day }}</p>
                     <p class="text-[10px] text-gray-500 font-mono">{{ sch.start_time }} - {{ sch.end_time }}</p>
                   </td>
-                  <td class="py-3.5 px-4 font-bold text-primary">{{ sch.school_class?.name || '-' }}</td>
-                  <td class="py-3.5 px-4 font-semibold text-gray-800">{{ sch.subject?.name || '-' }}</td>
-                  <td class="py-3.5 px-4 text-gray-700">{{ sch.teacher?.name || '-' }}</td>
-                  <td class="py-3.5 px-4 text-gray-500 font-medium">{{ sch.room || 'Lab. 1' }}</td>
-                  <td class="py-3.5 px-4 text-center">
+                  <td class="py-3.5 px-4 font-bold text-primary whitespace-nowrap">{{ sch.school_class?.name || '-' }}</td>
+                  <td class="py-3.5 px-4 font-semibold text-gray-800 whitespace-nowrap">{{ sch.subject?.name || '-' }}</td>
+                  <td class="py-3.5 px-4 text-gray-700 whitespace-nowrap">{{ sch.teacher?.name || '-' }}</td>
+                  <td class="py-3.5 px-4 text-gray-500 font-medium whitespace-nowrap">{{ sch.room || 'Lab. 1' }}</td>
+                  <td class="py-3.5 px-4 text-center whitespace-nowrap">
                     <div class="inline-flex items-center gap-1.5">
                       <button
                         @click="editSchedule(sch)"
@@ -398,7 +348,7 @@
           </div>
           <button
             @click="openAddTermModal"
-            class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+            class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap"
           >
             <Plus class="w-4 h-4" />
             <span>Tambah Semester Baru</span>
@@ -413,43 +363,43 @@
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="bg-gray-50/70 border-b border-gray-100 text-gray-500 font-bold uppercase tracking-wider text-[10px]">
-                  <th class="py-3 px-4 w-12 text-center">No</th>
-                  <th class="py-3 px-4">Nama Tahun Ajaran & Semester</th>
-                  <th class="py-3 px-4">Rentang Tanggal</th>
-                  <th class="py-3 px-4 text-center">Hari Efektif</th>
-                  <th class="py-3 px-4 text-center">Status</th>
-                  <th class="py-3 px-4 text-center">Aksi</th>
+                  <th class="py-3 px-4 w-12 text-center whitespace-nowrap">No</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Nama Tahun Ajaran & Semester</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Rentang Tanggal</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Hari Efektif</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Status</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
                 <tr v-for="(t, idx) in terms" :key="t.id" class="hover:bg-gray-50/50 transition">
-                  <td class="py-3.5 px-4 text-center font-medium text-gray-400">{{ idx + 1 }}</td>
-                  <td class="py-3.5 px-4 font-bold text-gray-900 text-sm">{{ t.name }}</td>
-                  <td class="py-3.5 px-4 text-gray-600 font-mono">{{ t.start_date }} s.d. {{ t.end_date }}</td>
-                  <td class="py-3.5 px-4 text-center font-bold text-gray-800">{{ t.effective_days }} Hari</td>
-                  <td class="py-3.5 px-4 text-center">
+                  <td class="py-3.5 px-4 text-center font-medium text-gray-400 whitespace-nowrap">{{ idx + 1 }}</td>
+                  <td class="py-3.5 px-4 font-bold text-gray-900 text-sm whitespace-nowrap">{{ t.name }}</td>
+                  <td class="py-3.5 px-4 text-gray-600 font-mono whitespace-nowrap">{{ t.start_date }} s.d. {{ t.end_date }}</td>
+                  <td class="py-3.5 px-4 text-center font-bold text-gray-800 whitespace-nowrap">{{ t.effective_days }} Hari</td>
+                  <td class="py-3.5 px-4 text-center whitespace-nowrap">
                     <span
                       v-if="t.is_active"
-                      class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                      class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap"
                     >
                       ● Sedang Aktif
                     </span>
                     <span
                       v-else
-                      class="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-50 text-gray-400 border border-gray-200"
+                      class="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-50 text-gray-400 border border-gray-200 whitespace-nowrap"
                     >
                       Arsip
                     </span>
                   </td>
-                  <td class="py-3.5 px-4 text-center">
+                  <td class="py-3.5 px-4 text-center whitespace-nowrap">
                     <button
                       v-if="!t.is_active"
                       @click="activateTerm(t)"
-                      class="px-3 py-1 bg-primary hover:bg-primary-hover text-white rounded-lg text-[10px] font-bold transition cursor-pointer"
+                      class="px-3 py-1 bg-primary hover:bg-primary-hover text-white rounded-lg text-[10px] font-bold transition cursor-pointer whitespace-nowrap"
                     >
                       Set Sebagai Aktif
                     </button>
-                    <span v-else class="text-xs text-emerald-600 font-bold">Aktif Utama</span>
+                    <span v-else class="text-xs text-emerald-600 font-bold whitespace-nowrap">Aktif Utama</span>
                   </td>
                 </tr>
               </tbody>
@@ -473,11 +423,9 @@
           </div>
 
           <div>
-            <label class="block font-semibold text-gray-700 mb-1">Jurusan / Kompetensi Keahlian *</label>
+            <label class="block font-semibold text-gray-700 mb-1">Jurusan / Program Keahlian *</label>
             <select v-model="classForm.major" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 outline-none bg-white font-semibold">
-              <option value="RPL">RPL (Rekayasa Perangkat Lunak)</option>
-              <option value="DKV">DKV (Desain Komunikasi Visual)</option>
-              <option value="Animasi">Animasi (2D & 3D)</option>
+              <option value="RPL">RPL (Rekayasa Perangkat Lunak - Kelas Industri)</option>
             </select>
           </div>
 
@@ -553,12 +501,10 @@
               <input v-model="subjectForm.code" type="text" placeholder="Contoh: RPL-PW" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary uppercase font-mono" />
             </div>
             <div>
-              <label class="block font-semibold text-gray-700 mb-1">Jurusan / Bidang</label>
+              <label class="block font-semibold text-gray-700 mb-1">Kategori / Muatan</label>
               <select v-model="subjectForm.major" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 outline-none bg-white">
-                <option value="RPL">RPL</option>
-                <option value="DKV">DKV</option>
-                <option value="Animasi">Animasi</option>
-                <option value="UMUM">UMUM</option>
+                <option value="RPL">RPL (Kejuruan)</option>
+                <option value="UMUM">UMUM (Muatan Umum / Dasar)</option>
               </select>
             </div>
           </div>
@@ -723,13 +669,8 @@ const teachers = ref<any[]>([])
 const candidateSecretaries = ref<any[]>([])
 
 const filteredClasses = computed(() => {
-  if (classMajorFilter.value === 'ALL') return classes.value
-  return classes.value.filter(c => c.major === classMajorFilter.value)
+  return classes.value
 })
-
-function filterClassByMajor(major: string) {
-  classMajorFilter.value = major
-}
 
 const filteredSubjects = computed(() => {
   if (subjectMajorFilter.value === 'ALL') return subjects.value
