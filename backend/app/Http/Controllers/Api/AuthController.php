@@ -55,7 +55,46 @@ class AuthController extends Controller
             'role' => 'required|in:SISWA,SEKRETARIS,GURU_PENGAJAR,GURU_PEMBIMBING,SUPERADMIN',
         ]);
 
-        $user = User::with('schoolClass')->where('role', $request->role)->where('is_active', true)->first();
+        // Prioritaskan user dari Kelas Industri / Jurusan RPL
+        $user = null;
+        if ($request->role === 'SEKRETARIS') {
+            $user = User::with('schoolClass')
+                ->where('role', 'SEKRETARIS')
+                ->where('is_active', true)
+                ->whereHas('schoolClass', fn($q) => $q->where('name', 'Kelas Industri'))
+                ->first();
+        } elseif ($request->role === 'GURU_PEMBIMBING') {
+            $user = User::with('schoolClass')
+                ->where('role', 'GURU_PEMBIMBING')
+                ->where('is_active', true)
+                ->where(function($q) {
+                    $q->where('name', 'like', '%Nurhayatul Fadilla%')
+                      ->orWhereHas('schoolClass', fn($sq) => $sq->where('name', 'Kelas Industri'));
+                })
+                ->first();
+        } elseif ($request->role === 'SISWA') {
+            $user = User::with('schoolClass')
+                ->where('role', 'SISWA')
+                ->where('is_active', true)
+                ->where(function($q) {
+                    $q->where('name', 'like', '%Jimmy%')
+                      ->orWhereHas('schoolClass', fn($sq) => $sq->where('name', 'Kelas Industri'));
+                })
+                ->first();
+        } elseif ($request->role === 'GURU_PENGAJAR') {
+            $user = User::with('schoolClass')
+                ->where('role', 'GURU_PENGAJAR')
+                ->where('is_active', true)
+                ->where(function($q) {
+                    $q->where('name', 'like', '%Bagas Pratama%')
+                      ->orWhere('specialization', 'like', '%Web%');
+                })
+                ->first();
+        }
+
+        if (!$user) {
+            $user = User::with('schoolClass')->where('role', $request->role)->where('is_active', true)->first();
+        }
 
         if (!$user) {
             return response()->json(['message' => 'User dengan role tersebut tidak ditemukan'], 404);

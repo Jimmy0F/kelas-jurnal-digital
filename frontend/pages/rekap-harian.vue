@@ -45,9 +45,9 @@
             @change="fetchRecap"
             class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white cursor-pointer"
           >
-            <option value="1">XI RPL 1 (Kelas Industri)</option>
-            <option value="2">XI RPL 2 (Kelas Industri)</option>
-            <option value="3">XII RPL 1 (Kelas Industri)</option>
+            <option v-for="cls in classOptions" :key="cls.id" :value="String(cls.id)">
+              {{ cls.name }}
+            </option>
           </select>
         </div>
       </div>
@@ -247,11 +247,31 @@ const exportExcel = () => {
   document.body.removeChild(link)
 }
 
-const printReport = () => {
-  window.print()
+const classOptions = ref<any[]>([
+  { id: 1, name: 'Kelas Industri' },
+  { id: 12, name: 'XI RPL 1' },
+  { id: 13, name: 'XI RPL 2' },
+  { id: 18, name: 'XII RPL 1' }
+])
+
+const fetchClasses = async () => {
+  try {
+    const res: any = await $fetch(`${config.public.apiBase}/master/classes`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    if (Array.isArray(res) && res.length > 0) {
+      classOptions.value = res
+      if (!classOptions.value.some(c => String(c.id) === String(filterClass.value))) {
+        filterClass.value = String(res[0].id)
+      }
+    }
+  } catch (e) {
+    // Keep fallback
+  }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchClasses()
   fetchRecap()
 })
 </script>
