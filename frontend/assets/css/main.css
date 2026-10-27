@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-primary: #0f47ad;
+    --color-primary-hover: #0c398a;
+    --color-primary-dark: #082457;
+    --color-primary-light: #cfdaef;
+    --color-primary-subtle: #eff4fc;
+    --brand-blue: #0f47ad;
+  }
+
   html {
     scrollbar-gutter: stable;
     overflow-y: scroll;

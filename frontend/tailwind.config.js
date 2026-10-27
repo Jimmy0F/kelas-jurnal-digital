@@ -11,30 +11,31 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2563EB',
-          hover: '#1D4ED8',
-          light: '#DBEAFE',
-          subtle: '#EFF6FF'
+          DEFAULT: '#0f47ad',
+          hover: '#0c398a',
+          dark: '#082457',
+          light: '#cfdaef',
+          subtle: '#eff4fc'
         },
         'brand-red': {
-          DEFAULT: '#2563EB',
-          dark: '#1D4ED8',
-          light: '#DBEAFE',
-          50: '#EFF6FF'
+          DEFAULT: '#0f47ad',
+          dark: '#0c398a',
+          light: '#cfdaef',
+          50: '#eff4fc'
         },
         'brand-blue': {
-          DEFAULT: '#2563EB',
-          dark: '#1D4ED8',
-          light: '#DBEAFE',
-          50: '#EFF6FF'
+          DEFAULT: '#0f47ad',
+          dark: '#0c398a',
+          light: '#cfdaef',
+          50: '#eff4fc'
         },
         presence: {
           hadir: '#16A34A',
           'hadir-bg': '#DCFCE7',
           sakit: '#EA580C',
           'sakit-bg': '#FFEDD5',
-          izin: '#2563EB',
-          'izin-bg': '#DBEAFE',
+          izin: '#0f47ad',
+          'izin-bg': '#cfdaef',
           alpha: '#DC2626',
           'alpha-bg': '#FEE2E2'
         }

@@ -2,7 +2,7 @@
   <div
     :class="[
       isDark ? 'bg-[#0b0f19] text-slate-100' : 'bg-white text-slate-800',
-      'min-h-screen flex flex-col font-sans antialiased transition-colors duration-300 selection:bg-[#2563EB] selection:text-white relative'
+      'min-h-screen flex flex-col font-sans antialiased transition-colors duration-300 selection:bg-[#0f47ad] selection:text-white relative'
     ]"
   >
     <!-- FIXED NAVBAR (Always pinned to the top on scroll) -->
@@ -30,7 +30,7 @@
               </span>
               <span
                 class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border transition-colors"
-                :class="isDark ? 'bg-blue-500/15 text-blue-300 border-blue-500/30' : 'bg-blue-50 text-[#2563EB] border-blue-200'"
+                :class="isDark ? 'bg-blue-500/15 text-blue-300 border-blue-500/30' : 'bg-blue-50 text-[#0f47ad] border-blue-200'"
               >
                 Jakarta
               </span>
@@ -51,7 +51,7 @@
             class="relative px-3.5 py-2 rounded-lg transition-all duration-200 cursor-pointer h-10 flex items-center justify-center"
             :class="[
               activeSection === link.id
-                ? (isDark ? 'text-[#60A5FA] font-bold' : 'text-[#2563EB] font-bold')
+                ? (isDark ? 'text-[#60A5FA] font-bold' : 'text-[#0f47ad] font-bold')
                 : (isDark ? 'text-slate-300 hover:text-white hover:bg-slate-800/60' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100')
             ]"
           >
@@ -59,7 +59,7 @@
             <!-- Blue Active Indicator Underline -->
             <span
               v-if="activeSection === link.id"
-              class="absolute bottom-0 left-2.5 right-2.5 h-[2.5px] bg-[#2563EB] rounded-full transition-all duration-300"
+              class="absolute bottom-0 left-2.5 right-2.5 h-[2.5px] bg-[#0f47ad] rounded-full transition-all duration-300"
             ></span>
           </button>
         </nav>
@@ -89,7 +89,7 @@
           <NuxtLink
             v-if="authStore.isAuthenticated"
             to="/dashboard"
-            class="px-4 sm:px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-95 group"
+            class="px-4 sm:px-5 py-2.5 rounded-xl bg-[#0f47ad] hover:bg-[#0c398a] text-white text-xs font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-95 group"
           >
             <span>Buka Dashboard</span>
             <ChevronRight class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -97,7 +97,7 @@
           <NuxtLink
             v-else
             to="/login"
-            class="px-4 sm:px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-95 group"
+            class="px-4 sm:px-5 py-2.5 rounded-xl bg-[#0f47ad] hover:bg-[#0c398a] text-white text-xs font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-95 group"
           >
             <span>Masuk Portal</span>
             <ChevronRight class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -132,12 +132,12 @@
             class="w-full text-left px-4 py-2.5 rounded-lg text-xs font-semibold transition-colors flex items-center justify-between"
             :class="[
               activeSection === link.id
-                ? (isDark ? 'text-[#60A5FA] bg-blue-500/10 font-bold' : 'text-[#2563EB] bg-blue-50 font-bold')
+                ? (isDark ? 'text-[#60A5FA] bg-blue-500/10 font-bold' : 'text-[#0f47ad] bg-blue-50 font-bold')
                 : (isDark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-700 hover:bg-slate-100')
             ]"
           >
             <span>{{ link.name }}</span>
-            <span v-if="activeSection === link.id" class="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span>
+            <span v-if="activeSection === link.id" class="w-1.5 h-1.5 rounded-full bg-[#0f47ad]"></span>
           </button>
         </div>
       </Transition>
@@ -153,7 +153,7 @@
           <!-- Left Column: Editorial Headline & Copy -->
           <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
             <!-- Plain Text Label (Replaces Gambar 1 pill/ping badge) -->
-            <p class="text-xs font-bold tracking-wider uppercase text-[#2563EB] transition-colors">
+            <p class="text-xs font-bold tracking-wider uppercase text-[#0f47ad] transition-colors">
               Tahun Ajaran 2026/2027 • Semester Ganjil
             </p>
 
@@ -163,7 +163,7 @@
               :class="isDark ? 'text-white' : 'text-slate-900'"
             >
               Pusat Pelaporan KBM &
-              <span class="text-[#2563EB]">Presensi Digital</span>
+              <span class="text-[#0f47ad]">Presensi Digital</span>
             </h1>
 
             <p
@@ -177,7 +177,7 @@
             <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
               <NuxtLink
                 to="/login"
-                class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm hover:shadow-md active:scale-95 group"
+                class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#0f47ad] hover:bg-[#0c398a] text-white text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm hover:shadow-md active:scale-95 group"
               >
                 <span>Buka Halaman Login</span>
                 <ChevronRight class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -262,7 +262,7 @@
                 <div class="flex items-center gap-2.5">
                   <div
                     class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs border"
-                    :class="isDark ? 'bg-blue-500/10 border-blue-500/30 text-blue-400' : 'bg-blue-50 border-blue-200 text-[#2563EB]'"
+                    :class="isDark ? 'bg-blue-500/10 border-blue-500/30 text-blue-400' : 'bg-blue-50 border-blue-200 text-[#0f47ad]'"
                   >
                     71
                   </div>
@@ -302,7 +302,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Section Header (Clean, no AI slop chip) -->
         <div class="max-w-2xl mx-auto text-center space-y-2 mb-12">
-          <p class="text-xs font-bold text-[#2563EB] uppercase tracking-wider">
+          <p class="text-xs font-bold text-[#0f47ad] uppercase tracking-wider">
             Kompetensi Keahlian
           </p>
           <h2 class="text-2xl sm:text-3xl font-bold tracking-tight" :class="isDark ? 'text-white' : 'text-slate-900'">
@@ -456,7 +456,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Section Header -->
         <div class="max-w-2xl mx-auto text-center space-y-2 mb-12">
-          <p class="text-xs font-bold text-[#2563EB] uppercase tracking-wider">
+          <p class="text-xs font-bold text-[#0f47ad] uppercase tracking-wider">
             Alur Sistem
           </p>
           <h2 class="text-2xl sm:text-3xl font-bold tracking-tight" :class="isDark ? 'text-white' : 'text-slate-900'">
@@ -574,7 +574,7 @@
             <div class="space-y-3">
               <span
                 class="inline-block text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border"
-                :class="isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-blue-50 text-[#2563EB] border-blue-200'"
+                :class="isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'bg-blue-50 text-[#0f47ad] border-blue-200'"
               >
                 Langkah 4
               </span>
@@ -587,7 +587,7 @@
             </div>
             <div
               class="pt-3 border-t mt-4 text-[11px] font-semibold"
-              :class="isDark ? 'border-slate-800 text-blue-400' : 'border-slate-100 text-[#2563EB]'"
+              :class="isDark ? 'border-slate-800 text-blue-400' : 'border-slate-100 text-[#0f47ad]'"
             >
               Master Data & Gateway WA
             </div>
@@ -604,7 +604,7 @@
           :class="[
             isDark
               ? 'bg-slate-900 border-slate-800 text-white'
-              : 'bg-[#2563EB] border-blue-700 text-white'
+              : 'bg-[#0f47ad] border-blue-700 text-white'
           ]"
         >
           <div class="space-y-1.5 max-w-xl">
@@ -625,8 +625,8 @@
               class="px-6 py-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 group shadow-sm"
               :class="[
                 isDark
-                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white'
-                  : 'bg-white hover:bg-slate-100 text-[#2563EB]'
+                  ? 'bg-[#0f47ad] hover:bg-[#0c398a] text-white'
+                  : 'bg-white hover:bg-slate-100 text-[#0f47ad]'
               ]"
             >
               <span>Buka Halaman Login</span>
@@ -673,7 +673,7 @@
               Jl. Dr. KRT. Radjiman Widyodiningrat (Pulo Jahe), RT 12 / RW 14, Kel. Jatinegara, Kec. Cakung, Kota Jakarta Timur, DKI Jakarta 13930
             </p>
             <p class="pt-1 font-medium" :class="isDark ? 'text-slate-400' : 'text-slate-600'">
-              Kontak: <span class="font-semibold">0856-8555-672</span> • Email: <a href="mailto:smkntujuh1jakarta@gmail.com" class="text-[#2563EB] hover:underline font-semibold">smkntujuh1jakarta@gmail.com</a>
+              Kontak: <span class="font-semibold">0856-8555-672</span> • Email: <a href="mailto:smkntujuh1jakarta@gmail.com" class="text-[#0f47ad] hover:underline font-semibold">smkntujuh1jakarta@gmail.com</a>
             </p>
           </div>
 
@@ -684,21 +684,21 @@
             </div>
             <ul class="space-y-2 font-medium" :class="isDark ? 'text-slate-400' : 'text-slate-600'">
               <li>
-                <NuxtLink to="/login" class="hover:text-[#2563EB] transition-colors flex items-center gap-1.5 group">
-                  <span class="text-[#2563EB] font-bold">›</span>
+                <NuxtLink to="/login" class="hover:text-[#0f47ad] transition-colors flex items-center gap-1.5 group">
+                  <span class="text-[#0f47ad] font-bold">›</span>
                   <span class="group-hover:translate-x-0.5 transition-transform">Masuk Portal Presensi Siswa & Guru</span>
                 </NuxtLink>
               </li>
               <li>
-                <a href="http://smkntujuh1jakarta.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#2563EB] transition-colors flex items-center gap-1.5 group">
-                  <span class="text-[#2563EB] font-bold">›</span>
+                <a href="http://smkntujuh1jakarta.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#0f47ad] transition-colors flex items-center gap-1.5 group">
+                  <span class="text-[#0f47ad] font-bold">›</span>
                   <span class="group-hover:translate-x-0.5 transition-transform">Website Resmi SMKN 71 Jakarta</span>
                   <ExternalLink class="w-3 h-3 opacity-60" />
                 </a>
               </li>
               <li>
-                <a href="https://siap71.smkn71jakarta.sch.id" target="_blank" rel="noopener noreferrer" class="hover:text-[#2563EB] transition-colors flex items-center gap-1.5 group">
-                  <span class="text-[#2563EB] font-bold">›</span>
+                <a href="https://siap71.smkn71jakarta.sch.id" target="_blank" rel="noopener noreferrer" class="hover:text-[#0f47ad] transition-colors flex items-center gap-1.5 group">
+                  <span class="text-[#0f47ad] font-bold">›</span>
                   <span class="group-hover:translate-x-0.5 transition-transform">LMS Pembelajaran SIAP 71</span>
                   <ExternalLink class="w-3 h-3 opacity-60" />
                 </a>
