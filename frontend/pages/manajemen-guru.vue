@@ -112,6 +112,16 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <!-- Impor Guru Massal Button -->
+          <button
+            type="button"
+            @click="openImportModal"
+            class="px-4 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-2xs hover:shadow-xs cursor-pointer bg-white"
+          >
+            <UploadCloud class="w-4 h-4 text-primary" />
+            <span>Impor Guru (JSON)</span>
+          </button>
+
           <!-- Tambah Guru Button -->
           <button
             type="button"
@@ -396,6 +406,145 @@
         </form>
       </div>
     </div>
+
+    <!-- Modal Impor Guru & Staf Massal (JSON) -->
+    <div
+      v-if="showImportModal"
+      class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-gray-150 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold">
+              <UploadCloud class="w-5 h-5" />
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-gray-900">Impor Guru & Staf Pengajar Massal</h3>
+              <p class="text-[11px] text-gray-500">Impor akun guru pembimbing dan pengajar mata pelajaran sekaligus</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            @click="closeImportModal"
+            class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+          >
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <!-- Petunjuk & Tombol Template -->
+          <div class="p-4 bg-blue-50/70 border border-blue-150 rounded-2xl space-y-2 text-blue-900">
+            <div class="flex items-center justify-between">
+              <span class="font-bold flex items-center gap-1.5">
+                <FileCode class="w-4 h-4 text-primary" />
+                Format Data JSON Guru & Staf:
+              </span>
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  @click="fillTeacherTemplate"
+                  class="text-[11px] font-bold text-primary hover:underline cursor-pointer"
+                >
+                  Contoh Data
+                </button>
+                <span class="text-gray-300">•</span>
+                <button
+                  type="button"
+                  @click="downloadTeacherTemplate"
+                  class="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Download class="w-3.5 h-3.5" />
+                  Unduh .json
+                </button>
+              </div>
+            </div>
+            <p class="text-[11px] text-blue-700 leading-relaxed font-mono bg-white/80 p-2.5 rounded-xl border border-blue-100">
+              [{"name": "Nama Guru, S.Kom", "nip_nis": "19900101...", "role": "GURU_PENGAJAR", "specialization": "Pemrograman Web", "email": "guru@sekolah.sch.id"}]
+            </p>
+            <p class="text-[11px] text-blue-600">
+              * Peran yang didukung: <code>GURU_PENGAJAR</code>, <code>GURU_PEMBIMBING</code>, atau <code>SUPERADMIN</code>. Kata sandi otomatis diatur ke <code>password123</code>.
+            </p>
+          </div>
+
+          <!-- File Upload Zone -->
+          <div>
+            <label class="block font-bold text-gray-700 mb-1.5">Unggah Berkas .JSON</label>
+            <div
+              @click="triggerFileInput"
+              class="border-2 border-dashed border-gray-200 hover:border-primary/60 hover:bg-blue-50/20 rounded-2xl p-4 text-center cursor-pointer transition flex flex-col items-center justify-center gap-1.5"
+            >
+              <input
+                ref="fileInputRef"
+                type="file"
+                accept=".json,application/json"
+                @change="handleFileUpload"
+                class="hidden"
+              />
+              <UploadCloud class="w-7 h-7 text-gray-400" />
+              <div class="text-xs font-semibold text-gray-700">
+                <span class="text-primary hover:underline font-bold">Pilih berkas JSON</span> atau seret ke sini
+              </div>
+              <p class="text-[10px] text-gray-400">Mendukung format .json berisi array data guru & staf pengajar</p>
+              <div v-if="uploadedFileName" class="mt-1 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full font-bold text-[11px] flex items-center gap-1">
+                <Check class="w-3.5 h-3.5" />
+                <span>{{ uploadedFileName }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- JSON Editor / Paste Area -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="font-bold text-gray-700">Atau Tempel / Edit Kode JSON di Sini</label>
+              <span v-if="detectedTeacherCount > 0" class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                ✓ {{ detectedTeacherCount }} Akun Guru Terdeteksi
+              </span>
+            </div>
+            <textarea
+              v-model="importJsonText"
+              rows="7"
+              placeholder='[
+  {
+    "name": "Bagas Pratama, S.Kom",
+    "nip_nis": "199001012015031001",
+    "role": "GURU_PENGAJAR",
+    "specialization": "Pemrograman Web & Mobile",
+    "email": "bagas.pratama@sekolah.sch.id"
+  }
+]'
+              class="w-full p-3 font-mono text-[11px] rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            ></textarea>
+          </div>
+
+          <!-- Alert jika ada error parse / server error -->
+          <div v-if="importError" class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center justify-between">
+            <span>{{ importError }}</span>
+            <button @click="importError = ''" class="font-bold cursor-pointer">✕</button>
+          </div>
+
+          <!-- Modal Actions -->
+          <div class="pt-3 border-t border-gray-150 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              @click="closeImportModal"
+              class="px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold cursor-pointer"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              :disabled="importing || !importJsonText.trim()"
+              @click="submitTeacherBulkImport"
+              class="px-5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-sm"
+            >
+              <UploadCloud class="w-4 h-4" />
+              <span>{{ importing ? 'Mengimpor Data...' : `Mulai Impor (${detectedTeacherCount} Guru)` }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -412,10 +561,21 @@ import {
   CheckCircle2,
   AlertCircle,
   X,
+  UploadCloud,
+  Download,
+  FileCode,
+  Check,
 } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/auth'
 
 const authStore = useAuthStore()
+
+const showImportModal = ref(false)
+const importJsonText = ref('')
+const importing = ref(false)
+const importError = ref('')
+const uploadedFileName = ref('')
+const fileInputRef = ref<HTMLInputElement | null>(null)
 
 const teachers = ref<any[]>([])
 const classes = ref<any[]>([])
@@ -618,6 +778,156 @@ async function handleDelete(teacher: any) {
     fetchTeachers()
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal menghapus guru.'
+  }
+}
+
+const detectedTeacherCount = computed(() => {
+  if (!importJsonText.value.trim()) return 0
+  try {
+    const parsed = JSON.parse(importJsonText.value)
+    if (Array.isArray(parsed)) return parsed.length
+    if (parsed.users && Array.isArray(parsed.users)) return parsed.users.length
+    if (parsed.data && Array.isArray(parsed.data)) return parsed.data.length
+    return 0
+  } catch {
+    return 0
+  }
+})
+
+function openImportModal() {
+  importError.value = ''
+  uploadedFileName.value = ''
+  if (!importJsonText.value.trim()) {
+    fillTeacherTemplate()
+  }
+  showImportModal.value = true
+}
+
+function closeImportModal() {
+  showImportModal.value = false
+  importError.value = ''
+}
+
+function triggerFileInput() {
+  fileInputRef.value?.click()
+}
+
+function handleFileUpload(e: Event) {
+  const target = e.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+
+  uploadedFileName.value = file.name
+  const reader = new FileReader()
+  reader.onload = (event) => {
+    try {
+      const text = event.target?.result as string
+      JSON.parse(text)
+      importJsonText.value = text
+      importError.value = ''
+    } catch {
+      importError.value = 'Berkas yang diunggah bukan format JSON yang valid.'
+    }
+  }
+  reader.readAsText(file)
+}
+
+function fillTeacherTemplate() {
+  const sample = [
+    {
+      name: "Bagas Pratama, S.Kom",
+      nip_nis: "199001012015031001",
+      role: "GURU_PENGAJAR",
+      specialization: "Pemrograman Web & Mobile",
+      phone: "081299990001",
+      email: "bagas.pratama@sekolah.sch.id"
+    },
+    {
+      name: "Nurhayatul Fadilla, S.Pd",
+      nip_nis: "198706152011012001",
+      role: "GURU_PEMBIMBING",
+      class_name: "Kelas Industri RPL",
+      specialization: "Wali Kelas Industri & Konsentrasi RPL",
+      phone: "081288990011",
+      email: "fadhilah@sekolah.sch.id"
+    },
+    {
+      name: "Veranika TM, S.Kom",
+      nip_nis: "198805052014022002",
+      role: "GURU_PENGAJAR",
+      specialization: "Basis Data & Cloud",
+      phone: "081299990003",
+      email: "veranika@sekolah.sch.id"
+    }
+  ]
+  importJsonText.value = JSON.stringify(sample, null, 2)
+  uploadedFileName.value = ''
+  importError.value = ''
+}
+
+function downloadTeacherTemplate() {
+  const sample = [
+    {
+      name: "Contoh Guru Pengajar, S.Kom",
+      nip_nis: "199001012015031001",
+      role: "GURU_PENGAJAR",
+      specialization: "Pemrograman Berorientasi Objek",
+      phone: "081299990001",
+      email: "guru1@sekolah.sch.id"
+    },
+    {
+      name: "Contoh Guru Pembimbing, S.Pd",
+      nip_nis: "198706152011012001",
+      role: "GURU_PEMBIMBING",
+      class_name: "Kelas Industri RPL",
+      specialization: "Wali Kelas & Konsentrasi RPL",
+      phone: "081299990002",
+      email: "guru2@sekolah.sch.id"
+    }
+  ]
+  const blob = new Blob([JSON.stringify(sample, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `template_guru_staf_pengajar.json`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
+async function submitTeacherBulkImport() {
+  importError.value = ''
+  let parsed: any = null
+  try {
+    parsed = JSON.parse(importJsonText.value)
+  } catch {
+    importError.value = 'Format JSON tidak valid. Periksa tanda koma, kurung kurawal, dan tanda petik.'
+    return
+  }
+
+  const list = Array.isArray(parsed) ? parsed : (parsed.users || parsed.data || null)
+  if (!Array.isArray(list) || !list.length) {
+    importError.value = 'Data JSON harus berupa array yang berisi minimal 1 data guru/staf.'
+    return
+  }
+
+  importing.value = true
+  try {
+    const res: any = await $fetch(`${authStore.apiBase}/users/import`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authStore.token}` },
+      body: { users: list }
+    })
+    successMsg.value = res.message || `${list.length} data guru/staf berhasil diimpor!`
+    showImportModal.value = false
+    importJsonText.value = ''
+    fetchTeachers()
+    fetchMetadata()
+  } catch (err: any) {
+    importError.value = err?.data?.message || 'Gagal memproses impor massal guru.'
+  } finally {
+    importing.value = false
   }
 }
 

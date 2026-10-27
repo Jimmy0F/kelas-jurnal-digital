@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\SchoolClass;
 use App\Models\Notification;
 use App\Models\AuditLog;
+use App\Models\Subject;
 
 class UserController extends Controller
 {
@@ -370,54 +371,186 @@ class UserController extends Controller
     public function bulkImport(Request $request)
     {
         $currentUser = $request->user();
-        if ($currentUser->role !== 'SUPERADMIN') {
-            return response()->json(['message' => 'Hanya Superadmin yang berhak melakukan impor data pengguna.'], 403);
+        if (!in_array($currentUser->role, ['SUPERADMIN', 'GURU_PEMBIMBING'])) {
+            return response()->json(['message' => 'Hanya Guru Pembimbing dan Superadmin yang berhak melakukan impor data.'], 403);
         }
 
-        $request->validate([
-            'users' => 'required|array|min:1',
-            'users.*.name' => 'required|string',
-            'users.*.email' => 'required|email',
-            'users.*.role' => 'required|in:SISWA,SEKRETARIS,GURU_PENGAJAR,GURU_PEMBIMBING,SUPERADMIN',
-            'users.*.nip_nis' => 'nullable|string',
-            'users.*.phone' => 'nullable|string',
-            'users.*.class_id' => 'nullable|exists:classes,id',
-        ]);
+        $rawList = null;
+
+        // 1. Check if file is uploaded (.json)
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $content = file_get_contents($file->getRealPath());
+            $json = json_decode($content, true);
+            if (is_array($json)) {
+                $rawList = isset($json['users']) && is_array($json['users']) ? $json['users'] : (isset($json['data']) && is_array($json['data']) ? $json['data'] : $json);
+            } else {
+                return response()->json(['message' => 'Berkas JSON tidak valid atau rusak.'], 422);
+            }
+        } elseif ($request->has('users')) {
+            $rawList = $request->input('users');
+            if (is_string($rawList)) {
+                $rawList = json_decode($rawList, true);
+            }
+        } else {
+            // Check if request body itself is a JSON array
+            $body = $request->getContent();
+            $decoded = json_decode($body, true);
+            if (is_array($decoded)) {
+                $rawList = isset($decoded['users']) && is_array($decoded['users']) ? $decoded['users'] : (isset($decoded['data']) && is_array($decoded['data']) ? $decoded['data'] : $decoded);
+            }
+        }
+
+        if (!is_array($rawList) || empty($rawList)) {
+            return response()->json(['message' => 'Format data tidak valid. Sertakan array data pengguna dalam format JSON.'], 422);
+        }
+
+        $isPembimbing = $currentUser->role === 'GURU_PEMBIMBING';
+        $classId = null;
+
+        if ($isPembimbing) {
+            $classId = $currentUser->class_id ?? SchoolClass::where('advisor_id', $currentUser->id)->value('id');
+            if (!$classId) {
+                return response()->json(['message' => 'Anda belum terdaftar sebagai wali kelas dari kelas binaan manapun.'], 422);
+            }
+        }
 
         $created = 0;
+        $updated = 0;
         $skipped = 0;
         $defaultPassword = Hash::make('password123');
+        $errors = [];
 
-        foreach ($request->users as $u) {
-            $existing = User::where('email', $u['email'])->first();
-            if ($existing) {
+        foreach ($rawList as $index => $u) {
+            if (!is_array($u)) continue;
+
+            $name = trim($u['name'] ?? ($u['nama'] ?? ''));
+            if (!$name) {
+                $errors[] = "Baris " . ($index + 1) . ": Nama wajib diisi.";
                 $skipped++;
                 continue;
             }
 
-            User::create([
-                'name' => $u['name'],
-                'email' => $u['email'],
-                'password' => $defaultPassword,
-                'phone' => $u['phone'] ?? null,
-                'nip_nis' => $u['nip_nis'] ?? null,
-                'role' => $u['role'],
-                'class_id' => $u['class_id'] ?? null,
-                'is_active' => true,
-            ]);
-            $created++;
+            $nipNis = isset($u['nip_nis']) ? trim((string)$u['nip_nis']) : (isset($u['nis']) ? trim((string)$u['nis']) : (isset($u['nip']) ? trim((string)$u['nip']) : (isset($u['nisn']) ? trim((string)$u['nisn']) : null)));
+            $phone = isset($u['phone']) ? trim((string)$u['phone']) : (isset($u['no_hp']) ? trim((string)$u['no_hp']) : (isset($u['telp']) ? trim((string)$u['telp']) : null));
+            $specialization = isset($u['specialization']) ? trim((string)$u['specialization']) : (isset($u['keahlian']) ? trim((string)$u['keahlian']) : (isset($u['mapel']) ? trim((string)$u['mapel']) : null));
+
+            // Determine role & class
+            if ($isPembimbing) {
+                $role = isset($u['role']) && strtoupper(trim($u['role'])) === 'SEKRETARIS' ? 'SEKRETARIS' : 'SISWA';
+                $targetClassId = $classId;
+            } else {
+                $inputRole = isset($u['role']) ? strtoupper(trim($u['role'])) : '';
+                if (in_array($inputRole, ['SISWA', 'SEKRETARIS', 'GURU_PENGAJAR', 'GURU_PEMBIMBING', 'SUPERADMIN'])) {
+                    $role = $inputRole;
+                } else {
+                    $role = 'GURU_PENGAJAR';
+                }
+
+                $targetClassId = $u['class_id'] ?? null;
+                if (!$targetClassId && !empty($u['class_name'])) {
+                    $foundClass = SchoolClass::where('name', 'like', '%' . trim($u['class_name']) . '%')->first();
+                    $targetClassId = $foundClass?->id;
+                }
+            }
+
+            // Determine email
+            $email = isset($u['email']) ? strtolower(trim($u['email'])) : '';
+            if (!$email) {
+                $slug = preg_replace('/[^a-z0-9]/', '', strtolower($nipNis ?: $name));
+                $emailDomain = ($role === 'SISWA' || $role === 'SEKRETARIS') ? 'siswa.sekolah.sch.id' : 'sekolah.sch.id';
+                $email = "{$slug}@{$emailDomain}";
+            }
+
+            // Check if user already exists
+            $existing = User::where('email', $email)
+                ->when($nipNis, function ($q) use ($nipNis) {
+                    $q->orWhere('nip_nis', $nipNis);
+                })
+                ->first();
+
+            if ($existing) {
+                if ($isPembimbing && $existing->class_id != $classId && in_array($existing->role, ['GURU_PENGAJAR', 'GURU_PEMBIMBING', 'SUPERADMIN'])) {
+                    $skipped++;
+                    $errors[] = "Siswa '{$name}' memiliki email/NISN yang bentrok dengan staf/guru.";
+                    continue;
+                }
+
+                $updateData = [
+                    'name' => $name,
+                    'phone' => $phone ?: $existing->phone,
+                    'nip_nis' => $nipNis ?: $existing->nip_nis,
+                    'role' => $role,
+                ];
+
+                if ($targetClassId) {
+                    $updateData['class_id'] = $targetClassId;
+                }
+                if ($specialization) {
+                    $updateData['specialization'] = $specialization;
+                }
+
+                $existing->update($updateData);
+
+                if ($role === 'SEKRETARIS' && $targetClassId) {
+                    SchoolClass::where('id', $targetClassId)->update(['secretary_id' => $existing->id]);
+                }
+                if ($role === 'GURU_PEMBIMBING' && $targetClassId) {
+                    SchoolClass::where('id', $targetClassId)->update(['advisor_id' => $existing->id]);
+                }
+
+                $updated++;
+            } else {
+                $newUser = User::create([
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => $defaultPassword,
+                    'phone' => $phone,
+                    'nip_nis' => $nipNis,
+                    'role' => $role,
+                    'class_id' => $targetClassId,
+                    'specialization' => $specialization,
+                    'is_active' => true,
+                ]);
+
+                if ($role === 'SEKRETARIS' && $targetClassId) {
+                    SchoolClass::where('id', $targetClassId)->update(['secretary_id' => $newUser->id]);
+                }
+
+                if ($role === 'GURU_PEMBIMBING' && $targetClassId) {
+                    SchoolClass::where('id', $targetClassId)->update(['advisor_id' => $newUser->id]);
+                }
+
+                // If subject_id provided or mapel name matches, link teacher to subject
+                $subjectId = $u['subject_id'] ?? null;
+                if (!$subjectId && $specialization) {
+                    $sub = Subject::where('name', 'like', "%{$specialization}%")->first();
+                    $subjectId = $sub?->id;
+                }
+                if ($role === 'GURU_PENGAJAR' && $subjectId) {
+                    Subject::where('id', $subjectId)->update(['teacher_id' => $newUser->id]);
+                }
+
+                $created++;
+            }
         }
+
+        $logAction = $isPembimbing
+            ? "Impor massal murid kelas: {$created} baru ditambahkan, {$updated} diperbarui"
+            : "Impor massal pengguna/guru: {$created} baru ditambahkan, {$updated} diperbarui, {$skipped} dilewati";
 
         AuditLog::create([
             'user_id' => $currentUser->id,
-            'action' => "Impor massal pengguna: {$created} berhasil dibuat, {$skipped} dilewati",
+            'action' => $logAction,
             'ip_address' => $request->ip(),
         ]);
 
         return response()->json([
-            'message' => "Proses impor selesai: {$created} akun berhasil ditambahkan, {$skipped} dilewati (email sudah ada).",
+            'message' => "Proses impor selesai: {$created} data baru ditambahkan, {$updated} data diperbarui" . ($skipped ? ", {$skipped} dilewati" : '') . ".",
             'created_count' => $created,
+            'updated_count' => $updated,
             'skipped_count' => $skipped,
+            'errors' => $errors,
         ]);
     }
 }
