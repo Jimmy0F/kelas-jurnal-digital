@@ -30,7 +30,7 @@
           <div class="bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs space-y-5">
             <div class="flex items-center justify-between border-b border-gray-100 pb-3">
               <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-red-50 text-primary flex items-center justify-center">
+                <div class="w-8 h-8 rounded-lg bg-blue-50 text-primary flex items-center justify-center">
                   <Radio class="w-4 h-4" />
                 </div>
                 <div>

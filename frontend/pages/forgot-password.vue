@@ -4,7 +4,7 @@
       <!-- Icon Lock / Check -->
       <div
         v-if="currentStep !== 4"
-        class="w-12 h-12 bg-red-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4"
+        class="w-12 h-12 bg-blue-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4"
       >
         <Lock class="w-6 h-6" />
       </div>
@@ -35,7 +35,7 @@
               s === currentStep
                 ? 'bg-primary text-white'
                 : s < currentStep
-                ? 'bg-red-100 text-primary'
+                ? 'bg-blue-100 text-primary'
                 : 'bg-gray-100 text-gray-400'
             ]"
           >

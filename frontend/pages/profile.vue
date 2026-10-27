@@ -8,13 +8,13 @@
     <main class="px-6 md:px-8 pb-10 max-w-4xl space-y-6">
       <!-- Profile Overview Card -->
       <div class="bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        <div class="w-20 h-20 rounded-full bg-red-100 text-primary font-black text-2xl flex items-center justify-center ring-4 ring-red-50 flex-shrink-0">
+        <div class="w-20 h-20 rounded-full bg-blue-100 text-primary font-black text-2xl flex items-center justify-center ring-4 ring-blue-50 flex-shrink-0">
           {{ userInitial }}
         </div>
         <div class="flex-1 text-center sm:text-left space-y-1">
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
             <h2 class="text-xl font-bold text-gray-900">{{ authStore.user?.name || 'Pengguna' }}</h2>
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-50 text-primary border border-red-100">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-primary border border-blue-100">
               {{ roleLabel }}
             </span>
           </div>
@@ -141,7 +141,7 @@
             <button
               :disabled="saving"
               type="submit"
-              class="px-5 py-2.5 rounded-xl bg-primary hover:bg-red-700 text-white text-xs font-bold transition shadow-xs disabled:opacity-50 cursor-pointer"
+              class="px-5 py-2.5 rounded-xl bg-primary hover:bg-blue-700 text-white text-xs font-bold transition shadow-xs disabled:opacity-50 cursor-pointer"
             >
               {{ saving ? 'Menyimpan...' : 'Simpan Perubahan Profil' }}
             </button>
@@ -154,7 +154,7 @@
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-gray-150 space-y-4 animate-in fade-in zoom-in-95 duration-150">
           <div class="flex items-center justify-between border-b border-gray-100 pb-3">
             <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-lg bg-red-50 text-primary flex items-center justify-center">
+              <div class="w-8 h-8 rounded-lg bg-blue-50 text-primary flex items-center justify-center">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
               </div>
               <div>
@@ -187,7 +187,7 @@
               type="button"
               :disabled="smsLoading"
               @click="requestSmsOtp"
-              class="w-full py-2.5 bg-primary hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-xs disabled:opacity-50 cursor-pointer"
+              class="w-full py-2.5 bg-primary hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-xs disabled:opacity-50 cursor-pointer"
             >
               {{ smsLoading ? 'Mengirim SMS...' : 'Kirim Kode OTP via SMS' }}
             </button>
@@ -216,7 +216,7 @@
                 type="button"
                 :disabled="smsLoading || smsOtpInput.length !== 6"
                 @click="verifySmsOtp"
-                class="flex-1 py-2.5 bg-primary hover:bg-red-700 text-white rounded-xl text-xs font-bold transition disabled:opacity-50 cursor-pointer"
+                class="flex-1 py-2.5 bg-primary hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition disabled:opacity-50 cursor-pointer"
               >
                 {{ smsLoading ? 'Memverifikasi...' : 'Verifikasi Kode OTP' }}
               </button>

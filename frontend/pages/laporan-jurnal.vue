@@ -108,7 +108,7 @@
               <td class="py-3.5 px-4 text-center">
                 <button
                   @click="selectedJournal = j"
-                  class="px-2.5 py-1 rounded-lg text-brand-red bg-red-50 hover:bg-red-100 text-[11px] font-semibold transition"
+                  class="px-2.5 py-1 rounded-lg text-brand-red bg-blue-50 hover:bg-blue-100 text-[11px] font-semibold transition"
                 >
                   Detail
                 </button>

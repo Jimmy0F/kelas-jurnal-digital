@@ -16,10 +16,10 @@
       <!-- User Card (Clickable to /profile) -->
       <NuxtLink
         to="/profile"
-        class="bg-gray-50 hover:bg-red-50/60 border border-gray-100 hover:border-red-100 rounded-2xl p-3 flex items-center gap-2.5 mb-6 transition group cursor-pointer"
+        class="bg-gray-50 hover:bg-blue-50/60 border border-gray-100 hover:border-blue-100 rounded-2xl p-3 flex items-center gap-2.5 mb-6 transition group cursor-pointer"
         title="Buka Pengaturan Profil"
       >
-        <div class="w-9 h-9 rounded-full bg-red-100 text-primary font-bold flex items-center justify-center text-xs flex-shrink-0 group-hover:ring-2 group-hover:ring-primary/20 transition">
+        <div class="w-9 h-9 rounded-full bg-blue-100 text-primary font-bold flex items-center justify-center text-xs flex-shrink-0 group-hover:ring-2 group-hover:ring-primary/20 transition">
           {{ userInitial }}
         </div>
         <div class="min-w-0 flex-1">
@@ -38,7 +38,7 @@
           class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors"
           :class="[
             isActive(item.to)
-              ? 'bg-red-50 text-primary font-semibold'
+              ? 'bg-blue-50 text-primary font-semibold'
               : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
           ]"
         >

@@ -49,7 +49,7 @@
               <span
                 v-if="unreadCount > 0"
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
-                :class="filterType === 'UNREAD' ? 'bg-white text-brand-red' : 'bg-red-100 text-brand-red'"
+                :class="filterType === 'UNREAD' ? 'bg-white text-brand-red' : 'bg-blue-100 text-brand-red'"
               >
                 {{ unreadCount }}
               </span>
@@ -68,7 +68,7 @@
               <span
                 v-if="unreadJurnalCount > 0"
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
-                :class="filterType === 'JURNAL' ? 'bg-white text-brand-red' : 'bg-red-100 text-brand-red'"
+                :class="filterType === 'JURNAL' ? 'bg-white text-brand-red' : 'bg-blue-100 text-brand-red'"
               >
                 {{ unreadJurnalCount }}
               </span>
@@ -87,7 +87,7 @@
               <span
                 v-if="unreadSuratIzinCount > 0"
                 class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
-                :class="filterType === 'SURAT_IZIN' ? 'bg-white text-brand-red' : 'bg-red-100 text-brand-red'"
+                :class="filterType === 'SURAT_IZIN' ? 'bg-white text-brand-red' : 'bg-blue-100 text-brand-red'"
               >
                 {{ unreadSuratIzinCount }}
               </span>
@@ -124,7 +124,7 @@
             :class="[
               item.is_read
                 ? 'bg-white border-gray-150 hover:border-gray-200'
-                : 'bg-red-50/30 border-red-200/80 shadow-2xs hover:bg-red-50/50'
+                : 'bg-blue-50/30 border-blue-200/80 shadow-2xs hover:bg-blue-50/50'
             ]"
           >
             <div
@@ -134,7 +134,7 @@
                   ? 'bg-blue-50 text-blue-600'
                   : item.type === 'SURAT_IZIN'
                     ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-red-50 text-brand-red'
+                    : 'bg-blue-50 text-brand-red'
               ]"
             >
               <BookOpenIcon v-if="item.type === 'JURNAL'" class="w-4 h-4" />
@@ -155,11 +155,11 @@
                 {{ item.body }}
               </p>
               <div class="mt-2.5 flex items-center justify-between">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-brand-red text-brand-red hover:text-white border border-red-200 text-xs font-bold transition-all shadow-2xs group-hover:shadow-xs">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-brand-red text-brand-red hover:text-white border border-blue-200 text-xs font-bold transition-all shadow-2xs group-hover:shadow-xs">
                   <span>Buka Rincian</span>
                   <span class="transition-transform group-hover:translate-x-1">→</span>
                 </span>
-                <span v-if="!item.is_read" class="text-[10px] font-semibold text-brand-red bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
+                <span v-if="!item.is_read" class="text-[10px] font-semibold text-brand-red bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
                   Belum Dibaca
                 </span>
               </div>

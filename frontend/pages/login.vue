@@ -68,7 +68,7 @@
         <div class="text-center pt-2">
           <NuxtLink
             to="/forgot-password"
-            class="inline-block text-xs text-primary hover:underline font-semibold py-1.5 px-3 rounded-lg hover:bg-red-50/50 transition cursor-pointer"
+            class="inline-block text-xs text-primary hover:underline font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-50/50 transition cursor-pointer"
           >
             Lupa kata sandi?
           </NuxtLink>
@@ -82,37 +82,37 @@
           <button
             type="button"
             @click="handleQuickLogin('SEKRETARIS')"
-            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-red-50/30 transition-colors text-[11px] font-medium"
+            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-blue-50/30 transition-colors text-[11px] font-medium"
           >
             Sekretaris
           </button>
           <button
             type="button"
             @click="handleQuickLogin('SISWA')"
-            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-red-50/30 transition-colors text-[11px] font-medium"
+            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-blue-50/30 transition-colors text-[11px] font-medium"
           >
             Siswa
           </button>
           <button
             type="button"
             @click="handleQuickLogin('GURU_PENGAJAR')"
-            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-red-50/30 transition-colors text-[11px] font-medium"
+            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-blue-50/30 transition-colors text-[11px] font-medium"
           >
             Guru Pengajar
           </button>
           <button
             type="button"
             @click="handleQuickLogin('GURU_PEMBIMBING')"
-            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-red-50/30 transition-colors text-[11px] font-medium"
+            class="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/40 bg-gray-50/50 hover:bg-blue-50/30 transition-colors text-[11px] font-medium"
           >
             Guru Pembimbing
           </button>
           <button
             type="button"
             @click="handleQuickLogin('SUPERADMIN')"
-            class="col-span-2 py-2 px-3 rounded-xl border border-red-200 bg-red-50/80 hover:bg-red-100 text-primary font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+            class="col-span-2 py-2 px-3 rounded-xl border border-blue-200 bg-blue-50/80 hover:bg-blue-100 text-primary font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
           >
-            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
             <span>Super Administrator</span>
           </button>
         </div>

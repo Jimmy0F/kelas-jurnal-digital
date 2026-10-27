@@ -55,7 +55,7 @@
               class="p-3.5 rounded-xl border cursor-pointer transition text-left space-y-2"
               :class="[
                 selectedItem?.id === item.id
-                  ? 'border-brand-red bg-red-50/20 shadow-xs'
+                  ? 'border-brand-red bg-blue-50/20 shadow-xs'
                   : 'border-gray-100 bg-white hover:border-gray-200 hover:bg-gray-50/50'
               ]"
             >
@@ -82,7 +82,7 @@
           <!-- Header Detail -->
           <div class="flex items-center justify-between border-b border-gray-100 pb-4">
             <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-brand-red bg-red-50 px-2 py-0.5 rounded">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-brand-red bg-blue-50 px-2 py-0.5 rounded">
                 Detail Permohonan Izin
               </span>
               <h2 class="text-lg font-bold text-gray-900 mt-1">{{ selectedItem.student_name }}</h2>

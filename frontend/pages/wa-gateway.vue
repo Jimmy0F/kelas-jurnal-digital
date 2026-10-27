@@ -181,7 +181,7 @@
                     type="button"
                     @click="broadcastForm.target_role = 'ALL'"
                     class="p-2.5 rounded-xl border text-center transition cursor-pointer"
-                    :class="broadcastForm.target_role === 'ALL' ? 'border-primary bg-red-50 text-primary font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
+                    :class="broadcastForm.target_role === 'ALL' ? 'border-primary bg-blue-50 text-primary font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
                   >
                     Semua Pengguna
                   </button>
@@ -220,7 +220,7 @@
                     type="button"
                     @click="broadcastForm.channel = 'ALL'"
                     class="p-2.5 rounded-xl border text-center transition cursor-pointer"
-                    :class="broadcastForm.channel === 'ALL' ? 'border-primary bg-red-50 text-primary font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
+                    :class="broadcastForm.channel === 'ALL' ? 'border-primary bg-blue-50 text-primary font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
                   >
                     Web + WhatsApp
                   </button>
@@ -228,7 +228,7 @@
                     type="button"
                     @click="broadcastForm.channel = 'IN_APP'"
                     class="p-2.5 rounded-xl border text-center transition cursor-pointer"
-                    :class="broadcastForm.channel === 'IN_APP' ? 'border-primary bg-red-50 text-primary font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
+                    :class="broadcastForm.channel === 'IN_APP' ? 'border-primary bg-blue-50 text-primary font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
                   >
                     Notifikasi Web
                   </button>

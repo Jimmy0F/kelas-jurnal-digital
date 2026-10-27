@@ -62,7 +62,7 @@
               <button
                 type="button"
                 @click="openAddScheduleModal = true"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 hover:border-brand-red bg-white hover:bg-red-50/40 text-gray-700 hover:text-brand-red text-xs font-semibold shadow-2xs transition cursor-pointer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 hover:border-brand-red bg-white hover:bg-blue-50/40 text-gray-700 hover:text-brand-red text-xs font-semibold shadow-2xs transition cursor-pointer"
               >
                 <PlusIcon class="w-3.5 h-3.5 text-brand-red" />
                 <span>Tambah Jadwal</span>
@@ -163,7 +163,7 @@
                     v-if="item.status.includes('Menunggu')"
                     type="button"
                     @click="openConfirmModal(item)"
-                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-brand-red bg-red-50 text-brand-red hover:bg-brand-red hover:text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-brand-red bg-blue-50 text-brand-red hover:bg-brand-red hover:text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
                   >
                     <CheckIcon class="w-3.5 h-3.5" />
                     <span>Konfirmasi</span>
@@ -255,7 +255,7 @@
                 @dragleave.prevent="isDragging = false"
                 @drop.prevent="handleFileDrop"
                 class="border-2 border-dashed rounded-2xl p-5 text-center transition cursor-pointer"
-                :class="isDragging ? 'border-brand-red bg-red-50/30' : 'border-gray-200 hover:border-gray-300 bg-gray-50/30'"
+                :class="isDragging ? 'border-brand-red bg-blue-50/30' : 'border-gray-200 hover:border-gray-300 bg-gray-50/30'"
                 @click="triggerFileInput"
               >
                 <input
@@ -267,7 +267,7 @@
                 />
 
                 <div v-if="!selectedFile" class="space-y-1.5">
-                  <div class="w-10 h-10 rounded-full bg-red-50 text-brand-red flex items-center justify-center mx-auto">
+                  <div class="w-10 h-10 rounded-full bg-blue-50 text-brand-red flex items-center justify-center mx-auto">
                     <UploadCloudIcon class="w-5 h-5" />
                   </div>
                   <p class="text-xs font-semibold text-brand-red">
@@ -345,7 +345,7 @@
       <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-gray-100">
           <div>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-100 text-brand-red">
+            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-brand-red">
               {{ activeModalItem.subject }}
             </span>
             <h3 class="text-base font-bold text-gray-900 mt-1">Detail Jurnal Realisasi KBM</h3>

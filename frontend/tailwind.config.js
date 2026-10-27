@@ -11,16 +11,22 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#C62828',
-          hover: '#B71C1C',
-          light: '#FEE2E2',
-          subtle: '#FEF2F2'
+          DEFAULT: '#2563EB',
+          hover: '#1D4ED8',
+          light: '#DBEAFE',
+          subtle: '#EFF6FF'
         },
         'brand-red': {
-          DEFAULT: '#C62828',
-          dark: '#B71C1C',
-          light: '#FEE2E2',
-          50: '#FEF2F2'
+          DEFAULT: '#2563EB',
+          dark: '#1D4ED8',
+          light: '#DBEAFE',
+          50: '#EFF6FF'
+        },
+        'brand-blue': {
+          DEFAULT: '#2563EB',
+          dark: '#1D4ED8',
+          light: '#DBEAFE',
+          50: '#EFF6FF'
         },
         presence: {
           hadir: '#16A34A',

@@ -409,7 +409,7 @@
                   type="button"
                   @click="selectedMajorFilter = 'RPL'"
                   class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                  :class="selectedMajorFilter === 'RPL' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-500 hover:text-blue-600'"
+                  :class="selectedMajorFilter === 'RPL' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-500 hover:text-red-600'"
                 >
                   RPL
                 </button>
@@ -417,7 +417,7 @@
                   type="button"
                   @click="selectedMajorFilter = 'DKV'"
                   class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                  :class="selectedMajorFilter === 'DKV' ? 'bg-purple-600 text-white shadow-2xs' : 'text-gray-500 hover:text-purple-600'"
+                  :class="selectedMajorFilter === 'DKV' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-gray-500 hover:text-emerald-600'"
                 >
                   DKV
                 </button>
@@ -453,8 +453,8 @@
                       <span
                         class="px-2 py-0.5 rounded-md text-[10px] font-bold"
                         :class="[
-                          cls.major === 'RPL' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                          cls.major === 'DKV' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                          cls.major === 'RPL' ? 'bg-red-50 text-red-700 border border-red-200' :
+                          cls.major === 'DKV' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                           'bg-amber-50 text-amber-700 border border-amber-200'
                         ]"
                       >
@@ -515,28 +515,28 @@
               <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
                 <NuxtLink
                   to="/manajemen-guru"
-                  class="p-3 bg-gray-50 hover:bg-red-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
+                  class="p-3 bg-gray-50 hover:bg-blue-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
                 >
                   <Users class="w-5 h-5 text-gray-500" />
                   <span>Kelola Guru</span>
                 </NuxtLink>
                 <NuxtLink
                   to="/master-data"
-                  class="p-3 bg-gray-50 hover:bg-red-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
+                  class="p-3 bg-gray-50 hover:bg-blue-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
                 >
                   <Layers class="w-5 h-5 text-gray-500" />
                   <span>Jadwal & Jurusan</span>
                 </NuxtLink>
                 <NuxtLink
                   to="/wa-gateway"
-                  class="p-3 bg-gray-50 hover:bg-red-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
+                  class="p-3 bg-gray-50 hover:bg-blue-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
                 >
                   <MessageSquare class="w-5 h-5 text-emerald-600" />
                   <span>WA Gateway</span>
                 </NuxtLink>
                 <NuxtLink
                   to="/presensi-override"
-                  class="p-3 bg-gray-50 hover:bg-red-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
+                  class="p-3 bg-gray-50 hover:bg-blue-50 hover:text-primary rounded-xl border border-gray-100 transition flex flex-col items-center justify-center text-center gap-1.5"
                 >
                   <ShieldAlert class="w-5 h-5 text-amber-600" />
                   <span>Buka Kunci</span>

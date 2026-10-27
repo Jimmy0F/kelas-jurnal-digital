@@ -31,7 +31,7 @@
         >
           <Calendar class="w-4 h-4 text-brand-red" />
           <span>Jadwal Pelajaran</span>
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-brand-red border border-red-200">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-brand-red border border-blue-200">
             {{ todaySchedules.length }}
           </span>
         </button>
@@ -139,7 +139,7 @@
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-gray-100">
             <div>
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-100 text-primary">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-primary">
                 {{ selectedMaterial.subject }}
               </span>
               <h3 class="text-base font-bold text-gray-900 mt-1">{{ selectedMaterial.topic }}</h3>
@@ -165,7 +165,7 @@
                   :href="selectedMaterial.attachment_url || '#'"
                   :download="selectedMaterial.attachment_name || 'Modul_Belajar_Kelas.pdf'"
                   target="_blank"
-                  class="inline-flex items-center gap-2 px-3 py-2 bg-red-50 text-brand-red hover:bg-red-100 rounded-xl font-semibold border border-red-200 text-xs"
+                  class="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 text-brand-red hover:bg-blue-100 rounded-xl font-semibold border border-blue-200 text-xs"
                 >
                   <Download class="w-4 h-4" />
                   <span>{{ selectedMaterial.attachment_name || 'Modul_Belajar_Kelas.pdf' }}</span>
@@ -195,7 +195,7 @@
           <div class="flex items-center justify-between pb-3.5 border-b border-gray-100">
             <div>
               <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-100 text-brand-red">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-brand-red">
                   Jadwal KBM Siswa
                 </span>
                 <span class="text-xs text-gray-400">{{ todayFormatted }}</span>
@@ -241,7 +241,7 @@
               <button
                 type="button"
                 @click="selectScheduleAndFilter(sch.subject)"
-                class="px-2.5 py-1.5 rounded-xl border border-red-200 bg-red-50 hover:bg-brand-red text-brand-red hover:text-white text-xs font-semibold transition shrink-0 cursor-pointer shadow-2xs"
+                class="px-2.5 py-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-brand-red text-brand-red hover:text-white text-xs font-semibold transition shrink-0 cursor-pointer shadow-2xs"
               >
                 Lihat Materi
               </button>

@@ -87,7 +87,7 @@
                 type="button"
                 @click="filterClassByMajor('RPL')"
                 class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="classMajorFilter === 'RPL' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-500 hover:text-blue-700'"
+                :class="classMajorFilter === 'RPL' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-500 hover:text-red-700'"
               >
                 RPL
               </button>
@@ -95,7 +95,7 @@
                 type="button"
                 @click="filterClassByMajor('DKV')"
                 class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="classMajorFilter === 'DKV' ? 'bg-purple-600 text-white shadow-2xs' : 'text-gray-500 hover:text-purple-700'"
+                :class="classMajorFilter === 'DKV' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-gray-500 hover:text-emerald-700'"
               >
                 DKV
               </button>
@@ -141,8 +141,8 @@
                     <span
                       class="px-2 py-0.5 rounded-md text-[10px] font-bold"
                       :class="[
-                        cls.major === 'RPL' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                        cls.major === 'DKV' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                        cls.major === 'RPL' ? 'bg-red-50 text-red-700 border border-red-200' :
+                        cls.major === 'DKV' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                         'bg-amber-50 text-amber-700 border border-amber-200'
                       ]"
                     >
@@ -214,7 +214,7 @@
                 type="button"
                 @click="filterSubjectByMajor('RPL')"
                 class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="subjectMajorFilter === 'RPL' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-500 hover:text-blue-700'"
+                :class="subjectMajorFilter === 'RPL' ? 'bg-red-600 text-white shadow-2xs' : 'text-gray-500 hover:text-red-700'"
               >
                 RPL
               </button>
@@ -222,7 +222,7 @@
                 type="button"
                 @click="filterSubjectByMajor('DKV')"
                 class="w-16 py-1.5 text-center font-bold text-xs rounded-lg transition-colors cursor-pointer"
-                :class="subjectMajorFilter === 'DKV' ? 'bg-purple-600 text-white shadow-2xs' : 'text-gray-500 hover:text-purple-700'"
+                :class="subjectMajorFilter === 'DKV' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-gray-500 hover:text-emerald-700'"
               >
                 DKV
               </button>
@@ -268,8 +268,8 @@
                     <span
                       class="px-2 py-0.5 rounded-md text-[10px] font-bold"
                       :class="[
-                        sub.major === 'RPL' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                        sub.major === 'DKV' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                        sub.major === 'RPL' ? 'bg-red-50 text-red-700 border border-red-200' :
+                        sub.major === 'DKV' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                         sub.major === 'Animasi' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                         'bg-gray-100 text-gray-700 border border-gray-200'
                       ]"

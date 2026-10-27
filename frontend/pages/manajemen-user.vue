@@ -139,10 +139,10 @@
                       class="px-2.5 py-0.5 rounded-md text-[10px] font-bold"
                       :class="{
                         'bg-purple-50 text-purple-700 border border-purple-200': u.role === 'SUPERADMIN',
-                        'bg-red-50 text-brand-red border border-red-200': u.role === 'GURU_PEMBIMBING',
-                        'bg-red-50 text-red-600 border border-red-100': u.role === 'GURU_PENGAJAR',
+                        'bg-emerald-50 text-emerald-700 border border-emerald-200': u.role === 'GURU_PEMBIMBING',
+                        'bg-blue-50 text-blue-700 border border-blue-200': u.role === 'GURU_PENGAJAR',
                         'bg-amber-50 text-amber-700 border border-amber-200': u.role === 'SEKRETARIS',
-                        'bg-blue-50 text-blue-600 border border-blue-100': u.role === 'SISWA',
+                        'bg-sky-50 text-sky-600 border border-sky-100': u.role === 'SISWA',
                       }"
                     >
                       {{ formatRoleLabel(u.role) }}
@@ -329,7 +329,7 @@
           <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-gray-100 pb-3">
               <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-red-50 text-brand-red flex items-center justify-center">
+                <div class="w-8 h-8 rounded-lg bg-blue-50 text-brand-red flex items-center justify-center">
                   <UploadCloud class="w-4 h-4" />
                 </div>
                 <div>
