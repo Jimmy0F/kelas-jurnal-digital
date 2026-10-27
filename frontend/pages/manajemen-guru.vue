@@ -11,7 +11,7 @@
         <div class="bg-white rounded-2xl border border-gray-150 p-5 shadow-2xs flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Guru Pembimbing (Walas)</p>
-            <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ walasCount }} Guru</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ stats.walas }} Guru</h3>
             <p class="text-[11px] text-emerald-600 font-medium mt-0.5">Membimbing Rombel Kelas</p>
           </div>
           <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
@@ -22,7 +22,7 @@
         <div class="bg-white rounded-2xl border border-gray-150 p-5 shadow-2xs flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Guru Pengajar (Mapel)</p>
-            <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ pengajarCount }} Guru</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ stats.pengajar }} Guru</h3>
             <p class="text-[11px] text-blue-600 font-medium mt-0.5">Pengampu Mata Pelajaran</p>
           </div>
           <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
@@ -33,7 +33,7 @@
         <div class="bg-white rounded-2xl border border-gray-150 p-5 shadow-2xs flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Guru & Staf Aktif</p>
-            <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ totalActiveCount }} Akun</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ stats.totalActive }} Akun</h3>
             <p class="text-[11px] text-purple-600 font-medium mt-0.5">Terdaftar di Sistem</p>
           </div>
           <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
@@ -79,34 +79,58 @@
             <button
               type="button"
               @click="setRoleFilter('ALL')"
-              class="px-3 py-1.5 rounded-lg transition"
+              class="px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5"
               :class="selectedRoleFilter === 'ALL' ? 'bg-white text-gray-900 shadow-2xs font-bold' : 'text-gray-500 hover:text-gray-900'"
             >
-              Semua Guru
+              <span>Semua Guru</span>
+              <span
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+                :class="selectedRoleFilter === 'ALL' ? 'bg-blue-100 text-primary' : 'bg-gray-200 text-gray-600'"
+              >
+                {{ stats.walas + stats.pengajar }}
+              </span>
             </button>
             <button
               type="button"
               @click="setRoleFilter('GURU_PEMBIMBING')"
-              class="px-3 py-1.5 rounded-lg transition"
+              class="px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5"
               :class="selectedRoleFilter === 'GURU_PEMBIMBING' ? 'bg-emerald-600 text-white font-bold shadow-2xs' : 'text-gray-500 hover:text-emerald-700'"
             >
-              Guru Pembimbing
+              <span>Guru Pembimbing</span>
+              <span
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+                :class="selectedRoleFilter === 'GURU_PEMBIMBING' ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'"
+              >
+                {{ stats.walas }}
+              </span>
             </button>
             <button
               type="button"
               @click="setRoleFilter('GURU_PENGAJAR')"
-              class="px-3 py-1.5 rounded-lg transition"
-              :class="selectedRoleFilter === 'GURU_PENGAJAR' ? 'bg-blue-600 text-white font-bold shadow-2xs' : 'text-gray-500 hover:text-blue-700'"
+              class="px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5"
+              :class="selectedRoleFilter === 'GURU_PENGAJAR' ? 'bg-primary text-white font-bold shadow-2xs' : 'text-gray-500 hover:text-primary'"
             >
-              Guru Pengajar
+              <span>Guru Pengajar</span>
+              <span
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+                :class="selectedRoleFilter === 'GURU_PENGAJAR' ? 'bg-white/20 text-white' : 'bg-blue-50 text-primary border border-blue-200'"
+              >
+                {{ stats.pengajar }}
+              </span>
             </button>
             <button
               type="button"
               @click="setRoleFilter('SUPERADMIN')"
-              class="px-3 py-1.5 rounded-lg transition"
+              class="px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1.5"
               :class="selectedRoleFilter === 'SUPERADMIN' ? 'bg-purple-600 text-white font-bold shadow-2xs' : 'text-gray-500 hover:text-purple-700'"
             >
-              Super Administrator
+              <span>Super Administrator</span>
+              <span
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+                :class="selectedRoleFilter === 'SUPERADMIN' ? 'bg-white/20 text-white' : 'bg-purple-50 text-purple-700 border border-purple-200'"
+              >
+                {{ stats.superadmin }}
+              </span>
             </button>
           </div>
         </div>
@@ -277,7 +301,7 @@
           <!-- Tipe Guru / Peran -->
           <div>
             <label class="block font-bold text-gray-700 mb-1.5">Tipe Guru / Peran Akun *</label>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <button
                 type="button"
                 @click="form.role = 'GURU_PEMBIMBING'"
@@ -285,7 +309,7 @@
                 :class="form.role === 'GURU_PEMBIMBING' ? 'border-emerald-500 bg-emerald-50 text-emerald-800 font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
               >
                 <div class="font-bold">Guru Pembimbing</div>
-                <div class="text-[10px] text-gray-500 mt-0.5">Wali kelas & pembina rombel</div>
+                <div class="text-[10px] text-gray-500 mt-0.5">Wali kelas & rombel</div>
               </button>
 
               <button
@@ -295,9 +319,25 @@
                 :class="form.role === 'GURU_PENGAJAR' ? 'border-blue-500 bg-blue-50 text-blue-800 font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
               >
                 <div class="font-bold">Guru Pengajar</div>
-                <div class="text-[10px] text-gray-500 mt-0.5">Guru mata pelajaran KBM</div>
+                <div class="text-[10px] text-gray-500 mt-0.5">Guru mapel KBM</div>
+              </button>
+
+              <button
+                type="button"
+                @click="form.role = 'SUPERADMIN'"
+                class="p-3 rounded-xl border text-left transition cursor-pointer"
+                :class="form.role === 'SUPERADMIN' ? 'border-purple-500 bg-purple-50 text-purple-800 font-bold' : 'border-gray-200 hover:bg-gray-50 text-gray-700'"
+              >
+                <div class="font-bold">Super Admin</div>
+                <div class="text-[10px] text-gray-500 mt-0.5">Admin sistem</div>
               </button>
             </div>
+          </div>
+
+          <!-- Informasi Khusus Superadmin -->
+          <div v-if="form.role === 'SUPERADMIN'" class="p-3 bg-purple-50 text-purple-800 rounded-xl border border-purple-200">
+            <p class="font-bold">Akses Super Administrator</p>
+            <p class="text-[11px] mt-0.5 text-purple-700">Akun ini memiliki hak akses penuh untuk mengelola master data, pengaturan sistem, WA Gateway, dan seluruh pengguna.</p>
           </div>
 
           <!-- Nama Guru -->
@@ -604,18 +644,42 @@ const form = ref({
   specialization: '',
 })
 
-const walasCount = computed(() => teachers.value.filter(t => t.role === 'GURU_PEMBIMBING').length)
-const pengajarCount = computed(() => teachers.value.filter(t => t.role === 'GURU_PENGAJAR').length)
-const totalActiveCount = computed(() => teachers.value.filter(t => t.is_active).length)
+const stats = ref({
+  walas: 0,
+  pengajar: 0,
+  superadmin: 0,
+  totalActive: 0
+})
+
+async function fetchStats() {
+  if (!authStore.token) return
+  try {
+    const res = await $fetch<any>(`${authStore.apiBase}/users?per_page=200`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    const list = res.data || []
+    stats.value = {
+      walas: list.filter((u: any) => u.role === 'GURU_PEMBIMBING').length,
+      pengajar: list.filter((u: any) => u.role === 'GURU_PENGAJAR').length,
+      superadmin: list.filter((u: any) => u.role === 'SUPERADMIN').length,
+      totalActive: list.filter((u: any) => ['GURU_PEMBIMBING', 'GURU_PENGAJAR', 'SUPERADMIN'].includes(u.role) && u.is_active).length,
+    }
+  } catch (e) {
+    console.error('Error fetching stats:', e)
+  }
+}
 
 async function fetchTeachers() {
   if (!authStore.token) return
   loading.value = true
   try {
     const params = new URLSearchParams()
-    params.set('category', 'GURU')
+    if (selectedRoleFilter.value === 'ALL') {
+      params.set('category', 'GURU')
+    } else {
+      params.set('role', selectedRoleFilter.value)
+    }
     if (searchQuery.value) params.set('search', searchQuery.value)
-    if (selectedRoleFilter.value !== 'ALL') params.set('role', selectedRoleFilter.value)
 
     const res = await $fetch<any>(`${authStore.apiBase}/users?${params.toString()}`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
@@ -670,7 +734,7 @@ function openAddModal() {
     email: '',
     nip_nis: '',
     phone: '',
-    role: 'GURU_PEMBIMBING',
+    role: selectedRoleFilter.value === 'ALL' ? 'GURU_PEMBIMBING' : selectedRoleFilter.value,
     class_id: null,
     subject_id: null,
     specialization: '',
@@ -716,6 +780,7 @@ async function handleSubmit() {
     successMsg.value = res.message || 'Data guru berhasil disimpan.'
     closeModal()
     fetchTeachers()
+    fetchStats()
     fetchMetadata()
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal menyimpan data guru.'
@@ -732,6 +797,7 @@ async function handleToggleActive(teacher: any) {
     })
     teacher.is_active = res.is_active
     successMsg.value = `Status ${teacher.name} diubah menjadi ${res.is_active ? 'Aktif' : 'Nonaktif'}.`
+    fetchStats()
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal mengubah status guru.'
   }
@@ -776,6 +842,7 @@ async function handleDelete(teacher: any) {
     })
     successMsg.value = `Akun guru ${teacher.name} berhasil dihapus.`
     fetchTeachers()
+    fetchStats()
   } catch (e: any) {
     errorMsg.value = e?.data?.message || 'Gagal menghapus guru.'
   }
@@ -934,5 +1001,6 @@ async function submitTeacherBulkImport() {
 onMounted(() => {
   fetchTeachers()
   fetchMetadata()
+  fetchStats()
 })
 </script>
