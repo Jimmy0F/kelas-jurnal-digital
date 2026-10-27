@@ -492,6 +492,10 @@ async function handleSendBroadcast() {
 }
 
 onMounted(() => {
+  if (authStore.user?.role !== 'SUPERADMIN') {
+    navigateTo('/dashboard')
+    return
+  }
   checkWaStatus()
   fetchBroadcasts()
 })

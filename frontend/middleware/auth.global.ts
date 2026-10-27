@@ -39,7 +39,6 @@ const ROLE_ALLOWED_ROUTES: Record<string, string[]> = {
     '/laporan-jurnal',
     '/rekap-semester',
     '/notifikasi',
-    '/wa-gateway',
     '/broadcast',
   ],
   SUPERADMIN: [

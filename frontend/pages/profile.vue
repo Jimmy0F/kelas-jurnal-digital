@@ -266,8 +266,8 @@
         </div>
       </div>
 
-      <!-- WhatsApp Gateway Integration Box (Eksklusif GURU_PEMBIMBING selaku Wali/Admin Sekolah) -->
-      <div v-if="authStore.user?.role === 'GURU_PEMBIMBING'" class="bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs space-y-4">
+      <!-- WhatsApp Gateway Integration Box (Eksklusif SUPERADMIN) -->
+      <div v-if="authStore.user?.role === 'SUPERADMIN'" class="bg-white rounded-2xl border border-gray-150 p-6 shadow-2xs space-y-4">
         <div class="flex items-center justify-between border-b border-gray-100 pb-3">
           <div>
             <h3 class="text-sm font-bold text-gray-900">Koneksi WhatsApp Gateway (Fonte Mandiri)</h3>
@@ -357,7 +357,7 @@ const pairingCode = ref('')
 const requestingWa = ref(false)
 
 const fetchWaStatus = async () => {
-  if (authStore.user?.role !== 'GURU_PEMBIMBING') return
+  if (authStore.user?.role !== 'SUPERADMIN') return
   try {
     const res: any = await $fetch(`${apiBase}/wa-gateway/status`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
